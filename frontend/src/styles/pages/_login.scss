@@ -1,0 +1,92 @@
+@use "../abstracts" as *;
+
+.login-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: $bg-soft;
+}
+
+/* LEFT SIDE */
+.login-banner {
+  background: linear-gradient(135deg, $secondary-color, $primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: $white;
+}
+
+.login-banner .overlay {
+  max-width: 500px;
+}
+
+.login-banner h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.login-banner p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  opacity: 0.9;
+}
+
+/* RIGHT SIDE */
+.login-form-area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+/* LOGIN CARD (ONLY STRUCTURE) */
+.login-card {
+  width: 100%;
+  max-width: 450px;
+}
+
+/* HEADER TEXT */
+.login-card h2 {
+  color: $text-main;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-card p {
+  color: $text-light;
+  margin-bottom: 1.5rem;
+}
+
+/* EXTRA ROW (ONLY LAYOUT) */
+.extra-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* SOCIAL SECTION LAYOUT ONLY */
+.social-login {
+  margin-top: 1.5rem;
+  display: grid;
+  gap: 0.8rem;
+}
+
+/* BOTTOM TEXT */
+.bottom-text {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+  .login-page {
+    grid-template-columns: 1fr;
+  }
+
+  .login-banner {
+    min-height: 260px;
+    text-align: center;
+  }
+}
