@@ -1,0 +1,32 @@
+@use "../abstracts" as *;
+
+.loader {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.loader-dark {
+  border: 3px solid rgba(15, 23, 42, 0.15);
+  border-top-color: $text-main;
+}
+
+.loader-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-lg {
+  width: 42px;
+  height: 42px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

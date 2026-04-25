@@ -1,0 +1,28 @@
+@use "../abstracts" as *;
+
+.card {
+  width: 100%;
+  background: $white;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-main;
+  padding: 2rem;
+}
+
+.card-sm {
+  max-width: 420px;
+}
+
+.card-md {
+  max-width: 500px;
+}
+
+.card-lg {
+  max-width: 620px;
+}
+
+@media (max-width: 576px) {
+  .card {
+    padding: 1.4rem;
+    border-radius: $radius-md;
+  }
+}
