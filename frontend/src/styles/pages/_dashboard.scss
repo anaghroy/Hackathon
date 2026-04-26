@@ -1,0 +1,59 @@
+@use "../abstracts" as *;
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: $bg-main;
+  color: $text-main;
+
+  .dashboard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: #050505;
+    border-bottom: 1px solid $border;
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      color: $text-main;
+    }
+  }
+
+  .dashboard-content {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: 0 1rem;
+  }
+
+  .profile-card {
+    background: #0a0a0a;
+    padding: 3rem;
+    border-radius: $radius-lg;
+    border: 1px solid $border;
+
+    .card-header {
+      margin-bottom: 2.5rem;
+      h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        color: $text-main;
+        letter-spacing: -0.02em;
+      }
+      p {
+        color: $text-muted;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .profile-form {
+    .textarea {
+      height: 120px;
+      padding-top: 12px;
+      resize: vertical;
+    }
+  }
+}
+

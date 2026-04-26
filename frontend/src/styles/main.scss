@@ -2,11 +2,13 @@
 @use "./abstracts/mixins";
 @use "./abstracts/variables";
 
-@use "./base/global";
+@use "./base/fonts";
 @use "./base/reset";
 @use "./base/typography";
+@use "./base/global";
 
 @use "./components/button";
+@use "./components/toast";
 @use "./components/card";
 @use "./components/input";
 @use "./components/loader";
@@ -17,4 +19,6 @@
 @use "./pages/dashboard";
 @use "./pages/login";
 @use "./pages/register";
+@use "./pages/forgot-password";
+@use "./pages/reset-password";
 @use "./pages/verifyPending";

@@ -7,8 +7,11 @@ const authApi = axios.create({
 });
 
 /* Register */
+// api service
+
 export const registerUser = async (userData) => {
   const response = await authApi.post("/register", userData);
+
   return response.data;
 };
 
