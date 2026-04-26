@@ -7,6 +7,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import morgan from "morgan";
 import authRouter from "./routes/auth.routes.js";
+import projectRouter from "./routes/project.routes.js"
+import uploadRouter from "./routes/upload.routes.js"
 import { config } from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -51,6 +53,8 @@ app.use(passport.initialize());
 
 // API routes — must be BEFORE the static/catch-all
 app.use("/api/auth", authRouter);
+app.use("/api/projects", projectRouter);
+app.use("/api/upload", uploadRouter);
 
 // Serve React build with correct absolute path
 app.use(express.static(path.join(__dirname, "../public"), { index: false }));
