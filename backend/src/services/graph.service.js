@@ -2,7 +2,7 @@ export const generateGraph = (files) => {
   let nodes = [];
   let edges = [];
 
-  // 🔥 store full paths
+  // store full paths
   const filePaths = new Set(files.map((f) => f.filename));
 
   files.forEach((file) => {
@@ -20,10 +20,10 @@ export const generateGraph = (files) => {
 
       if (!importPath) continue;
 
-      // ❌ ignore external libs
+      // ignore external libs
       if (!importPath.startsWith(".")) continue;
 
-      // 🔥 normalize path
+      // normalize path
       let normalized = importPath
         .replace(/^(\.\/|\.\.\/)+/, "") // remove ../
         .replace(/\\/g, "/");
@@ -36,7 +36,7 @@ export const generateGraph = (files) => {
         normalized + ".json",
       ];
 
-      // 🔥 find correct file
+      // find correct file
       const targetFile = [...filePaths].find((filePath) =>
         possibleMatches.some((p) => filePath.endsWith(p))
       );

@@ -1,8 +1,11 @@
 import Project from "../models/project.model.js";
+import { deleteCache, buildExplainKey } from "../services/cache.service.js";
 
 export const uploadProjectFiles = async (req, res) => {
   try {
     const projectId = req.params.projectId;
+
+    console.log("buildExplainKey:", buildExplainKey);
 
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded" });
@@ -17,6 +20,9 @@ export const uploadProjectFiles = async (req, res) => {
       $push: { files: { $each: files } },
     });
 
+        await deleteCache(buildExplainKey(projectId));
+
+    console.log("📂 Files updated → cache cleared");
     res.json({
       message: "Files uploaded successfully",
       count: files.length,
