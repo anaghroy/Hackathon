@@ -53,7 +53,18 @@ if(!process.env.BASE_URL){
 if(!process.env.FRONTEND_URL){
     throw new Error("FRONTEND_URL is not defined in environment variables")
 }
-
+if(!process.env.GEMINI_API_KEY){
+    throw new Error("GEMINI_API_KEY is not defined in environment variables")
+}
+if(!process.env.GROQ_API_KEY){
+    throw new Error("GROQ_API_KEY is not defined in environment variables")
+}
+if(!process.env.HUGGINGFACE_API_KEY){
+    throw new Error("HUGGINGFACE_API_KEY is not defined in environment variables")
+}
+if(!process.env.TOGETHER_API_KEY){
+    throw new Error("TOGETHER_API_KEY is not defined in environment variables")
+}
 
 
 export const config = {
@@ -69,6 +80,10 @@ export const config = {
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
     BREVO_SENDER_EMAIL: process.env.BREVO_SENDER_EMAIL,
     BREVO_API_KEY: process.env.BREVO_API_KEY,
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY,
+    GROQ_API_KEY: process.env.GROQ_API_KEY,
+    HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY,
+    TOGETHER_API_KEY: process.env.TOGETHER_API_KEY,
     BASE_URL: process.env.BASE_URL,
     FRONTEND_URL: process.env.FRONTEND_URL,
     NODE_ENV: process.env.NODE_ENV,
