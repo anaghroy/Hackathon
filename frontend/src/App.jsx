@@ -31,7 +31,33 @@ function App() {
   }, []);
   return (
     <BrowserRouter>
-      <Toaster position="top-right" />
+      <Toaster 
+        position="top-right" 
+        gutter={8}
+        toastOptions={{
+          className: 'squadra-toast',
+          duration: 4000,
+          icon: null, // Force remove icons globally
+          style: {
+            background: '#111318',
+            color: '#fff',
+            border: '1px solid rgba(255, 255, 255, 0.05)',
+            borderRadius: '6px',
+            fontSize: '14px',
+            padding: '12px 16px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.5)',
+          },
+          success: {
+            className: 'squadra-toast squadra-success',
+          },
+          error: {
+            className: 'squadra-toast squadra-error',
+          },
+          loading: {
+            className: 'squadra-toast squadra-loading',
+          },
+        }}
+      />
 
       <Routes>
         <Route

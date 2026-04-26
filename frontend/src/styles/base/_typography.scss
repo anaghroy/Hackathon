@@ -1,0 +1,28 @@
+@use "../abstracts" as *;
+@use "./fonts" as *;
+
+body {
+  font-family: $font-main;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-main;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.label, label, .input-label {
+  font-family: $font-accent;
+}
+
+.code, .mono, .brand-tag, .status-badge {
+  font-family: $font-code;
+}
+
+.divider span {
+  font-family: $font-code;
+  letter-spacing: 0.1em;
+}

@@ -38,6 +38,8 @@ export const useAuth = () => {
   };
 
   const handleApiError = (error, fallbackMessage) => {
+    console.log(error);
+    
     const message =
       error?.response?.data?.message || error?.message || fallbackMessage;
 
@@ -46,6 +48,9 @@ export const useAuth = () => {
   };
 
   /* Register */
+
+  // useAuth.js
+
   const handleRegister = async (formData) => {
     try {
       startLoading();
@@ -53,10 +58,17 @@ export const useAuth = () => {
       const data = await registerUser(formData);
 
       toast.success(data.message || "Registered Successfully");
-      return data;
+
+      return {
+        success: true,
+        ...data,
+      };
     } catch (error) {
       handleApiError(error, "Register Failed");
-      throw error;
+
+      return {
+        success: false,
+      };
     } finally {
       stopLoading();
     }
