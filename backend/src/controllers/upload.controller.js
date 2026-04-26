@@ -8,8 +8,8 @@ export const uploadProjectFiles = async (req, res) => {
       return res.status(400).json({ message: "No files uploaded" });
     }
 
-    const files = req.files.map((file) => ({
-      filename: file.originalname,
+    const files = req.files.map((file, index) => ({
+      filename: req.body.filePaths[index],
       content: file.buffer.toString("utf-8"),
     }));
 

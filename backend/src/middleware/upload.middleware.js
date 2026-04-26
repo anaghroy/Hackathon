@@ -3,18 +3,31 @@ import path from "path";
 
 const storage = multer.memoryStorage();
 
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "application/javascript",
-    "text/javascript",
-    "application/json",
-    "text/plain",
-  ];
+const allowedMimeTypes = [
+  "application/javascript",
+  "text/javascript",
+  "application/x-javascript",
+  "text/plain",
+  "application/json",
+  "application/typescript",
+  "text/typescript",
+  "application/octet-stream",
+];
 
-  if (allowedTypes.includes(file.mimetype)) {
+const allowedExtensions = [".js", ".jsx", ".ts", ".tsx", ".json"];
+
+const fileFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  const isValidMime = allowedMimeTypes.includes(file.mimetype);
+  const isValidExt = allowedExtensions.includes(ext);
+
+  if (isValidExt && isValidMime) {
+    cb(null, true);
+  } else if (isValidExt) {
     cb(null, true);
   } else {
-    cb(new Error("Invalid file type"), false);
+    cb(new Error("Invalid file type. Only .js, .jsx, .ts, .tsx, .json files are allowed."), false);
   }
 };
 

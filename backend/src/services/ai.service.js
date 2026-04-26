@@ -4,27 +4,32 @@ import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
 import { huggingfaceAnalyze } from "../services/ai/providers/huggingface.provider.js";
 
 export const analyzeCodeWithAI = async (parsedData) => {
-  const prompt = `
-Analyze this project:
+  try {
+    // Handle custom prompt OR default prompt
+    const prompt =
+      parsedData?.customPrompt ||
+      `
+Analyze project:
 
-Files: ${parsedData.totalFiles}
-Lines: ${parsedData.totalLines}
-Types: ${JSON.stringify(parsedData.fileTypes)}
+Total Files: ${parsedData?.totalFiles || 0}
+Total Lines: ${parsedData?.totalLines || 0}
+
+File Types:
+${JSON.stringify(parsedData?.fileTypes || {})}
 `;
 
-  try {
     // SMART ROUTING
-    if (parsedData.totalFiles < 5) {
+    if (parsedData?.totalFiles < 5) {
       console.log("Using Gemini");
       return await geminiAnalyze(prompt);
     }
 
-    if (parsedData.totalFiles < 15) {
+    if (parsedData?.totalFiles < 15) {
       console.log("Using Together");
       return await togetherAnalyze(prompt);
     }
 
-    if (parsedData.totalFiles < 40) {
+    if (parsedData?.totalFiles < 40) {
       console.log("Using Groq");
       return await groqAnalyze(prompt);
     }
@@ -32,6 +37,7 @@ Types: ${JSON.stringify(parsedData.fileTypes)}
     console.log("Using HuggingFace");
     return await huggingfaceAnalyze(prompt);
   } catch (err) {
+    console.error("AI Service Error:", err);
     return "All AI providers failed";
   }
 };
