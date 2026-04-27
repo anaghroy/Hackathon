@@ -42,34 +42,55 @@
   }
 }
 
-.editor-file-tree {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+.editor-file-tree-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
 
-  &__item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 8px;
-    font-size: 13px;
-    color: $text-muted;
-    border-radius: $radius-sm;
-    cursor: pointer;
-    transition: background-color 0.2s;
+.editor-file-tree__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+  border-radius: 4px;
 
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.05);
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: $text-light;
+  }
+
+  &.active {
+    background-color: rgba($primary, 0.1);
+    color: $text-main;
+    font-weight: 500;
+  }
+
+  &.folder {
+    color: #8b9eb7;
+    
+    &.expanded {
       color: $text-main;
     }
+  }
 
-    .icon-folder {
-      color: #8b9eb7;
-    }
-    
-    .icon-file {
-      color: $text-muted;
-    }
+  .icon-folder {
+    color: #e2b340; // Folder yellow
+  }
+  
+  .icon-file {
+    color: #8b9eb7;
+  }
+
+  span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 

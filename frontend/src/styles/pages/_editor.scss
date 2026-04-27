@@ -90,36 +90,24 @@
 .editor-code-panel {
   flex: 1;
   display: flex;
-  overflow: auto;
+  overflow: hidden;
   background-color: $bg-panel;
-  font-family: $font-code;
-  font-size: 14px;
-  line-height: 1.6;
 }
 
-.editor-code-lines {
-  padding: 16px 8px;
-  text-align: right;
-  color: $text-light;
-  user-select: none;
-  background-color: rgba(0, 0, 0, 0.2);
-  min-width: 48px;
-  
-  .line-number {
-    height: 22.4px; // matches line-height 1.6 * 14px
-  }
-}
-
-.editor-code-content {
+.editor-empty-state {
   flex: 1;
-  padding: 16px;
-  margin: 0;
-  color: #e5e5e5;
-  overflow-x: auto;
-  
-  code {
-    font-family: inherit;
-    white-space: pre-wrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $bg-panel;
+  color: $text-muted;
+
+  .empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0.5;
   }
 }
 
