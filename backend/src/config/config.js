@@ -65,6 +65,9 @@ if(!process.env.HUGGINGFACE_API_KEY){
 if(!process.env.TOGETHER_API_KEY){
     throw new Error("TOGETHER_API_KEY is not defined in environment variables")
 }
+if(!process.env.DEEPINFRA_API_KEY){
+    throw new Error("DEEPINFRA_API_KEY is not defined in environment variables")
+}
 
 
 export const config = {
@@ -84,6 +87,7 @@ export const config = {
     GROQ_API_KEY: process.env.GROQ_API_KEY,
     HUGGINGFACE_API_KEY: process.env.HUGGINGFACE_API_KEY,
     TOGETHER_API_KEY: process.env.TOGETHER_API_KEY,
+    DEEPINFRA_API_KEY: process.env.DEEPINFRA_API_KEY,
     BASE_URL: process.env.BASE_URL,
     FRONTEND_URL: process.env.FRONTEND_URL,
     NODE_ENV: process.env.NODE_ENV,

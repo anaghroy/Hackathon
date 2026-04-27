@@ -9,7 +9,7 @@ export const togetherAnalyze = async (prompt) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "mistralai/Mixtral-8x7B-Instruct-v0.1",
+      model: "Qwen/Qwen3-30B-A22B-Instruct",
       prompt,
       max_tokens: 500,
     }),

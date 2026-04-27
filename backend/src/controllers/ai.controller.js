@@ -86,7 +86,7 @@ export const explainGraphWithAI = async (req, res) => {
     });
 
     if (existing) {
-      console.log("💾 DB hit");
+      console.log("DB hit");
 
       const data = {
         graph: existing.graph,
