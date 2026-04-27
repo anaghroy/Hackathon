@@ -228,7 +228,10 @@ export const useAuth = () => {
 
       const data = await uploadProfilePicture(formData);
 
-      dispatch(setUser(data.user));
+      // Backend uploadProfilePicture doesn't return the full user object
+      // We fetch fresh user data to keep state in sync and prevent redirects
+      await handleGetMe();
+      
       toast.success(data.message || "Profile Picture Updated");
 
       return data;

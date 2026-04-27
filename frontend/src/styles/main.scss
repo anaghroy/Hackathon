@@ -7,16 +7,25 @@
 @use "./base/typography";
 @use "./base/global";
 
+@use "./layout/dashboard-layout";
+@use "./layout/navbar";
+@use "./layout/sidebar";
+
 @use "./components/button";
 @use "./components/toast";
 @use "./components/card";
 @use "./components/input";
 @use "./components/loader";
+@use "./components/search-bar";
+@use "./components/project-card";
+@use "./components/modal";
 
 @use "./layout/authLayout";
 @use "./layout/header";
 
 @use "./pages/dashboard";
+@use "./pages/project-detail";
+@use "./pages/profile";
 @use "./pages/login";
 @use "./pages/register";
 @use "./pages/forgot-password";

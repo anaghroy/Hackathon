@@ -1,59 +1,70 @@
-@use "../abstracts" as *;
+@use "../abstracts/variables" as *;
 
-.dashboard-container {
-  min-height: 100vh;
-  background-color: $bg-main;
-  color: $text-main;
-
-  .dashboard-nav {
+.dashboard-page {
+  &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1.5rem 2rem;
-    background: #050505;
-    border-bottom: 1px solid $border;
+    margin-bottom: 2.5rem;
+    gap: 1rem;
 
-    .logo {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      color: $text-main;
+    @media (max-width: 640px) {
+      flex-direction: column;
+      align-items: flex-start;
     }
   }
 
-  .dashboard-content {
-    max-width: 800px;
-    margin: 4rem auto;
-    padding: 0 1rem;
+  &__title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
   }
 
-  .profile-card {
-    background: #0a0a0a;
-    padding: 3rem;
+  &__title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: $text-main;
+    letter-spacing: -0.02em;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 0.9375rem;
+    color: $text-muted;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: $bg-panel;
+    border: 1px dashed $border;
     border-radius: $radius-lg;
-    border: 1px solid $border;
+    gap: 1rem;
 
-    .card-header {
-      margin-bottom: 2.5rem;
-      h2 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: $text-main;
-        letter-spacing: -0.02em;
-      }
-      p {
-        color: $text-muted;
-        font-size: 14px;
+    &-icon {
+      color: $text-light;
+      svg {
+        width: 48px;
+        height: 48px;
       }
     }
-  }
 
-  .profile-form {
-    .textarea {
-      height: 120px;
-      padding-top: 12px;
-      resize: vertical;
+    &-text {
+      color: $text-muted;
     }
   }
 }
-

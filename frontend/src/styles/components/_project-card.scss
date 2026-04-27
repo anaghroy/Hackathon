@@ -1,0 +1,97 @@
+@use "../abstracts/variables" as *;
+
+.project-card {
+  background-color: $bg-panel;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  transition: $transition;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: $border-hover;
+    transform: translateY(-2px);
+    background-color: $bg-soft;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  &__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: $text-main;
+    margin: 0;
+  }
+
+  &__date {
+    font-size: 0.75rem;
+    color: $text-muted;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__tag {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid $border;
+    border-radius: $radius-sm;
+    color: $text-muted;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: auto;
+  }
+
+  &__btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    border-radius: $radius-md;
+    border: 1px solid $border;
+    background: transparent;
+    color: $text-muted;
+    transition: $transition;
+    cursor: pointer;
+
+    &:hover {
+      border-color: $border-hover;
+      color: $text-main;
+    }
+
+    &--primary {
+      background-color: $white;
+      color: $black;
+      border: none;
+
+      &:hover {
+        background-color: #f4f4f5;
+        color: $black;
+      }
+    }
+
+    &--delete {
+        &:hover {
+            border-color: $error;
+            color: $error;
+            background-color: rgba(239, 68, 68, 0.05);
+        }
+    }
+  }
+}

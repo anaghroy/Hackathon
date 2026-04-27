@@ -1,1 +1,20 @@
-@use "../abstracts" as *;
+@use "../abstracts/variables" as *;
+
+.profile-card {
+  max-width: 800px;
+  background-color: $bg-panel;
+  border: 1px solid $border;
+  border-radius: $radius-lg;
+  padding: 2.5rem;
+  
+  @media (max-width: 640px) {
+    padding: 1.5rem;
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
