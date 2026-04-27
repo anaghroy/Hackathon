@@ -283,7 +283,7 @@ const Dashboard = () => {
                     <div 
                       key={project._id} 
                       className="project-card"
-                      onClick={() => navigate(`/project/${project._id}`)}
+                      onClick={() => navigate(`/editor/${project._id}`)}
                     >
                       <div className="project-card__header">
                           <h3 className="project-card__title">{project.title}</h3>

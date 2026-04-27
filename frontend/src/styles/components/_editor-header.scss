@@ -1,0 +1,96 @@
+@use "../abstracts/variables" as *;
+
+.editor-header {
+  height: 56px;
+  background-color: $bg-panel;
+  border-bottom: 1px solid $border;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: $text-main;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: 12px;
+    color: $text-light;
+    font-family: $font-code;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: $text-muted;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: $transition;
+
+    &:hover {
+      color: $text-main;
+    }
+  }
+}
+
+.editor-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: $radius-sm; // Sharp edges
+  cursor: pointer;
+  transition: $transition;
+  border: 1px solid transparent;
+
+  &--primary {
+    background-color: $primary;
+    color: $on-primary;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &--ghost {
+    background-color: transparent;
+    color: $text-muted;
+    border-color: $border;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: $text-main;
+      border-color: $border-hover;
+    }
+  }
+}

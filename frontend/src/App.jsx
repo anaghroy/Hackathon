@@ -7,7 +7,13 @@ import { useAuth } from "./hooks/useAuth";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
-import ProjectDetail from "./pages/ProjectDetail";
+import EditorPage from "./pages/EditorPage";
+import EditorIntent from "./pages/EditorIntent";
+import EditorExplainAI from "./pages/EditorExplainAI";
+import EditorSchema from "./pages/EditorSchema";
+import EditorMemory from "./pages/EditorMemory";
+import EditorTests from "./pages/EditorTests";
+import EditorReview from "./pages/EditorReview";
 import Profile from "./pages/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -126,10 +132,64 @@ function App() {
         />
 
         <Route
-          path="/project/:projectId"
+          path="/editor/:projectId"
           element={
             <ProtectedRoute>
-              <ProjectDetail />
+              <EditorPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/intent"
+          element={
+            <ProtectedRoute>
+              <EditorIntent />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/explain-ai"
+          element={
+            <ProtectedRoute>
+              <EditorExplainAI />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/schema"
+          element={
+            <ProtectedRoute>
+              <EditorSchema />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/memory"
+          element={
+            <ProtectedRoute>
+              <EditorMemory />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/tests"
+          element={
+            <ProtectedRoute>
+              <EditorTests />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/editor/:projectId/review"
+          element={
+            <ProtectedRoute>
+              <EditorReview />
             </ProtectedRoute>
           }
         />

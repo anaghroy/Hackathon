@@ -1,0 +1,136 @@
+@use "../abstracts/variables" as *;
+
+.editor-sidebar {
+  background-color: $bg-soft;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  &--left {
+    width: 280px;
+  }
+
+  &--right {
+    width: 340px;
+  }
+
+  &__section {
+    padding: 24px 16px;
+    border-bottom: 1px solid $border;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__title {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    color: $text-light;
+    margin-bottom: 16px;
+  }
+}
+
+.editor-file-tree {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    font-size: 13px;
+    color: $text-muted;
+    border-radius: $radius-sm;
+    cursor: pointer;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: $text-main;
+    }
+
+    .icon-folder {
+      color: #8b9eb7;
+    }
+    
+    .icon-file {
+      color: $text-muted;
+    }
+  }
+}
+
+.editor-memory-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    line-height: 1.4;
+    color: $text-muted;
+    
+    .bullet {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: $success;
+      margin-top: 6px;
+      flex-shrink: 0;
+      opacity: 0.8;
+    }
+  }
+}
+
+.editor-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.editor-tool-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  padding: 20px 12px;
+  color: $text-muted;
+  cursor: pointer;
+  transition: $transition;
+  text-align: center;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    border-color: $border-hover;
+    color: $text-main;
+    transform: translateY(-2px);
+  }
+
+  span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+}
