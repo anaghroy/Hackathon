@@ -1,8 +1,15 @@
 import express from "express";
 import { authUser } from "../middleware/auth.middleware.js";
-import { intentAnalysis } from "../controllers/ai.controller.js";
-import { explainCodebase } from "../controllers/ai.controller.js";
-import { explainGraphWithAI } from "../controllers/ai.controller.js";
+import {
+  intentAnalysis,
+  explainCodebase,
+  explainGraphWithAI,
+  reviewCode,
+  generateTests,
+  generateSchema,
+  debugCode,
+  securityScan,
+} from "../controllers/ai.controller.js";
 
 const aiRouter = express.Router();
 
@@ -26,5 +33,40 @@ aiRouter.get("/explain/:projectId", authUser, explainCodebase);
  * @access Private
  */
 aiRouter.get("/explain-ai/:projectId", authUser, explainGraphWithAI);
+
+/**
+ * @description Review code snippet based on team conventions (Decision Memory)
+ * @route POST /api/ai/review/:projectId
+ * @access Private
+ */
+aiRouter.post("/review/:projectId", authUser, reviewCode);
+
+/**
+ * @description Generate unit tests for a code snippet
+ * @route POST /api/ai/test/:projectId
+ * @access Private
+ */
+aiRouter.post("/test/:projectId", authUser, generateTests);
+
+/**
+ * @description Generate DB schema and ER diagram from natural language
+ * @route POST /api/ai/schema/:projectId
+ * @access Private
+ */
+aiRouter.post("/schema/:projectId", authUser, generateSchema);
+
+/**
+ * @description Time-Travel Debugging & Root Cause Analyzer
+ * @route POST /api/ai/debug/:projectId
+ * @access Private
+ */
+aiRouter.post("/debug/:projectId", authUser, debugCode);
+
+/**
+ * @description Context-Aware Security & Vulnerability Auto-Fixer
+ * @route POST /api/ai/security/:projectId
+ * @access Private
+ */
+aiRouter.post("/security/:projectId", authUser, securityScan);
 
 export default aiRouter;

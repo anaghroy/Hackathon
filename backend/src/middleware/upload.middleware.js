@@ -12,12 +12,29 @@ const allowedMimeTypes = [
   "application/typescript",
   "text/typescript",
   "application/octet-stream",
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/gif",
+  "image/svg+xml",
+  "image/webp",
 ];
 
-const allowedExtensions = [".js", ".jsx", ".ts", ".tsx", ".json"];
+const allowedExtensions = [
+  ".js",
+  ".jsx",
+  ".ts",
+  ".tsx",
+  ".json",
+  ".png",
+  ".jpg",
+  ".jpeg",
+  ".gif",
+  ".svg",
+  ".webp",
+];
 
-const fileFilter = (req, file, cb) => {
-  const ext = path.extname(file.originalname).toLowerCase();
+const fileFilter = (req, file, cb) => {  const ext = path.extname(file.originalname).toLowerCase();
 
   const isValidMime = allowedMimeTypes.includes(file.mimetype);
   const isValidExt = allowedExtensions.includes(ext);
@@ -27,7 +44,12 @@ const fileFilter = (req, file, cb) => {
   } else if (isValidExt) {
     cb(null, true);
   } else {
-    cb(new Error("Invalid file type. Only .js, .jsx, .ts, .tsx, .json files are allowed."), false);
+    cb(
+      new Error(
+        "Invalid file type. Only .js, .jsx, .ts, .tsx, .json files are allowed.",
+      ),
+      false,
+    );
   }
 };
 

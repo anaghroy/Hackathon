@@ -10,7 +10,7 @@ export const resetPasswordTemplate = (resetUrl, username) => {
           <table width="600" style="background:#fff;border-radius:10px;overflow:hidden;">
             
             <tr>
-              <td style="background:#4f46e5;color:#fff;padding:20px;text-align:center;font-size:20px;">
+              <td style="background:#000000;color:#fff;padding:20px;text-align:center;font-size:20px;">
                 🔐 Reset Your Password
               </td>
             </tr>
