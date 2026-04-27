@@ -8,7 +8,11 @@ export const generateGraph = (files) => {
   files.forEach((file) => {
     const sourceFile = file.filename;
 
-    nodes.push({ id: sourceFile });
+    nodes.push({ 
+      id: sourceFile,
+      data: { label: sourceFile.split('/').pop() }, // Show only filename as label
+      position: { x: Math.random() * 600, y: Math.random() * 600 }
+    });
 
     const importRegex =
       /import\s+.*?from\s+['"](.*?)['"]|require\(['"](.*?)['"]\)/g;

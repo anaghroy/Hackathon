@@ -13,7 +13,7 @@ export const addMemory = async (req, res) => {
     const memory = await createMemory({
       ...req.body,
       projectId,
-      createdBy: req.user._id,
+      createdBy: req.user.id,
     });
 
     await deleteCache(buildExplainKey(projectId));

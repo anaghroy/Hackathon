@@ -95,8 +95,16 @@ export const getSingleProject = async (req, res) => {
 export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description } = req.body;
-    const project = await Project.findByIdAndUpdate(id, { title, description }, { new: true });
+    const { title, description, files } = req.body;
+    
+    // Only update fields that are provided
+    const updateData = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (files !== undefined) updateData.files = files;
+
+    const project = await Project.findByIdAndUpdate(id, updateData, { new: true });
+    
     return res.status(200).json({
       message: "Project updated successfully",
       success: true,
