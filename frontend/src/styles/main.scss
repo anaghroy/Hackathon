@@ -31,3 +31,9 @@
 @use "./pages/forgot-password";
 @use "./pages/reset-password";
 @use "./pages/verifyPending";
+
+// Editor
+@use "./components/editor-header";
+@use "./components/editor-sidebar";
+@use "./pages/editor";
+@use "./pages/editor-intent";
