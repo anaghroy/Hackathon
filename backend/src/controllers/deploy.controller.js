@@ -199,3 +199,38 @@ export const rollbackDeployment = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server error triggering rollback." });
   }
 };
+
+/**
+ * @desc Get all deployments for a project
+ * @route GET /api/deploy/:projectId/history
+ * @access Private
+ */
+export const getDeploymentHistory = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const history = await Deployment.find({ project: projectId }).sort({ createdAt: -1 });
+    return res.status(200).json({ success: true, history });
+  } catch (error) {
+    console.error("Error fetching history:", error);
+    return res.status(500).json({ success: false, message: "Server error fetching history." });
+  }
+};
+
+/**
+ * @desc Get status of the latest deployment
+ * @route GET /api/deploy/:projectId/status
+ * @access Private
+ */
+export const getDeploymentStatus = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const deployment = await Deployment.findOne({ project: projectId }).sort({ createdAt: -1 });
+    if (!deployment) {
+      return res.status(404).json({ success: false, message: "No deployment found." });
+    }
+    return res.status(200).json({ success: true, deployment });
+  } catch (error) {
+    console.error("Error fetching status:", error);
+    return res.status(500).json({ success: false, message: "Server error fetching status." });
+  }
+};

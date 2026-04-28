@@ -1,5 +1,5 @@
 import express from "express";
-import { triggerDeployment, getLogs, rollbackDeployment } from "../controllers/deploy.controller.js";
+import { triggerDeployment, getLogs, rollbackDeployment, getDeploymentHistory, getDeploymentStatus } from "../controllers/deploy.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 
 const deployRouter = express.Router();
@@ -24,5 +24,7 @@ deployRouter.get("/:projectId/logs", authUser, getLogs);
  * @access Private
  */
 deployRouter.post("/:projectId/rollback", authUser, rollbackDeployment);
+deployRouter.get("/:projectId/history", authUser, getDeploymentHistory);
+deployRouter.get("/:projectId/status", authUser, getDeploymentStatus);
 
 export default deployRouter;

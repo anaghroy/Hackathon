@@ -1,7 +1,7 @@
 import Project from "../models/project.model.js";
 import Deployment from "../models/deployment.model.js";
 import { parseProjectFiles } from "../services/parser.service.js";
-import { analyzeCodeWithAI } from "../services/ai.service.js";
+import { analyzeCodeWithAI, analyzeCodeSecurity } from "../services/ai.service.js";
 import { generateGraph } from "../services/graph.service.js";
 import DecisionMemory from "../models/decisionMemory.model.js";
 import AIAnalysis from "../models/aiAnalysis.model.js";
@@ -236,6 +236,21 @@ Return a JSON object strictly following this structure:
       result = { error: "Failed to parse AI response", raw: aiResult };
     }
     
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const scanSecurity = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    if (!projectId) return res.status(400).json({ message: "projectId is required" });
+
+    const project = await Project.findById(projectId);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    const result = await analyzeCodeSecurity(project._id, project.files || []);
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });

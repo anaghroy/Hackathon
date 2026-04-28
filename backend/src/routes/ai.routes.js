@@ -1,15 +1,16 @@
 import express from "express";
 import { authUser } from "../middleware/auth.middleware.js";
-import { 
-  intentAnalysis, 
-  explainCodebase, 
+import {
+  intentAnalysis,
+  explainCodebase,
   explainGraphWithAI,
   generateSchema,
   generateTests,
   reviewCode,
   analyzeLogs,
   applyFix,
-  analyzePerformance
+  analyzePerformance,
+  scanSecurity
 } from "../controllers/ai.controller.js";
 
 const aiRouter = express.Router();
@@ -25,5 +26,6 @@ aiRouter.post("/review/:projectId", authUser, reviewCode);
 aiRouter.post("/analyze-logs", authUser, analyzeLogs);
 aiRouter.post("/apply-fix", authUser, applyFix);
 aiRouter.post("/performance/:projectId", authUser, analyzePerformance);
+aiRouter.post("/security/:projectId", authUser, scanSecurity);
 
 export default aiRouter;
