@@ -26,6 +26,11 @@ const projectSchema = new mongoose.Schema({
     default: "main",
   },
   buildCommand: String,
+  envVars: {
+    type: Map,
+    of: String,
+    default: {},
+  },
   
   createdAt: {
     type: Date,
