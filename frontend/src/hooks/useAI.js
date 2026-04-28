@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import {
@@ -23,7 +24,7 @@ export const useAI = () => {
   const dispatch = useDispatch();
   const aiState = useSelector((state) => state.ai);
 
-  const processIntent = async (projectId, data) => {
+  const processIntent = useCallback(async (projectId, data) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
@@ -39,9 +40,9 @@ export const useAI = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch]);
 
-  const getArchitectureGraph = async (projectId) => {
+  const getArchitectureGraph = useCallback(async (projectId) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
@@ -56,9 +57,9 @@ export const useAI = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch]);
 
-  const getRawGraph = async (projectId) => {
+  const getRawGraph = useCallback(async (projectId) => {
     try {
       const response = await explainRawApi(projectId);
       return response.data;
@@ -67,9 +68,9 @@ export const useAI = () => {
       toast.error(msg);
       throw err;
     }
-  };
+  }, []);
 
-  const generateDbSchema = async (projectId, data) => {
+  const generateDbSchema = useCallback(async (projectId, data) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
@@ -85,9 +86,9 @@ export const useAI = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch]);
 
-  const generateTests = async (projectId, data) => {
+  const generateTests = useCallback(async (projectId, data) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
@@ -103,9 +104,9 @@ export const useAI = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch]);
 
-  const reviewCode = async (projectId, data) => {
+  const reviewCode = useCallback(async (projectId, data) => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
@@ -121,11 +122,11 @@ export const useAI = () => {
     } finally {
       dispatch(setLoading(false));
     }
-  };
+  }, [dispatch]);
 
-  const resetAiState = () => {
+  const resetAiState = useCallback(() => {
     dispatch(clearAiState());
-  };
+  }, [dispatch]);
 
   return {
     ...aiState,
@@ -138,3 +139,4 @@ export const useAI = () => {
     resetAiState,
   };
 };
+

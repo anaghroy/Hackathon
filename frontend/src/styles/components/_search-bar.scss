@@ -1,42 +1,40 @@
 @use "../abstracts/variables" as *;
 
 .search-bar {
-  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: $bg-soft;
+  border: 1px solid $border;
+  border-radius: $radius-md;
+  padding: 0 1rem;
   width: 100%;
+  transition: border-color $transition;
+
+  &:focus-within {
+    border-color: $border-hover;
+  }
 
   &__icon {
-    position: absolute;
-    left: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
     color: $text-light;
-    pointer-events: none;
-    
-    svg {
-        width: 16px;
-        height: 16px;
-    }
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
   }
 
   &__input {
-    width: 100%;
-    background-color: $bg-soft;
-    border: 1px solid $border;
-    border-radius: $radius-md;
-    padding: 0.625rem 1rem 0.625rem 2.75rem;
+    background: none;
+    border: none;
     color: $text-main;
+    height: 40px;
+    width: 100%;
     font-size: 0.875rem;
-    transition: $transition;
-
-    &::placeholder {
-      color: $text-light;
-    }
 
     &:focus {
       outline: none;
-      border-color: $border-hover;
-      background-color: transparent;
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.03);
+    }
+
+    &::placeholder {
+      color: $text-light;
     }
   }
 }

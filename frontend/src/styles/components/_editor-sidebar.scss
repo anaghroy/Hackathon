@@ -18,85 +18,220 @@
 
   &--left {
     width: 280px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
   }
 
   &--right {
-    width: 340px;
+    width: 320px;
+    background-color: #111112;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0;
+    box-shadow: -10px 0 30px rgba(0, 0, 0, 0.4);
+
+    .editor-sidebar__section {
+      padding: 32px 24px;
+      
+      &:first-child {
+        padding-top: 32px;
+      }
+    }
+
+    .editor-sidebar__title {
+      color: rgba($text-light, 0.5);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      margin-bottom: 20px;
+    }
   }
 
   &__section {
-    padding: 24px 16px;
-    border-bottom: 1px solid $border;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     
     &:last-child {
       border-bottom: none;
+      margin-top: auto;
+      padding-bottom: 24px;
+    }
+
+    &.explorer {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-bottom: 12px;
+      overflow: hidden;
+    }
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 16px;
+    
+    .actions {
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    &:hover .actions {
+      opacity: 1;
     }
   }
 
   &__title {
     font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    color: $text-light;
-    margin-bottom: 16px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: rgba($text-light, 0.35);
+    margin: 0;
+    text-transform: uppercase;
+    padding: 0 16px;
+  }
+}
+
+.explorer-action-btn {
+  background: none;
+  border: none;
+  color: $text-muted;
+  padding: 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: $text-main;
+  }
+
+  &--delete:hover {
+    color: $error;
+    background-color: rgba($error, 0.1);
   }
 }
 
 .editor-file-tree-container {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+  }
 }
 
 .editor-file-tree__item {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: 6px;
+  padding: 4px 16px;
   font-size: 13px;
-  color: $text-muted;
+  color: rgba($text-light, 0.7);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: none;
   user-select: none;
-  border-radius: 4px;
+  border-radius: 0;
+  position: relative;
+  white-space: nowrap;
 
   &:hover {
     background-color: rgba(255, 255, 255, 0.05);
-    color: $text-light;
+    color: $text-main;
   }
 
   &.active {
-    background-color: rgba($primary, 0.1);
+    background-color: rgba(255, 255, 255, 0.06);
     color: $text-main;
-    font-weight: 500;
-  }
-
-  &.folder {
-    color: #8b9eb7;
     
-    &.expanded {
-      color: $text-main;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background-color: $primary;
+      box-shadow: 0 0 8px rgba($primary, 0.5);
     }
   }
 
+  &.folder {
+    font-weight: 500;
+  }
+
+  .chevron {
+    color: rgba($text-light, 0.4);
+    display: flex;
+    align-items: center;
+    width: 16px;
+  }
+
   .icon-folder {
-    color: #e2b340; // Folder yellow
+    color: #cca33d;
+    flex-shrink: 0;
+    margin-right: 2px;
   }
   
   .icon-file {
     color: #8b9eb7;
+    flex-shrink: 0;
+    margin-left: 16px; 
+    margin-right: 2px;
+  }
+
+  &.folder .icon-file {
+    margin-left: 0;
   }
 
   span {
-    white-space: nowrap;
+    flex: 1;
     overflow: hidden;
     text-overflow: ellipsis;
   }
 }
 
+.explorer-input-container {
+  padding: 2px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  .icon {
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  input {
+    width: 100%;
+    background-color: #1e1e1e;
+    border: 1px solid $primary;
+    color: $text-main;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 2px;
+    outline: none;
+    font-family: inherit;
+
+    &::placeholder {
+      color: rgba($text-light, 0.3);
+    }
+  }
+}
+
 .editor-memory-list {
   list-style: none;
-  padding: 0;
+  padding: 8px 16px;
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -105,53 +240,109 @@
   &__item {
     display: flex;
     align-items: flex-start;
-    gap: 8px;
-    font-size: 13px;
-    line-height: 1.4;
-    color: $text-muted;
+    gap: 12px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba($text-light, 0.6);
+    padding: 10px 14px;
+    background-color: rgba(255, 255, 255, 0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.08);
+      transform: translateY(-1px);
+      color: $text-main;
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
     .bullet {
       width: 6px;
       height: 6px;
       border-radius: 50%;
       background-color: $success;
-      margin-top: 6px;
+      margin-top: 5px;
       flex-shrink: 0;
-      opacity: 0.8;
+      box-shadow: 0 0 8px rgba($success, 0.4);
     }
   }
 }
 
 .editor-tools-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 12px;
 }
 
 .editor-tool-card {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background-color: rgba(255, 255, 255, 0.03);
-  border: 1px solid $border;
-  border-radius: $radius-md;
-  padding: 20px 12px;
-  color: $text-muted;
+  gap: 16px;
+  background-color: #1a1a1b;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 18px 20px;
+  color: rgba($text-light, 0.6);
   cursor: pointer;
-  transition: $transition;
-  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+  position: relative;
+  overflow: hidden;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.06);
-    border-color: $border-hover;
+    background-color: #1e1e1f;
+    border-color: rgba(255, 255, 255, 0.1);
     color: $text-main;
     transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+    svg {
+      color: $primary;
+      transform: scale(1.1) rotate(5deg);
+      filter: drop-shadow(0 0 8px rgba($primary, 0.4));
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    transition: all 0.3s ease;
+    color: rgba($text-light, 0.4);
+    flex-shrink: 0;
   }
 
   span {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+}
+
+// Memory Active Highlight (Green State)
+.memory-card--active {
+  background-color: rgba($success, 0.04) !important;
+  border-color: rgba($success, 0.2) !important;
+  box-shadow: 0 0 20px rgba($success, 0.05), inset 0 0 0 1px rgba($success, 0.1) !important;
+  
+  &::before {
+    background-color: $success !important;
+    box-shadow: 0 0 12px rgba($success, 0.5);
+  }
+
+  h4, span, p {
+    color: $text-main !important;
+  }
+
+  .bullet {
+    background-color: $success !important;
+    box-shadow: 0 0 10px rgba($success, 0.8) !important;
   }
 }

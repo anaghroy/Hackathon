@@ -3,7 +3,7 @@ import axios from "axios";
 const authApi = axios.create({
   baseURL: "/api/auth",
   withCredentials: true,
-  timeout: 10000,
+  timeout: 60000,
 });
 
 /* Register */

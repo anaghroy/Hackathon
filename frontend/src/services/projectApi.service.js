@@ -4,7 +4,7 @@ import axios from "axios";
 const projectApi = axios.create({
   baseURL: "/api/projects",
   withCredentials: true,
-  timeout: 10000,
+  timeout: 60000,
 });
 
 // Create Project

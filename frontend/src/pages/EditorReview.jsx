@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, CheckCircle, Play, AlertTriangle, Lightbulb, Check } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Play, AlertTriangle, Lightbulb, Check, Code, ShieldCheck, Zap } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
+import Editor from "@monaco-editor/react";
 
 const EditorReview = () => {
   const { projectId } = useParams();
@@ -20,13 +21,19 @@ const EditorReview = () => {
     }
   };
 
-  const renderList = (items, icon) => {
-    if (!items || items.length === 0) return <p style={{ color: 'var(--text-muted)' }}>None found.</p>;
+  const renderList = (items, type) => {
+    if (!items || items.length === 0) return <p className="text-muted" style={{ fontSize: '13px', margin: '0 0 0 28px' }}>No points detected.</p>;
+    
+    let Icon = Check;
+    if (type === 'issue') Icon = AlertTriangle;
+    if (type === 'suggestion') Icon = Lightbulb;
+    if (type === 'mismatch') Icon = AlertTriangle;
+
     return (
-      <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+      <ul className="ai-list" style={{ marginLeft: '4px' }}>
         {items.map((item, i) => (
-          <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: 'var(--text-light)', fontSize: '0.95rem' }}>
-            <span style={{ marginTop: '0.2rem' }}>{icon}</span>
+          <li key={i} className="ai-list__item">
+            <Icon size={14} />
             <span>{item}</span>
           </li>
         ))}
@@ -35,94 +42,96 @@ const EditorReview = () => {
   };
 
   return (
-    <div className="editor-layout" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: 'var(--bg-dark)' }}>
+    <div className="ai-page">
       <header className="editor-header">
         <div className="editor-header__left">
           <button className="editor-btn editor-btn--ghost" onClick={() => navigate(`/editor/${projectId}`)}>
             <ArrowLeft size={16} /> Back to Editor
           </button>
-          <div className="editor-header__title" style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <CheckCircle size={18} /> AI Code Review
+          <div className="editor-header__info" style={{ marginLeft: '1.5rem' }}>
+            <h1 className="editor-header__title" style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+              <ShieldCheck size={24} className="text-primary" style={{ filter: 'drop-shadow(0 0 10px rgba(59, 130, 246, 0.5))' }} /> AI Code Review
+            </h1>
           </div>
         </div>
       </header>
       
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="ai-page__content">
         {/* Left Side: Input */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1rem', borderRight: '1px solid var(--border-color)', gap: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Code Snippet to Review</label>
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Paste your code here..."
-              style={{
-                flex: 1,
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '1rem',
-                fontFamily: 'JetBrains Mono, monospace',
-                resize: 'none'
-              }}
-            />
+        <aside className="ai-form-side">
+          <div className="ai-form-side__header">
+            <h2>Code Auditor</h2>
+            <p>Paste your snippet below to identify potential bugs, security issues, and style mismatches.</p>
           </div>
+
+          <div className="ai-group ai-group--flex" style={{ minHeight: '300px' }}>
+            <label><Code size={12} /> Snippet to Review</label>
+            <div className="ai-code-input-container" style={{ flex: 1, borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <Editor
+                height="100%"
+                defaultLanguage="javascript"
+                value={code}
+                onChange={setCode}
+                theme="vs-dark"
+                options={{
+                  fontSize: 13,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  fontFamily: 'JetBrains Mono, monospace',
+                  padding: { top: 16, bottom: 16 },
+                  wordWrap: 'on'
+                }}
+              />
+            </div>
+          </div>
+
           <button 
-            className="editor-btn editor-btn--primary" 
+            className="ai-btn-primary" 
             onClick={handleSubmit}
             disabled={loading || !code.trim()}
-            style={{ alignSelf: 'flex-end', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16, display: 'inline-block' }}></span> : <Play size={16} />}
-            {loading ? 'Reviewing...' : 'Review Code'}
+            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16 }}></span> : <Zap size={18} />}
+            <span>{loading ? 'Analyzing...' : 'Run Analysis'}</span>
           </button>
-        </div>
+        </aside>
 
         {/* Right Side: Output */}
-        <div style={{ flex: 1, padding: '1.5rem', overflowY: 'auto', backgroundColor: 'var(--bg-dark)' }}>
+        <main className="ai-result-side">
           {reviewResult ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               
-              {/* Issues Card */}
-              <div style={{ backgroundColor: 'var(--bg-darker)', border: '1px solid rgba(248, 81, 73, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                <h3 style={{ color: 'rgba(248, 81, 73, 1)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <AlertTriangle size={18} /> Issues & Bugs
-                </h3>
-                {renderList(reviewResult.issues, <AlertTriangle size={14} color="rgba(248, 81, 73, 0.8)" />)}
+              <div className="ai-card ai-card--issue">
+                <h3 className="ai-card__title"><AlertTriangle size={18} /> Critical Issues & Bugs</h3>
+                {renderList(reviewResult.issues, 'issue')}
               </div>
 
-              {/* Suggestions Card */}
-              <div style={{ backgroundColor: 'var(--bg-darker)', border: '1px solid rgba(88, 166, 255, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                <h3 style={{ color: 'rgba(88, 166, 255, 1)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Lightbulb size={18} /> Suggestions & Improvements
-                </h3>
-                {renderList(reviewResult.suggestions, <Lightbulb size={14} color="rgba(88, 166, 255, 0.8)" />)}
+              <div className="ai-card ai-card--suggestion">
+                <h3 className="ai-card__title"><Lightbulb size={18} /> Suggestions & Improvements</h3>
+                {renderList(reviewResult.suggestions, 'suggestion')}
               </div>
 
-              {/* Best Practices Card */}
-              <div style={{ backgroundColor: 'var(--bg-darker)', border: '1px solid rgba(46, 160, 67, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                <h3 style={{ color: 'rgba(46, 160, 67, 1)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Check size={18} /> Best Practices
-                </h3>
-                {renderList(reviewResult.bestPractices, <Check size={14} color="rgba(46, 160, 67, 0.8)" />)}
+              <div className="ai-card ai-card--practice">
+                <h3 className="ai-card__title"><Check size={18} /> Best Practices</h3>
+                {renderList(reviewResult.bestPractices, 'practice')}
               </div>
 
-              {/* Convention Mismatches Card */}
-              <div style={{ backgroundColor: 'var(--bg-darker)', border: '1px solid rgba(210, 153, 34, 0.3)', borderRadius: '8px', padding: '1.5rem' }}>
-                <h3 style={{ color: 'rgba(210, 153, 34, 1)', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <AlertTriangle size={18} /> Convention Mismatches
-                </h3>
-                {renderList(reviewResult.conventionMismatches, <AlertTriangle size={14} color="rgba(210, 153, 34, 0.8)" />)}
-              </div>
+              {reviewResult.conventionMismatches?.length > 0 && (
+                <div className="ai-card ai-card--warning">
+                  <h3 className="ai-card__title"><AlertTriangle size={18} /> Convention Mismatches</h3>
+                  {renderList(reviewResult.conventionMismatches, 'mismatch')}
+                </div>
+              )}
 
             </div>
           ) : (
-            <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-              Submit code to see the review results...
+            <div className="ai-empty-state">
+              <CheckCircle size={64} />
+              <h3>Ready for Review</h3>
+              <p>Submit your code on the left to start a comprehensive AI analysis of your work.</p>
             </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );

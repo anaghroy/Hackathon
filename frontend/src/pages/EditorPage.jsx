@@ -5,8 +5,10 @@ import useProject from '../hooks/useProject';
 import { useMemory } from '../hooks/useMemory';
 import { toast } from 'react-hot-toast';
 import { 
-  ArrowLeft, FileCode2, TestTube, CheckCircle, Folder, 
-  FileJson, Cpu, Database, BrainCircuit, Activity, ChevronRight, ChevronDown, Plus, Save
+  ArrowLeft, FileCode2, TestTube, CheckCircle, Folder, FolderOpen,
+  FileJson, Cpu, Database, BrainCircuit, Activity, ChevronRight, ChevronDown, Plus, Save,
+  FilePlus, FolderPlus, Trash2, X, Check, FileText, Image as ImageIcon, FileCode, Hash, Info, Settings,
+  Type
 } from 'lucide-react';
 
 const EditorPage = () => {
@@ -17,11 +19,46 @@ const EditorPage = () => {
 
   // State for Editor
   const [activeFile, setActiveFile] = useState(null);
-  const [fileContent, setFileContent] = useState('');
+  const [openTabs, setOpenTabs] = useState([]); // Array of file objects
+  const [modifiedContents, setModifiedContents] = useState({}); // { [filename]: content }
   const [expandedFolders, setExpandedFolders] = useState({});
-  const [isCreatingFile, setIsCreatingFile] = useState(false);
-  const [newFilePath, setNewFilePath] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  // State for Explorer
+  const [selectedPath, setSelectedPath] = useState(null); 
+  const [selectedType, setSelectedType] = useState(null); 
+  const [creationType, setCreationType] = useState(null); 
+  const [newItemName, setNewItemName] = useState('');
+
+  // Helper to get file icon
+  const getFileIcon = (filename, size = 14) => {
+    const ext = filename.split('.').pop().toLowerCase();
+    switch (ext) {
+      case 'js':
+      case 'jsx':
+        return <FileCode2 size={size} className="icon-js" style={{ color: '#f7df1e' }} />;
+      case 'ts':
+      case 'tsx':
+        return <FileCode size={size} className="icon-ts" style={{ color: '#3178c6' }} />;
+      case 'css':
+      case 'scss':
+        return <Hash size={size} className="icon-css" style={{ color: '#264de4' }} />;
+      case 'html':
+        return <FileCode2 size={size} className="icon-html" style={{ color: '#e34c26' }} />;
+      case 'json':
+        return <FileJson size={size} className="icon-json" style={{ color: '#fbc02d' }} />;
+      case 'md':
+        return <Info size={size} className="icon-md" style={{ color: '#0366d6' }} />;
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'svg':
+      case 'gif':
+        return <ImageIcon size={size} className="icon-img" style={{ color: '#4caf50' }} />;
+      default:
+        return <FileText size={size} className="icon-file" style={{ color: '#8b9eb7' }} />;
+    }
+  };
 
   useEffect(() => {
     if (projectId) {
@@ -32,15 +69,102 @@ const EditorPage = () => {
 
   // Set first file as active when project loads
   useEffect(() => {
-    if (selectedProject?.files?.length > 0 && !activeFile) {
-      setActiveFile(selectedProject.files[0]);
-      setFileContent(selectedProject.files[0].content || '');
+    if (selectedProject?.files?.length > 0 && openTabs.length === 0) {
+      const firstFile = selectedProject.files[0];
+      setOpenTabs([firstFile]);
+      setActiveFile(firstFile);
+      setModifiedContents({ [firstFile.filename]: firstFile.content || '' });
     }
   }, [selectedProject]);
 
   const handleFileClick = (file) => {
+    setSelectedPath(file.filename);
+    setSelectedType('file');
+    
+    // Add to tabs if not already open
+    if (!openTabs.find(t => t.filename === file.filename)) {
+      setOpenTabs(prev => [...prev, file]);
+    }
+    
+    // Switch active file
     setActiveFile(file);
-    setFileContent(file.content || '');
+    
+    // Initialize modified content if not already there
+    if (modifiedContents[file.filename] === undefined) {
+      setModifiedContents(prev => ({
+        ...prev,
+        [file.filename]: file.content || ''
+      }));
+    }
+  };
+
+  const handleCloseTab = (e, filename) => {
+    e.stopPropagation();
+    const newTabs = openTabs.filter(t => t.filename !== filename);
+    setOpenTabs(newTabs);
+
+    // If closing the active tab
+    if (activeFile?.filename === filename) {
+      if (newTabs.length > 0) {
+        const lastTab = newTabs[newTabs.length - 1];
+        setActiveFile(lastTab);
+        setSelectedPath(lastTab.filename);
+      } else {
+        setActiveFile(null);
+        setSelectedPath(null);
+      }
+    }
+
+    // Clean up modified content if not unsaved? 
+    // Actually VS Code keeps them in memory for a bit but for simplicity:
+    // Only remove if it matches original content? 
+    // Let's just keep it for now to avoid losing work if user reopens.
+  };
+
+  const handleEditorChange = (value) => {
+    if (!activeFile) return;
+    setModifiedContents(prev => ({
+      ...prev,
+      [activeFile.filename]: value
+    }));
+  };
+
+  const handleFolderClick = (path) => {
+    setSelectedPath(path);
+    setSelectedType('folder');
+    setExpandedFolders(prev => ({
+      ...prev,
+      [path]: !prev[path]
+    }));
+  };
+
+  const getLanguageFromFilename = (filename) => {
+    if (!filename) return 'plaintext';
+    const ext = filename.split('.').pop().toLowerCase();
+    const map = {
+      js: 'javascript',
+      jsx: 'javascript',
+      ts: 'typescript',
+      tsx: 'typescript',
+      html: 'html',
+      css: 'css',
+      scss: 'scss',
+      json: 'json',
+      md: 'markdown',
+      sql: 'sql',
+      py: 'python',
+      rb: 'ruby',
+      php: 'php',
+      go: 'go',
+      java: 'java',
+      cpp: 'cpp',
+      c: 'c',
+      sh: 'shell',
+      yml: 'yaml',
+      yaml: 'yaml',
+      xml: 'xml'
+    };
+    return map[ext] || 'plaintext';
   };
 
   const toggleFolder = (path) => {
@@ -50,36 +174,99 @@ const EditorPage = () => {
     }));
   };
 
-  const handleCreateFile = async (e) => {
+  const handleCreateItem = async (e) => {
     if (e.key === 'Enter') {
-      if (!newFilePath.trim()) {
-        setIsCreatingFile(false);
-        return;
-      }
-      
-      const newFile = { filename: newFilePath, content: '// New File' };
-      const currentFiles = selectedProject?.files || [];
-      
-      if (currentFiles.some(f => f.filename === newFilePath)) {
-        toast.error('File already exists');
+      if (!newItemName.trim()) {
+        setCreationType(null);
         return;
       }
 
-      try {
-        const updatedFiles = [...currentFiles, newFile];
-        await updateProject(projectId, { files: updatedFiles });
-        toast.success('File created');
-        setIsCreatingFile(false);
-        setNewFilePath('');
-        setActiveFile(newFile);
-        setFileContent('// New File');
-        getProject(projectId); // refresh
-      } catch (error) {
-        toast.error('Failed to create file');
+      let parentPath = '';
+      if (selectedPath) {
+        if (selectedType === 'folder') {
+          parentPath = selectedPath;
+        } else {
+          // If file selected, use its parent
+          const parts = selectedPath.split('/');
+          if (parts.length > 1) {
+            parentPath = parts.slice(0, -1).join('/');
+          }
+        }
+      }
+
+      const fullPath = parentPath ? `${parentPath}/${newItemName}` : newItemName;
+      const currentFiles = selectedProject?.files || [];
+
+      if (creationType === 'file') {
+        if (currentFiles.some(f => f.filename === fullPath)) {
+          toast.error('File already exists');
+          return;
+        }
+
+        const newFile = { filename: fullPath, content: '// New File' };
+        try {
+          const updatedFiles = [...currentFiles, newFile];
+          await updateProject(projectId, { files: updatedFiles });
+          toast.success('File created');
+          setCreationType(null);
+          setNewItemName('');
+          handleFileClick(newFile);
+          getProject(projectId);
+        } catch (error) {
+          toast.error('Failed to create file');
+        }
+      } else {
+        // Folder creation - add a .keep file to persist the folder
+        const keepFilePath = `${fullPath}/.keep`;
+        if (currentFiles.some(f => f.filename.startsWith(fullPath))) {
+          toast.error('Folder already exists');
+          return;
+        }
+
+        try {
+          const updatedFiles = [...currentFiles, { filename: keepFilePath, content: '' }];
+          await updateProject(projectId, { files: updatedFiles });
+          toast.success('Folder created');
+          setCreationType(null);
+          setNewItemName('');
+          setExpandedFolders(prev => ({ ...prev, [fullPath]: true }));
+          setSelectedPath(fullPath);
+          setSelectedType('folder');
+          getProject(projectId);
+        } catch (error) {
+          toast.error('Failed to create folder');
+        }
       }
     } else if (e.key === 'Escape') {
-      setIsCreatingFile(false);
-      setNewFilePath('');
+      setCreationType(null);
+      setNewItemName('');
+    }
+  };
+
+  const handleDeleteFolder = async () => {
+    if (!selectedPath || selectedType !== 'folder') return;
+    
+    const confirmDelete = window.confirm(`Are you sure you want to delete the folder "${selectedPath}" and all its contents?`);
+    if (!confirmDelete) return;
+
+    try {
+      const currentFiles = selectedProject?.files || [];
+      const updatedFiles = currentFiles.filter(f => !f.filename.startsWith(`${selectedPath}/`) && f.filename !== selectedPath);
+      
+      await updateProject(projectId, { files: updatedFiles });
+      toast.success('Folder deleted');
+      setSelectedPath(null);
+      setSelectedType(null);
+      
+      // If active file was in the deleted folder, clear it
+      if (activeFile && (activeFile.filename.startsWith(`${selectedPath}/`) || activeFile.filename === selectedPath)) {
+        setActiveFile(null);
+        setFileContent('');
+      }
+      
+      getProject(projectId);
+    } catch (error) {
+      toast.error('Failed to delete folder');
     }
   };
 
@@ -87,8 +274,9 @@ const EditorPage = () => {
     if (!activeFile) return;
     setIsSaving(true);
     try {
+      const currentContent = modifiedContents[activeFile.filename];
       const updatedFiles = selectedProject.files.map(f => 
-        f.filename === activeFile.filename ? { ...f, content: fileContent } : f
+        f.filename === activeFile.filename ? { ...f, content: currentContent } : f
       );
       await updateProject(projectId, { files: updatedFiles });
       toast.success('File saved');
@@ -132,23 +320,65 @@ const EditorPage = () => {
       return a.type === 'folder' ? -1 : 1;
     });
 
-    return sortedItems.map((item) => {
+    const items = sortedItems.map((item) => {
+      if (item.name === '.keep' && item.type === 'file') return null;
+
       const isExpanded = expandedFolders[item.path];
-      const isSelected = activeFile?.filename === item.path;
+      const isSelected = selectedPath === item.path;
 
       if (item.type === 'folder') {
+        let showInputUnderThis = false;
+        if (creationType) {
+          if (selectedPath === item.path) {
+            showInputUnderThis = true;
+          } else if (selectedType === 'file' && selectedPath.startsWith(item.path + '/')) {
+            // Check if this is the immediate parent
+            const relativePath = selectedPath.replace(item.path + '/', '');
+            if (!relativePath.includes('/')) {
+              showInputUnderThis = true;
+            }
+          }
+        }
+        
         return (
           <div key={item.path}>
             <div 
-              className={`editor-file-tree__item folder ${isExpanded ? 'expanded' : ''}`}
-              onClick={() => toggleFolder(item.path)}
-              style={{ paddingLeft: `${depth * 12 + 12}px` }}
+              className={`editor-file-tree__item folder ${isExpanded ? 'expanded' : ''} ${isSelected ? 'active' : ''}`}
+              onClick={() => handleFolderClick(item.path)}
+              style={{ paddingLeft: `${depth * 16 + 12}px` }}
             >
-              {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
-              <Folder size={14} className="icon-folder" />
-              <span>{item.name}</span>
+              <div className="chevron">
+                {isExpanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+              </div>
+              {isExpanded ? (
+                <FolderOpen size={16} className="icon-folder" style={{ color: '#e2b340' }} />
+              ) : (
+                <Folder size={16} className="icon-folder" style={{ color: '#e2b340' }} />
+              )}
+              <span style={{ marginLeft: '4px' }}>{item.name}</span>
             </div>
-            {isExpanded && renderTree(item, depth + 1)}
+            {isExpanded && (
+              <>
+                {showInputUnderThis && (
+                  <div className="explorer-input-container" style={{ paddingLeft: `${(depth + 1) * 16 + 12}px` }}>
+                    <div className="icon">
+                      {creationType === 'file' ? getFileIcon('new.file', 14) : <Folder size={14} className="icon-folder" style={{ color: '#e2b340' }} />}
+                    </div>
+                    <input
+                      autoFocus
+                      placeholder={`New ${creationType}...`}
+                      value={newItemName}
+                      onChange={(e) => setNewItemName(e.target.value)}
+                      onKeyDown={handleCreateItem}
+                      onBlur={() => {
+                        if (!newItemName) setCreationType(null);
+                      }}
+                    />
+                  </div>
+                )}
+                {renderTree(item, depth + 1)}
+              </>
+            )}
           </div>
         );
       }
@@ -158,13 +388,37 @@ const EditorPage = () => {
           key={item.path}
           className={`editor-file-tree__item file ${isSelected ? 'active' : ''}`}
           onClick={() => handleFileClick(item)}
-          style={{ paddingLeft: `${depth * 12 + 24}px` }}
+          style={{ paddingLeft: `${depth * 16 + 12}px` }}
         >
-          {item.name.endsWith('.json') ? <FileJson size={14} className="icon-file" /> : <FileCode2 size={14} className="icon-file" />}
-          <span>{item.name}</span>
+          <div className="chevron" style={{ width: 16 }}></div>
+          {getFileIcon(item.name, 16)}
+          <span style={{ marginLeft: '4px' }}>{item.name}</span>
         </div>
       );
     });
+
+    return (
+      <>
+        {depth === 0 && creationType && (!selectedPath || (selectedType === 'file' && !selectedPath.includes('/'))) && (
+          <div className="explorer-input-container" style={{ paddingLeft: '16px', marginBottom: '4px' }}>
+            <div className="icon">
+              {creationType === 'file' ? getFileIcon('new.file', 14) : <Folder size={14} className="icon-folder" style={{ color: '#e2b340' }} />}
+            </div>
+            <input
+              autoFocus
+              placeholder={`New ${creationType}...`}
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+              onKeyDown={handleCreateItem}
+              onBlur={() => {
+                if (!newItemName) setCreationType(null);
+              }}
+            />
+          </div>
+        )}
+        {items}
+      </>
+    );
   };
 
   if (projectLoading) {
@@ -227,45 +481,55 @@ const EditorPage = () => {
         {/* 2. LEFT SIDEBAR */}
         <aside className="editor-sidebar editor-sidebar--left">
           <div className="editor-sidebar__section explorer">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-              <h3 className="editor-sidebar__title" style={{ margin: 0 }}>EXPLORER</h3>
-              <button 
-                className="editor-btn editor-btn--ghost" 
-                style={{ padding: '4px' }}
-                onClick={() => setIsCreatingFile(true)}
-                title="New File"
-              >
-                <Plus size={14} />
-              </button>
+            <div className="editor-sidebar__header">
+              <h3 className="editor-sidebar__title">EXPLORER</h3>
+              <div className="actions">
+                <button 
+                  className="explorer-action-btn" 
+                  onClick={() => {
+                    setCreationType('file');
+                    if (selectedType === 'folder' && selectedPath) {
+                      setExpandedFolders(prev => ({ ...prev, [selectedPath]: true }));
+                    } else if (selectedType === 'file' && selectedPath.includes('/')) {
+                      const parent = selectedPath.split('/').slice(0, -1).join('/');
+                      setExpandedFolders(prev => ({ ...prev, [parent]: true }));
+                    }
+                  }}
+                  title="New File"
+                >
+                  <FilePlus size={14} />
+                </button>
+                <button 
+                  className="explorer-action-btn" 
+                  onClick={() => {
+                    setCreationType('folder');
+                    if (selectedType === 'folder' && selectedPath) {
+                      setExpandedFolders(prev => ({ ...prev, [selectedPath]: true }));
+                    } else if (selectedType === 'file' && selectedPath.includes('/')) {
+                      const parent = selectedPath.split('/').slice(0, -1).join('/');
+                      setExpandedFolders(prev => ({ ...prev, [parent]: true }));
+                    }
+                  }}
+                  title="New Folder"
+                >
+                  <FolderPlus size={14} />
+                </button>
+                {selectedType === 'folder' && (
+                  <button 
+                    className="explorer-action-btn explorer-action-btn--delete" 
+                    onClick={handleDeleteFolder}
+                    title="Delete Folder"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
             </div>
             <div className="editor-file-tree-container">
-              {isCreatingFile && (
-                <div style={{ padding: '0 12px', marginBottom: '8px' }}>
-                  <input
-                    type="text"
-                    value={newFilePath}
-                    onChange={(e) => setNewFilePath(e.target.value)}
-                    onKeyDown={handleCreateFile}
-                    onBlur={() => setIsCreatingFile(false)}
-                    placeholder="filename (e.g. src/app.js)"
-                    autoFocus
-                    style={{
-                      width: '100%',
-                      backgroundColor: 'rgba(0,0,0,0.2)',
-                      border: '1px solid var(--primary-color)',
-                      color: 'var(--text-light)',
-                      padding: '4px 8px',
-                      fontSize: '12px',
-                      borderRadius: '4px',
-                      outline: 'none'
-                    }}
-                  />
-                </div>
-              )}
               {renderTree(fileTree)}
-              {!selectedProject?.files?.length && !isCreatingFile && (
+              {!selectedProject?.files?.length && !creationType && (
                 <div style={{ padding: '12px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>
-                  No files in project. Click + to create one.
+                  No files in project.
                 </div>
               )}
             </div>
@@ -278,7 +542,12 @@ const EditorPage = () => {
             ) : memories.length > 0 ? (
               <ul className="editor-memory-list">
                 {memories.map((mem, index) => (
-                  <li key={mem._id || index} className="editor-memory-list__item">
+                  <li 
+                    key={mem._id || index} 
+                    className="editor-memory-list__item"
+                    onClick={() => navigate(`/editor/${projectId}/memory`, { state: { highlightId: mem._id } })}
+                    title="Click to view details"
+                  >
                     <span className="bullet"></span> {mem.title || mem.decision || "Memory recorded"}
                   </li>
                 ))}
@@ -291,45 +560,68 @@ const EditorPage = () => {
 
         {/* 3. CENTER MAIN AREA */}
         <main className="editor-main">
-          <div className="editor-main__header" style={{ display: 'flex', justifyContent: 'space-between' }}>
-            {activeFile ? (
-              <div className="editor-tab active">
-                {activeFile.filename.endsWith('.json') ? <FileJson size={14} /> : <FileCode2 size={14} />}
-                <span>{activeFile.filename}</span>
-              </div>
-            ) : (
-              <div className="editor-tab active">
-                <Activity size={14} />
-                <span>No file selected</span>
-              </div>
-            )}
+          <div className="editor-main__header">
+            <div className="editor-tabs-container">
+              {openTabs.map(tab => {
+                const originalFile = selectedProject.files.find(f => f.filename === tab.filename);
+                const isUnsaved = originalFile && modifiedContents[tab.filename] !== undefined && modifiedContents[tab.filename] !== originalFile.content;
+                
+                return (
+                  <div 
+                    key={tab.filename}
+                    className={`editor-tab ${activeFile?.filename === tab.filename ? 'active' : ''} ${isUnsaved ? 'unsaved' : ''}`}
+                    onClick={() => handleFileClick(tab)}
+                  >
+                    <div className="tab-icon">
+                      {getFileIcon(tab.filename, 14)}
+                    </div>
+                    <span>{tab.filename.split('/').pop()}</span>
+                    {isUnsaved ? (
+                      <div className="tab-indicator"></div>
+                    ) : null}
+                    <div className="tab-close" onClick={(e) => handleCloseTab(e, tab.filename)}>
+                      <X size={14} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
             
             {activeFile && (
-              <button 
-                className="editor-btn editor-btn--ghost" 
-                onClick={handleSaveFile}
-                disabled={isSaving}
-                style={{ alignSelf: 'center', marginRight: '16px', padding: '4px 12px' }}
-              >
-                {isSaving ? <span className="editor-loader__spinner" style={{ width: 12, height: 12, marginRight: 8, display: 'inline-block' }}></span> : <Save size={14} style={{ marginRight: '8px' }} />}
-                Save
-              </button>
+              <div className="editor-save-wrapper">
+                <button 
+                  className="editor-btn editor-btn--ghost" 
+                  onClick={handleSaveFile}
+                  disabled={isSaving}
+                >
+                  {isSaving ? <span className="editor-loader__spinner" style={{ width: 10, height: 10, marginRight: 6, display: 'inline-block' }}></span> : <Save size={12} style={{ marginRight: '6px' }} />}
+                  Save
+                </button>
+              </div>
             )}
           </div>
           <div className="editor-code-panel">
             {activeFile ? (
               <Editor
                 height="100%"
-                defaultLanguage={activeFile.filename.split('.').pop() === 'jsx' ? 'javascript' : activeFile.filename.split('.').pop()}
-                value={fileContent}
+                language={getLanguageFromFilename(activeFile.filename)}
+                value={modifiedContents[activeFile.filename] || ''}
                 theme="vs-dark"
-                onChange={(value) => setFileContent(value)}
+                onChange={handleEditorChange}
                 options={{
                   fontSize: 14,
                   minimap: { enabled: true },
                   scrollBeyondLastLine: false,
                   automaticLayout: true,
                   fontFamily: 'JetBrains Mono, monospace',
+                  wordWrap: 'on',
+                  bracketPairColorization: { enabled: true },
+                  autoClosingBrackets: 'always',
+                  autoClosingQuotes: 'always',
+                  cursorSmoothCaretAnimation: 'on',
+                  cursorBlinking: 'smooth',
+                  renderWhitespace: 'selection',
+                  padding: { top: 10, bottom: 10 }
                 }}
               />
             ) : (
