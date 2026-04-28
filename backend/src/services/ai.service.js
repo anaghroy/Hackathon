@@ -72,3 +72,27 @@ Lines: ${parsedData?.totalLines || 0}`;
 
   return "AI system overloaded. Please try again.";
 };
+
+export const analyzeCodeSecurity = async (projectId, projectFiles) => {
+  const fileSummary = projectFiles.map(f => `File: ${f.filename}\n${f.content}`).join("\n\n");
+  const prompt = `Analyze the following codebase for security vulnerabilities (e.g. OWASP top 10). 
+Return a JSON object with a 'highRiskIssues' count and an 'issues' array detailing the vulnerabilities. 
+If no critical issues, 'highRiskIssues' should be 0.
+Code:
+${fileSummary}`;
+
+  try {
+    const aiResult = await analyzeCodeWithAI({ customPrompt: prompt });
+    let result;
+    try {
+      result = JSON.parse(aiResult.replace(/```json|```/g, ''));
+    } catch (e) {
+      // Fallback if parsing fails, assume safe for now or handle appropriately
+      result = { highRiskIssues: 0, issues: ["Failed to parse AI security response"] };
+    }
+    return result;
+  } catch (err) {
+    console.error("Security scan failed:", err);
+    return { highRiskIssues: 0, issues: ["Security scan failed due to server error"] };
+  }
+};

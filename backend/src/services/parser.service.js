@@ -1,3 +1,18 @@
+const calculateComplexity = (content) => {
+  if (!content) return 1;
+  // Basic heuristic: count branching and looping keywords/operators
+  const keywords = ['if\\s*\\(', 'for\\s*\\(', 'while\\s*\\(', 'case\\s', 'catch\\s*\\(', '\\|\\|', '&&', '\\?'];
+  let complexity = 1;
+  keywords.forEach(keyword => {
+    const regex = new RegExp(keyword, 'g');
+    const matches = content.match(regex);
+    if (matches) {
+      complexity += matches.length;
+    }
+  });
+  return complexity;
+};
+
 export const parseProjectFiles = (files) => {
   try {
     const summary = {
@@ -15,12 +30,15 @@ export const parseProjectFiles = (files) => {
 
       // count lines
       const lines = file.content.split("\n").length;
+      
+      const complexity = calculateComplexity(file.content);
 
       summary.totalLines += lines;
 
       summary.fileList.push({
         name: file.filename,
         lines,
+        complexity,
       });
     });
 

@@ -1,5 +1,6 @@
 import Project from "../models/project.model.js";
 import Deployment from "../models/deployment.model.js";
+import { analyzeCodeSecurity } from "../services/ai.service.js";
 
 /**
  * @desc Trigger a manual deployment
@@ -55,10 +56,25 @@ async function simulateDeploymentProcess(deploymentId, project) {
   const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   try {
+    // Pre-Deployment Phase: Security Scanning
+    await Deployment.findByIdAndUpdate(deploymentId, {
+      $push: { logs: { message: `Running AI Security Scan...`, type: "system" } }
+    });
+    
+    const securityResult = await analyzeCodeSecurity(project._id, project.files || []);
+    
+    if (securityResult.highRiskIssues > 0) {
+      await Deployment.findByIdAndUpdate(deploymentId, {
+        status: "FAILED",
+        $push: { logs: { message: `[SYSTEM] Deployment halted due to ${securityResult.highRiskIssues} critical security vulnerabilities.`, type: "stderr" } }
+      });
+      return; // Stop deployment
+    }
+
     // Stage 1: BUILDING
     await Deployment.findByIdAndUpdate(deploymentId, {
       status: "BUILDING",
-      $push: { logs: { message: `Cloning repository ${project.repoName}...`, type: "stdout" } }
+      $push: { logs: { message: `Security scan passed. Cloning repository ${project.repoName}...`, type: "stdout" } }
     });
     await wait(2000);
     

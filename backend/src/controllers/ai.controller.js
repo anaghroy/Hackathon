@@ -1,4 +1,5 @@
 import Project from "../models/project.model.js";
+import Deployment from "../models/deployment.model.js";
 import { parseProjectFiles } from "../services/parser.service.js";
 import { analyzeCodeWithAI } from "../services/ai.service.js";
 import { generateGraph } from "../services/graph.service.js";
@@ -142,6 +143,100 @@ export const reviewCode = async (req, res) => {
       result = { issues: ["Error parsing AI review"], suggestions: [aiResult], bestPractices: [], conventionMismatches: [] };
     }
     res.json({ review: result });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const analyzeLogs = async (req, res) => {
+  try {
+    const { deploymentId } = req.body;
+    if (!deploymentId) return res.status(400).json({ message: "deploymentId is required" });
+
+    const deployment = await Deployment.findById(deploymentId);
+    if (!deployment) return res.status(404).json({ message: "Deployment not found" });
+
+    const errorLogs = deployment.logs
+      .filter(l => l.type === "stderr" || l.type === "stdout")
+      .slice(-100)
+      .map(l => l.message)
+      .join("\n");
+
+    const prompt = `Analyze these deployment logs and provide a fix. Return JSON with 'rootCause' and 'proposedPatch' (an array of objects with filePath and newContent).
+Logs:
+${errorLogs}`;
+
+    const aiResult = await analyzeCodeWithAI({ customPrompt: prompt });
+    let result;
+    try {
+      result = JSON.parse(aiResult.replace(/```json|```/g, ''));
+    } catch (e) {
+      result = { rootCause: aiResult, proposedPatch: [] };
+    }
+
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const applyFix = async (req, res) => {
+  try {
+    const { projectId, fileModifications } = req.body;
+    if (!projectId || !fileModifications) {
+      return res.status(400).json({ message: "projectId and fileModifications are required" });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    // Apply the modifications to project files
+    for (const mod of fileModifications) {
+      const fileIndex = project.files.findIndex(f => f.filename === mod.filePath);
+      if (fileIndex > -1) {
+        project.files[fileIndex].content = mod.newContent;
+      } else {
+        project.files.push({ filename: mod.filePath, content: mod.newContent });
+      }
+    }
+    
+    await project.save();
+
+    res.json({ message: "Fix applied successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const analyzePerformance = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { code } = req.body;
+
+    const aiPrompt = `Analyze the following code for performance bottlenecks and Time/Space complexity (Big-O notation).
+Code:
+\`\`\`
+${code}
+\`\`\`
+Return a JSON object strictly following this structure: 
+{
+  "timeComplexity": "...",
+  "spaceComplexity": "...",
+  "bottlenecks": ["..."],
+  "suggestions": ["..."],
+  "optimizedCode": "..."
+}`;
+
+    const aiResult = await analyzeCodeWithAI({ customPrompt: aiPrompt });
+    
+    let result;
+    try {
+      result = JSON.parse(aiResult.replace(/```json|```/g, '').trim());
+    } catch (e) {
+      result = { error: "Failed to parse AI response", raw: aiResult };
+    }
+    
+    res.json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
