@@ -11,6 +11,7 @@ import projectRouter from "./routes/project.routes.js"
 import uploadRouter from "./routes/upload.routes.js"
 import aiRoutes from "./routes/ai.routes.js";
 import memoryRoutes from "./routes/memory.routes.js";
+import repoRouter from "./routes/repo.routes.js";
 import { config } from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,6 +60,7 @@ app.use("/api/projects", projectRouter);
 app.use("/api/upload", uploadRouter);
 app.use("/api/ai", aiRoutes);
 app.use("/api/memory", memoryRoutes);
+app.use("/api/repos", repoRouter);
 
 // Serve React build with correct absolute path
 app.use(express.static(path.join(__dirname, "../public"), { index: false }));

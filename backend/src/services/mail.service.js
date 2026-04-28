@@ -13,7 +13,7 @@ export async function sendEmail({ to, subject, html, text }) {
 
   const data = await client.transactionalEmails.sendTransacEmail({
     sender: {
-      name: "CogniCode",
+      name: "X",
       email: config.BREVO_SENDER_EMAIL,
     },
     to: [{ email: to }],

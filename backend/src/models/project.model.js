@@ -16,6 +16,16 @@ const projectSchema = new mongoose.Schema({
       content: String,
     },
   ],
+  repoProvider: {
+    type: String,
+    enum: ["github", "gitlab", "bitbucket"],
+  },
+  repoName: String,
+  branch: {
+    type: String,
+    default: "main",
+  },
+  buildCommand: String,
   
   createdAt: {
     type: Date,
