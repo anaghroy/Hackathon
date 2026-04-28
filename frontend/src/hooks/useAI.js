@@ -8,6 +8,9 @@ import {
   generateSchemaApi,
   generateTestsApi,
   reviewCodeApi,
+  scanSecurityApi,
+  analyzePerformanceApi,
+  applyFixApi,
 } from "../services/aiApi.service";
 import {
   setIntentResult,
@@ -15,6 +18,8 @@ import {
   setDbSchema,
   setTestCode,
   setCodeReview,
+  setSecurityResult,
+  setPerformanceResult,
   setLoading,
   setError,
   clearAiState,
@@ -124,6 +129,59 @@ export const useAI = () => {
     }
   }, [dispatch]);
 
+  const scanSecurity = useCallback(async (projectId) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const response = await scanSecurityApi(projectId);
+      dispatch(setSecurityResult(response.data));
+      toast.success("Security scan completed");
+      return response.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to scan security";
+      dispatch(setError(msg));
+      toast.error(msg);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
+  const applyFix = useCallback(async (data) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const response = await applyFixApi(data);
+      toast.success("Security fix applied successfully");
+      return response.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to apply security fix";
+      dispatch(setError(msg));
+      toast.error(msg);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
+  const analyzePerformance = useCallback(async (projectId, data) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const response = await analyzePerformanceApi(projectId, data);
+      dispatch(setPerformanceResult(response.data));
+      toast.success("Performance analysis completed");
+      return response.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to analyze performance";
+      dispatch(setError(msg));
+      toast.error(msg);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
   const resetAiState = useCallback(() => {
     dispatch(clearAiState());
   }, [dispatch]);
@@ -136,6 +194,9 @@ export const useAI = () => {
     generateDbSchema,
     generateTests,
     reviewCode,
+    scanSecurity,
+    analyzePerformance,
+    applyFix,
     resetAiState,
   };
 };

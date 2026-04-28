@@ -17,7 +17,7 @@ import {
   deleteProjectApi,
 } from "../services/projectApi.service";
 
-const useProject = () => {
+export const useProject = () => {
   const dispatch = useDispatch();
   const { projects, selectedProject, loading, error } = useSelector(
     (state) => state.project

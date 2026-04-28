@@ -8,7 +8,7 @@ import {
   ArrowLeft, FileCode2, TestTube, CheckCircle, Folder, FolderOpen,
   FileJson, Cpu, Database, BrainCircuit, Activity, ChevronRight, ChevronDown, Plus, Save,
   FilePlus, FolderPlus, Trash2, X, Check, FileText, Image as ImageIcon, FileCode, Hash, Info, Settings,
-  Type
+  Type, ShieldAlert, Rocket, Lock, Terminal, History
 } from 'lucide-react';
 
 const EditorPage = () => {
@@ -469,6 +469,43 @@ const EditorPage = () => {
             <CheckCircle size={16} /> Review Code
           </button>
           <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/security`)}
+          >
+            <ShieldAlert size={16} /> Security Fixer
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/history`)}
+          >
+            <History size={16} /> History
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/logs`)}
+          >
+            <Terminal size={16} /> Logs
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/performance`)}
+          >
+            <Activity size={16} /> Profiler
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/env`)}
+          >
+            <Lock size={16} /> Secrets
+          </button>
+          <button 
+            className="editor-btn editor-btn--primary" 
+            onClick={() => navigate(`/editor/${projectId}/deploy`)}
+            style={{ background: '#3b82f6', color: '#fff' }}
+          >
+            <Rocket size={16} /> Deploy
+          </button>
+          <button 
             className="editor-btn editor-btn--primary" 
             onClick={() => navigate('/dashboard')}
           >
@@ -670,6 +707,60 @@ const EditorPage = () => {
               >
                 <BrainCircuit size={20} />
                 <span>Memory</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/security`)}
+                style={{ borderColor: 'rgba(239, 68, 68, 0.2)' }}
+              >
+                <ShieldAlert size={20} className="text-error" style={{ color: '#ef4444' }} />
+                <span>Security Fixer</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/performance`)}
+                style={{ borderColor: 'rgba(59, 130, 246, 0.2)' }}
+              >
+                <Activity size={20} className="text-primary" style={{ color: '#3b82f6' }} />
+                <span>Profiler</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/deploy`)}
+                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
+              >
+                <Rocket size={20} style={{ color: '#3b82f6' }} />
+                <span>Deployments</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/env`)}
+                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
+              >
+                <Lock size={20} style={{ color: '#3b82f6' }} />
+                <span>Env Secrets</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/logs`)}
+                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
+              >
+                <Terminal size={20} style={{ color: '#3b82f6' }} />
+                <span>Runtime Logs</span>
+              </button>
+
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/history`)}
+                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
+              >
+                <History size={20} style={{ color: '#3b82f6' }} />
+                <span>Rollback History</span>
               </button>
             </div>
           </div>
