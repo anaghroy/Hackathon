@@ -4,14 +4,37 @@ import { useAuth } from "../hooks/useAuth";
 import useProject from "../hooks/useProject";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
-import { Plus, Folder, Users, Settings, LogOut, Search, Trash2, ExternalLink, X, Layout, GitCompare } from "lucide-react";
+import {
+  Plus,
+  Folder,
+  Users,
+  Settings,
+  LogOut,
+  Search,
+  Trash2,
+  ExternalLink,
+  X,
+  Layout,
+  GitCompare,
+} from "lucide-react";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { user, handleUpdateProfile, handleLogout, loading: authLoading } = useAuth();
-  const { projects, fetchProjects, createProject, deleteProject, loading: projectLoading } = useProject();
-  
+  const {
+    user,
+    handleUpdateProfile,
+    handleLogout,
+    loading: authLoading,
+  } = useAuth();
+  const {
+    projects,
+    fetchProjects,
+    createProject,
+    deleteProject,
+    loading: projectLoading,
+  } = useProject();
+
   const [activeTab, setActiveTab] = useState("projects");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -26,7 +49,7 @@ const Dashboard = () => {
       bio: user?.bio || "",
       dob: user?.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
     },
-    authValidator
+    authValidator,
   );
 
   useEffect(() => {
@@ -90,13 +113,44 @@ const Dashboard = () => {
         <div className="navbar__left">
           <button className="hamburger" onClick={toggleSidebar}>
             <X size={24} className={isSidebarOpen ? "" : "hidden"} />
-            <Plus size={24} className={isSidebarOpen ? "hidden" : "rotate-45"} />
+            <Plus
+              size={24}
+              className={isSidebarOpen ? "hidden" : "rotate-45"}
+            />
           </button>
-          <div className="navbar__brand" onClick={() => navigate("/dashboard")} style={{ cursor: 'pointer' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <div
+            className="navbar__brand"
+            onClick={() => navigate("/dashboard")}
+            style={{ cursor: "pointer" }}
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 2L2 7L12 12L22 7L12 2Z"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M2 17L12 22L22 17"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M2 12L12 17L22 12"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
             </svg>
             <span>SQUADRA</span>
           </div>
@@ -107,64 +161,91 @@ const Dashboard = () => {
             <div className="search-bar__icon">
               <Search size={16} />
             </div>
-            <input 
-              type="text" 
-              className="search-bar__input" 
-              placeholder="Search projects..." 
+            <input
+              type="text"
+              className="search-bar__input"
+              placeholder="Search projects..."
             />
           </div>
         </div>
 
         <div className="navbar__right">
-          <div className="navbar__user" onClick={() => navigate("/profile")} style={{ cursor: 'pointer' }}>
+          <div
+            className="navbar__user"
+            onClick={() => navigate("/profile")}
+            style={{ cursor: "pointer" }}
+          >
             <div className="navbar__user-avatar">
               {user?.picture ? (
-                <img src={user.picture} alt={user.username} className="navbar__user-img" />
+                <img
+                  src={user.picture}
+                  alt={user.username}
+                  className="navbar__user-img"
+                />
               ) : (
                 user?.username?.charAt(0).toUpperCase() || "U"
               )}
             </div>
             <div className="navbar__user-info">
-              <span className="navbar__user-name">{user?.username || "Developer"}</span>
+              <span className="navbar__user-name">
+                {user?.username || "Developer"}
+              </span>
             </div>
           </div>
         </div>
       </header>
 
       {/* Sidebar */}
-      <aside className={`dashboard__sidebar sidebar ${isSidebarOpen ? 'sidebar--open' : ''}`}>
+      <aside
+        className={`dashboard__sidebar sidebar ${isSidebarOpen ? "sidebar--open" : ""}`}
+      >
         <div className="sidebar__menu">
-          <div 
-            className={`sidebar__item ${activeTab === 'overview' ? 'sidebar__item--active' : ''}`}
-            onClick={() => { setActiveTab('overview'); setIsSidebarOpen(false); }}
+          <div
+            className={`sidebar__item ${activeTab === "overview" ? "sidebar__item--active" : ""}`}
+            onClick={() => {
+              setActiveTab("overview");
+              setIsSidebarOpen(false);
+            }}
           >
             <Layout size={20} />
             Overview
           </div>
-          <div 
-            className={`sidebar__item ${activeTab === 'projects' ? 'sidebar__item--active' : ''}`}
-            onClick={() => { setActiveTab('projects'); setIsSidebarOpen(false); }}
+          <div
+            className={`sidebar__item ${activeTab === "projects" ? "sidebar__item--active" : ""}`}
+            onClick={() => {
+              setActiveTab("projects");
+              setIsSidebarOpen(false);
+            }}
           >
             <Folder size={20} />
             My Projects
           </div>
-          <div 
-            className={`sidebar__item ${activeTab === 'shared' ? 'sidebar__item--active' : ''}`}
-            onClick={() => { setActiveTab('shared'); setIsSidebarOpen(false); }}
+          <div
+            className={`sidebar__item ${activeTab === "shared" ? "sidebar__item--active" : ""}`}
+            onClick={() => {
+              setActiveTab("shared");
+              setIsSidebarOpen(false);
+            }}
           >
             <Users size={20} />
             Shared with Me
           </div>
-          <div 
-            className={`sidebar__item ${activeTab === 'settings' ? 'sidebar__item--active' : ''}`}
-            onClick={() => { setActiveTab('settings'); setIsSidebarOpen(false); }}
+          <div
+            className={`sidebar__item ${activeTab === "settings" ? "sidebar__item--active" : ""}`}
+            onClick={() => {
+              setActiveTab("settings");
+              setIsSidebarOpen(false);
+            }}
           >
             <Settings size={20} />
             Settings
           </div>
-          <div 
-            className={`sidebar__item ${activeTab === 'deployments' ? 'sidebar__item--active' : ''}`}
-            onClick={() => { navigate('/connect-repo'); setIsSidebarOpen(false); }}
+          <div
+            className={`sidebar__item ${activeTab === "deployments" ? "sidebar__item--active" : ""}`}
+            onClick={() => {
+              navigate("/connect-repo");
+              setIsSidebarOpen(false);
+            }}
           >
             <GitCompare size={20} />
             Deployments
@@ -181,12 +262,14 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <main className="dashboard__main dashboard-page">
-        {activeTab === 'settings' ? (
+        {activeTab === "settings" ? (
           <div className="profile-card">
             <header className="dashboard-page__header">
               <div className="dashboard-page__title-group">
                 <h1 className="dashboard-page__title">Profile Settings</h1>
-                <p className="dashboard-page__subtitle">Manage your account information and bio.</p>
+                <p className="dashboard-page__subtitle">
+                  Manage your account information and bio.
+                </p>
               </div>
             </header>
 
@@ -201,7 +284,9 @@ const Dashboard = () => {
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
-                {errors.username && <p className="error-text">{errors.username}</p>}
+                {errors.username && (
+                  <p className="error-text">{errors.username}</p>
+                )}
               </div>
 
               <div className="input-group">
@@ -244,7 +329,11 @@ const Dashboard = () => {
                 {errors.dob && <p className="error-text">{errors.dob}</p>}
               </div>
 
-              <button type="submit" className="btn btn-primary btn-full" disabled={authLoading}>
+              <button
+                type="submit"
+                className="btn btn-primary btn-full"
+                disabled={authLoading}
+              >
                 {authLoading ? "Updating..." : "Update Profile"}
               </button>
             </form>
@@ -254,19 +343,28 @@ const Dashboard = () => {
             <header className="dashboard-page__header">
               <div className="dashboard-page__title-group">
                 <h1 className="dashboard-page__title">
-                  {activeTab === 'projects' ? 'My Projects' : activeTab === 'overview' ? 'Welcome Back' : 'Shared with Me'}
+                  {activeTab === "projects"
+                    ? "My Projects"
+                    : activeTab === "overview"
+                      ? "Welcome Back"
+                      : "Shared with Me"}
                 </h1>
-                <p className="dashboard-page__subtitle">Manage and organize your AI code projects</p>
+                <p className="dashboard-page__subtitle">
+                  Manage and organize your AI code projects
+                </p>
               </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button 
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button
                   className="project-card__btn project-card__btn--ghost"
-                  onClick={() => navigate('/connect-repo')}
-                  style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '0 16px' }}
+                  onClick={() => navigate("/connect-repo")}
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    padding: "0 16px",
+                  }}
                 >
                   <GitCompare size={18} /> Connect Repo
                 </button>
-                <button 
+                <button
                   className="project-card__btn project-card__btn--primary"
                   onClick={() => setIsCreateModalOpen(true)}
                 >
@@ -276,56 +374,67 @@ const Dashboard = () => {
             </header>
 
             {projectLoading && projects.length === 0 ? (
-                <div className="dashboard-page__loading">
-                    <div className="loader"></div>
-                </div>
+              <div className="dashboard-page__loading">
+                <div className="loader"></div>
+              </div>
             ) : projects.length === 0 ? (
-                <div className="dashboard-page__empty">
-                    <div className="dashboard-page__empty-icon">
-                        <Folder size={48} strokeWidth={1} />
-                    </div>
-                    <p className="dashboard-page__empty-text">
-                        {activeTab === 'shared' ? 'No projects shared with you.' : 'You haven\'t created any projects yet.'}
-                    </p>
-                    {activeTab !== 'shared' && (
-                        <button className="btn btn-primary" onClick={() => setIsCreateModalOpen(true)}>
-                            Start Your First Project
-                        </button>
-                    )}
+              <div className="dashboard-page__empty">
+                <div className="dashboard-page__empty-icon">
+                  <Folder size={48} strokeWidth={1} />
                 </div>
+                <p className="dashboard-page__empty-text">
+                  {activeTab === "shared"
+                    ? "No projects shared with you."
+                    : "You haven't created any projects yet."}
+                </p>
+                {activeTab !== "shared" && (
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setIsCreateModalOpen(true)}
+                  >
+                    Start Your First Project
+                  </button>
+                )}
+              </div>
             ) : (
-                <div className="dashboard-page__grid">
+              <div className="dashboard-page__grid">
                 {projects.map((project) => (
-                    <div 
-                      key={project._id} 
-                      className="project-card"
-                      onClick={() => navigate(`/editor/${project._id}`)}
-                    >
-                      <div className="project-card__header">
-                          <h3 className="project-card__title">{project.title}</h3>
-                          <span className="project-card__date">
-                            {new Date(project.updatedAt).toLocaleDateString()}
-                          </span>
-                      </div>
-                      <div className="project-card__content">
-                          <p className="project-card__description">
-                            {project.description || "No description provided."}
-                          </p>
-                      </div>
-                      <div className="project-card__actions">
-                          <button 
-                            className="project-card__btn project-card__btn--delete"
-                            onClick={(e) => openDeleteModal(e, project)}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                          <button className="project-card__btn">
-                            <ExternalLink size={14} /> Open
-                          </button>
-                      </div>
+                  <div
+                    key={project._id}
+                    className="project-card"
+                    onClick={() => navigate(`/editor/${project._id}`)}
+                  >
+                    <div className="project-card__header">
+                      <h3 className="project-card__title">{project.title}</h3>
+                      <span className="project-card__date">
+                        {new Date(
+                          project.updatedAt || project.createdAt,
+                        ).toLocaleString("en-US", {
+                          month: "short",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </span>
                     </div>
+                    <div className="project-card__content">
+                      <p className="project-card__description">
+                        {project.description || "No description provided."}
+                      </p>
+                    </div>
+                    <div className="project-card__actions">
+                      <button
+                        className="project-card__btn project-card__btn--delete"
+                        onClick={(e) => openDeleteModal(e, project)}
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                      <button className="project-card__btn">
+                        <ExternalLink size={14} /> Open
+                      </button>
+                    </div>
+                  </div>
                 ))}
-                </div>
+              </div>
             )}
           </>
         )}
@@ -333,11 +442,17 @@ const Dashboard = () => {
 
       {/* Create Project Modal */}
       {isCreateModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsCreateModalOpen(false)}>
+        <div
+          className="modal-overlay"
+          onClick={() => setIsCreateModalOpen(false)}
+        >
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <header className="modal-header">
               <h2>Initialize Project</h2>
-              <button className="close-btn" onClick={() => setIsCreateModalOpen(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setIsCreateModalOpen(false)}
+              >
                 <X size={20} />
               </button>
             </header>
@@ -349,28 +464,41 @@ const Dashboard = () => {
                   placeholder="e.g. Squadra Core Engine"
                   className="input-field"
                   value={newProject.title}
-                  onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}
+                  onChange={(e) =>
+                    setNewProject({ ...newProject, title: e.target.value })
+                  }
                   autoFocus
                 />
               </div>
               <div className="input-group">
-                <label className="input-label mono">DESCRIPTION (OPTIONAL)</label>
+                <label className="input-label mono">
+                  DESCRIPTION (OPTIONAL)
+                </label>
                 <textarea
                   placeholder="What is this project about?"
                   className="input-field textarea"
                   value={newProject.description}
-                  onChange={(e) => setNewProject({ ...newProject, description: e.target.value })}
+                  onChange={(e) =>
+                    setNewProject({
+                      ...newProject,
+                      description: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="modal-actions">
-                <button 
-                  type="button" 
-                  className="btn btn-ghost" 
+                <button
+                  type="button"
+                  className="btn btn-ghost"
                   onClick={() => setIsCreateModalOpen(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary" disabled={projectLoading}>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={projectLoading}
+                >
                   {projectLoading ? "Initializing..." : "Create Project"}
                 </button>
               </div>
@@ -381,29 +509,40 @@ const Dashboard = () => {
 
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsDeleteModalOpen(false)}>
-          <div className="modal-content modal-content--danger" onClick={(e) => e.stopPropagation()}>
+        <div
+          className="modal-overlay"
+          onClick={() => setIsDeleteModalOpen(false)}
+        >
+          <div
+            className="modal-content modal-content--danger"
+            onClick={(e) => e.stopPropagation()}
+          >
             <header className="modal-header">
               <h2>Delete Project?</h2>
-              <button className="close-btn" onClick={() => setIsDeleteModalOpen(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
                 <X size={20} />
               </button>
             </header>
             <div className="modal-body">
               <p>
-                Are you sure you want to delete <strong className="white">"{projectToDelete?.title}"</strong>? 
-                This action cannot be undone and all mission data will be permanently erased.
+                Are you sure you want to delete{" "}
+                <strong className="white">"{projectToDelete?.title}"</strong>?
+                This action cannot be undone and all mission data will be
+                permanently erased.
               </p>
             </div>
             <div className="modal-actions">
-              <button 
-                className="btn btn-ghost" 
+              <button
+                className="btn btn-ghost"
                 onClick={() => setIsDeleteModalOpen(false)}
               >
                 Cancel
               </button>
-              <button 
-                className="btn btn-danger" 
+              <button
+                className="btn btn-danger"
                 onClick={handleDeleteConfirm}
                 disabled={projectLoading}
               >

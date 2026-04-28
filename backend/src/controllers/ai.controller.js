@@ -100,15 +100,63 @@ export const generateSchema = async (req, res) => {
     const { projectId } = req.params;
     const { prompt } = req.body;
 
-    const aiPrompt = `Generate a Database Schema based on: "${prompt}". Provide Mongoose/Prisma code and a Mermaid ER diagram string. Format as JSON: { "code": "...", "mermaid": "erDiagram ..." }.`;
+    const aiPrompt = `Generate a Database Schema based on: "${prompt}". 
+Provide Mongoose/Prisma code and a Mermaid ER diagram string. 
+IMPORTANT: Return ONLY a valid JSON object. Do not include any other text.
+IMPORTANT: You must escape all newlines in the JSON strings using \\n. Do not use actual line breaks inside the string values.
+Format exactly as JSON: { "code": "...", "mermaid": "erDiagram\\n..." }`;
+
     const aiResult = await analyzeCodeWithAI({ customPrompt: aiPrompt });
     
     let result;
     try {
-      result = JSON.parse(aiResult.replace(/```json|```/g, ''));
+      // Find the first { and last } to extract just the JSON
+      const firstBrace = aiResult.indexOf('{');
+      const lastBrace = aiResult.lastIndexOf('}');
+      
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        let jsonStr = aiResult.substring(firstBrace, lastBrace + 1);
+        
+        // Clean up markdown code blocks if the AI put them INSIDE the JSON string
+        jsonStr = jsonStr.replace(/```mermaid\\n/g, '').replace(/```mermaid\n/g, '').replace(/```/g, '');
+
+        try {
+          // Attempt standard parse first
+          result = JSON.parse(jsonStr);
+        } catch(e) {
+          // If naive parsing fails, it's usually because of unescaped newlines in string values.
+          // Fallback to manual extraction using Regex on the raw aiResult
+          throw new Error("JSON parse failed");
+        }
+      } else {
+        throw new Error("No JSON object found");
+      }
     } catch (e) {
-      result = { code: aiResult, mermaid: "erDiagram\n    ERROR[Error parsing mermaid]" };
+      console.error("Schema JSON parse error, falling back to Regex parsing.");
+      
+      // Fallback: manually extract code and mermaid using regex if JSON fails
+      // Try to find code block
+      const codeMatch = aiResult.match(/```(?:javascript|js|typescript|ts|sql|prisma)?\n([\s\S]*?)```/);
+      // Try to find mermaid block
+      const mermaidMatch = aiResult.match(/```mermaid\n([\s\S]*?)```/);
+      
+      // If AI didn't use code blocks, it might have just returned the raw diagram
+      const rawMermaidMatch = aiResult.match(/(erDiagram[\s\S]*)/);
+      
+      result = { 
+        code: codeMatch ? codeMatch[1] : (aiResult.includes("erDiagram") ? aiResult.split("erDiagram")[0] : aiResult), 
+        mermaid: mermaidMatch ? mermaidMatch[1] : (rawMermaidMatch ? rawMermaidMatch[1] : "")
+      };
     }
+    
+    // Fix literal '\n' that AI might have generated
+    if (result.mermaid) {
+      result.mermaid = result.mermaid.replace(/\\n/g, '\n');
+    }
+    if (result.code) {
+      result.code = result.code.replace(/\\n/g, '\n');
+    }
+    
     res.json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });

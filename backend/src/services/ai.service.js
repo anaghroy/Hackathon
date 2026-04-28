@@ -4,6 +4,7 @@ import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
 import { huggingfaceAnalyze } from "../services/ai/providers/huggingface.provider.js";
 import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js";
 import { cohereAnalyze } from "../services/ai/providers/cohere.provider.js";
+import { openRouterAnalyze } from "../services/ai/providers/openrouter.provider.js";
 
 const withTimeout = (promise, ms = 8000) => {
   return Promise.race([
@@ -39,10 +40,11 @@ Lines: ${parsedData?.totalLines || 0}`;
 
   const providers = [
     { name: "Gemini", fn: geminiAnalyze },
-    { name: "Together", fn: togetherAnalyze },
-    { name: "Groq", fn: groqAnalyze },
-    { name: "HuggingFace", fn: huggingfaceAnalyze },
     { name: "DeepInfra", fn: deepInfraAnalyze },
+    { name: "OpenRouter", fn: openRouterAnalyze },
+    { name: "Together", fn: togetherAnalyze },
+    { name: "HuggingFace", fn: huggingfaceAnalyze },
+    { name: "Groq", fn: groqAnalyze },
     { name: "Cohere", fn: cohereAnalyze },
   ];
 

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, CheckCircle, Play, AlertTriangle, Lightbulb, Check, Code, ShieldCheck, Zap } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import Editor from "@monaco-editor/react";
+import TypewriterText from '../components/TypewriterText';
 
 const EditorReview = () => {
   const { projectId } = useParams();
@@ -34,7 +35,7 @@ const EditorReview = () => {
         {items.map((item, i) => (
           <li key={i} className="ai-list__item">
             <Icon size={14} />
-            <span>{item}</span>
+            <TypewriterText text={item} delay={i * 200} speed={10} />
           </li>
         ))}
       </ul>

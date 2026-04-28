@@ -23,6 +23,7 @@ const EditorPage = () => {
   const [modifiedContents, setModifiedContents] = useState({}); // { [filename]: content }
   const [expandedFolders, setExpandedFolders] = useState({});
   const [isSaving, setIsSaving] = useState(false);
+  const editorRef = React.useRef(null);
 
   // State for Explorer
   const [selectedPath, setSelectedPath] = useState(null); 
@@ -136,6 +137,43 @@ const EditorPage = () => {
       ...prev,
       [path]: !prev[path]
     }));
+  };
+
+  const handleEditorDidMount = (editor, monaco) => {
+    editorRef.current = editor;
+    // Format on initial mount if it's a js/ts file
+    if (activeFile && (activeFile.filename.endsWith('.js') || activeFile.filename.endsWith('.jsx'))) {
+      setTimeout(() => {
+        editor.getAction('editor.action.formatDocument')?.run();
+      }, 300);
+    }
+  };
+
+  useEffect(() => {
+    if (activeFile && editorRef.current) {
+      const ext = activeFile.filename.split('.').pop().toLowerCase();
+      if (['js', 'jsx', 'ts', 'tsx', 'json', 'html', 'css'].includes(ext)) {
+        setTimeout(() => {
+          editorRef.current?.getAction('editor.action.formatDocument')?.run();
+        }, 300);
+      }
+    }
+  }, [activeFile]);
+
+  const isImageFile = (filename) => {
+    if (!filename) return false;
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['png', 'jpg', 'jpeg', 'svg', 'gif', 'webp', 'ico'].includes(ext);
+  };
+
+  const getImageUrl = (file) => {
+    if (file.content && file.content.startsWith('data:image/')) {
+      return file.content;
+    }
+    if (selectedProject?.repoName) {
+      return `https://raw.githubusercontent.com/${selectedProject.repoName}/${selectedProject.branch || 'main'}/${file.filename}`;
+    }
+    return '';
   };
 
   const getLanguageFromFilename = (filename) => {
@@ -639,28 +677,45 @@ const EditorPage = () => {
           </div>
           <div className="editor-code-panel">
             {activeFile ? (
-              <Editor
-                height="100%"
-                language={getLanguageFromFilename(activeFile.filename)}
-                value={modifiedContents[activeFile.filename] || ''}
-                theme="vs-dark"
-                onChange={handleEditorChange}
-                options={{
-                  fontSize: 14,
-                  minimap: { enabled: true },
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                  fontFamily: 'JetBrains Mono, monospace',
-                  wordWrap: 'on',
-                  bracketPairColorization: { enabled: true },
-                  autoClosingBrackets: 'always',
-                  autoClosingQuotes: 'always',
-                  cursorSmoothCaretAnimation: 'on',
-                  cursorBlinking: 'smooth',
-                  renderWhitespace: 'selection',
-                  padding: { top: 10, bottom: 10 }
-                }}
-              />
+              isImageFile(activeFile.filename) ? (
+                <div className="editor-image-preview" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', backgroundColor: '#0f0f10', overflow: 'auto', padding: '20px' }}>
+                  <img 
+                    src={getImageUrl(activeFile)} 
+                    alt={activeFile.filename}
+                    style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = '<div style="color: #ef4444; text-align: center;"><p>Failed to load image.</p><p style="font-size: 12px; opacity: 0.7;">Make sure it exists in the repository.</p></div>';
+                    }}
+                  />
+                </div>
+              ) : (
+                <Editor
+                  height="100%"
+                  language={getLanguageFromFilename(activeFile.filename)}
+                  value={modifiedContents[activeFile.filename] || ''}
+                  theme="vs-dark"
+                  onChange={handleEditorChange}
+                  onMount={handleEditorDidMount}
+                  options={{
+                    fontSize: 14,
+                    minimap: { enabled: true },
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                    fontFamily: 'JetBrains Mono, monospace',
+                    wordWrap: 'on',
+                    bracketPairColorization: { enabled: true },
+                    autoClosingBrackets: 'always',
+                    autoClosingQuotes: 'always',
+                    cursorSmoothCaretAnimation: 'on',
+                    cursorBlinking: 'smooth',
+                    renderWhitespace: 'selection',
+                    padding: { top: 10, bottom: 10 },
+                    formatOnType: true,
+                    formatOnPaste: true
+                  }}
+                />
+              )
             ) : (
               <div className="editor-empty-state">
                 <div className="empty-content">
