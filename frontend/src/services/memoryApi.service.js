@@ -3,7 +3,7 @@ import axios from "axios";
 const memoryApi = axios.create({
   baseURL: "/api/memory",
   withCredentials: true,
-  timeout: 10000,
+  timeout: 60000,
 });
 
 // Feature 5: Get Memory

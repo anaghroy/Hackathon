@@ -13,6 +13,8 @@
     "@monaco-editor/react": "^4.7.0",
     "@reduxjs/toolkit": "^2.11.2",
     "axios": "^1.15.2",
+    "dagre": "^0.8.5",
+    "framer-motion": "^12.38.0",
     "lucide-react": "^1.11.0",
     "mermaid": "^11.14.0",
     "monaco-editor": "^0.55.1",

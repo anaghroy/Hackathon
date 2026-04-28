@@ -3,7 +3,7 @@ import axios from "axios";
 const aiApi = axios.create({
   baseURL: "/api/ai",
   withCredentials: true,
-  timeout: 30000, // AI requests might take longer
+  timeout: 120000, // AI requests might take longer
 });
 
 // Feature 1: Intent Mode

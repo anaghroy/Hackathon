@@ -1,19 +1,29 @@
-import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, BrainCircuit, Plus } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { ArrowLeft, BrainCircuit, Plus, Calendar, FileText, Search } from 'lucide-react';
 import { useMemory } from '../hooks/useMemory';
 
 const EditorMemory = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { memories, fetchMemories, createMemory, loading } = useMemory();
   const [title, setTitle] = useState('');
   const [decision, setDecision] = useState('');
   const [filePath, setFilePath] = useState('Global');
+  
+  const highlightId = location.state?.highlightId;
+  const highlightedRef = useRef(null);
 
   useEffect(() => {
     fetchMemories(projectId);
   }, [projectId]);
+
+  useEffect(() => {
+    if (highlightedRef.current) {
+      highlightedRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [memories, highlightId]);
 
   const handleAddMemory = async () => {
     if (!title.trim() || !decision.trim() || !filePath.trim()) return;
@@ -32,75 +42,57 @@ const EditorMemory = () => {
   };
 
   return (
-    <div className="editor-layout" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: 'var(--bg-dark)' }}>
+    <div className="memory-page">
       <header className="editor-header">
         <div className="editor-header__left">
           <button className="editor-btn editor-btn--ghost" onClick={() => navigate(`/editor/${projectId}`)}>
             <ArrowLeft size={16} /> Back to Editor
           </button>
-          <div className="editor-header__title" style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <BrainCircuit size={18} /> Project Memory
+          <div className="editor-header__info" style={{ marginLeft: '1.5rem' }}>
+            <h1 className="editor-header__title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <BrainCircuit size={20} className="text-primary" /> Project Memory
+            </h1>
           </div>
         </div>
       </header>
       
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden', padding: '2rem', gap: '2rem' }}>
+      <div className="memory-page__content">
         {/* Left Side: Add Memory Form */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem', borderRight: '1px solid var(--border-color)', paddingRight: '2rem' }}>
-          <h3 style={{ color: 'var(--text-light)', marginBottom: '1rem' }}>Record a Decision</h3>
+        <div className="memory-form-container">
+          <div className="memory-form-container__header">
+            <h3 className="memory-form-container__title">Record a Decision</h3>
+            <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.3)', margin: 0 }}>
+              Document architectural choices and project changes.
+            </p>
+          </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Decision Title</label>
+          <div className="form-group">
+            <label>Decision Title</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder='e.g., "Switched to React Flow"'
-              style={{
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '0.75rem',
-                fontFamily: 'Inter, sans-serif'
-              }}
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Related File Path</label>
+          <div className="form-group">
+            <label>Related File Path</label>
             <input
               type="text"
+              className="code-input"
               value={filePath}
               onChange={(e) => setFilePath(e.target.value)}
               placeholder='e.g., "src/components/Graph.jsx" or "Global"'
-              style={{
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '0.75rem',
-                fontFamily: 'JetBrains Mono, monospace'
-              }}
             />
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Reason / Context (Description)</label>
+          <div className="form-group">
+            <label>Reason / Context</label>
             <textarea
               value={decision}
               onChange={(e) => setDecision(e.target.value)}
               placeholder='Explain why this decision was made...'
-              style={{
-                flex: 1,
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '1rem',
-                fontFamily: 'Inter, sans-serif',
-                resize: 'none'
-              }}
             />
           </div>
 
@@ -108,55 +100,59 @@ const EditorMemory = () => {
             className="editor-btn editor-btn--primary" 
             onClick={handleAddMemory}
             disabled={loading || !title.trim() || !decision.trim() || !filePath.trim()}
-            style={{ alignSelf: 'flex-start', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            style={{ marginTop: '8px', padding: '12px', justifyContent: 'center' }}
           >
-            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16, display: 'inline-block' }}></span> : <Plus size={16} />}
-            {loading ? 'Adding...' : 'Add Memory'}
+            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16 }}></span> : <Plus size={18} />}
+            <span>{loading ? 'Adding...' : 'Save Decision'}</span>
           </button>
         </div>
 
         {/* Right Side: Timeline */}
-        <div style={{ flex: 2, overflowY: 'auto', paddingRight: '1rem' }}>
-          <h3 style={{ color: 'var(--text-light)', marginBottom: '1.5rem' }}>Decision Timeline</h3>
+        <div className="memory-timeline">
+          <div className="memory-timeline__header">
+            <h3>Decision Timeline</h3>
+            <div className="count">{memories.length} entries</div>
+          </div>
+
           {loading && memories.length === 0 ? (
-            <p style={{ color: 'var(--text-muted)' }}>Loading timeline...</p>
+            <div className="memory-empty-state">
+              <span className="editor-loader__spinner"></span>
+              <p>Loading project memory...</p>
+            </div>
           ) : memories.length > 0 ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {memories.map((mem, index) => (
-                <div key={mem._id || index} style={{ 
-                  backgroundColor: 'var(--bg-darker)', 
-                  border: '1px solid var(--border-color)', 
-                  borderRadius: '8px', 
-                  padding: '1.5rem',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '0.8rem'
-                }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                      <h4 style={{ color: 'var(--primary-color)', fontSize: '1.1rem', margin: 0 }}>{mem.title || 'Decision Recorded'}</h4>
-                      <code style={{ fontSize: '0.75rem', color: 'var(--text-muted)', backgroundColor: 'rgba(255,255,255,0.05)', padding: '2px 6px', borderRadius: '4px' }}>{mem.filePath}</code>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {memories.map((mem) => {
+                const isHighlighted = mem._id === highlightId;
+                return (
+                  <div 
+                    key={mem._id} 
+                    ref={isHighlighted ? highlightedRef : null}
+                    className={`memory-card ${isHighlighted ? 'memory-card--active' : ''}`}
+                  >
+                    <div className="memory-card__header">
+                      <div className="memory-card__info">
+                        <h4>{mem.title || 'Decision Recorded'}</h4>
+                        <div className="file-path">
+                          <FileText size={10} style={{ marginRight: '4px' }} />
+                          {mem.filePath}
+                        </div>
+                      </div>
+                      <div className="memory-card__date">
+                        <Calendar size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
+                        {mem.createdAt ? new Date(mem.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Just now'}
+                      </div>
                     </div>
-                    <span style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>
-                      {mem.createdAt ? new Date(mem.createdAt).toLocaleDateString() : 'Just now'}
-                    </span>
+                    <p className="memory-card__description">
+                      {mem.description}
+                    </p>
                   </div>
-                  <p style={{ color: 'var(--text-light)', fontSize: '0.95rem', lineHeight: '1.5', margin: 0 }}>
-                    {mem.description}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
-            <div style={{ 
-              backgroundColor: 'var(--bg-darker)', 
-              border: '1px dashed var(--border-color)', 
-              borderRadius: '8px', 
-              padding: '3rem',
-              textAlign: 'center',
-              color: 'var(--text-muted)'
-            }}>
-              No decisions have been recorded yet. Start building your project memory!
+            <div className="memory-empty-state">
+              <BrainCircuit size={48} />
+              <p>No decisions have been recorded yet. Start building your project memory!</p>
             </div>
           )}
         </div>

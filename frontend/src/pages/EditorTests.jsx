@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, TestTube, Play, Copy, Check } from 'lucide-react';
+import { ArrowLeft, TestTube, Play, Copy, Check, Code, Zap } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
+import Editor from "@monaco-editor/react";
 
 const EditorTests = () => {
   const { projectId } = useParams();
@@ -16,7 +17,7 @@ const EditorTests = () => {
     if (!code.trim()) return;
     try {
       const result = await generateTests(projectId, { code, intent });
-      setTestResult(result.code || result.tests || result.output || typeof result === 'string' ? result : JSON.stringify(result, null, 2));
+      setTestResult(result.code || result.tests || result.output || (typeof result === 'string' ? result : JSON.stringify(result, null, 2)));
       setCopied(false);
     } catch (error) {
       console.error(error);
@@ -30,102 +31,113 @@ const EditorTests = () => {
   };
 
   return (
-    <div className="editor-layout" style={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor: 'var(--bg-dark)' }}>
+    <div className="ai-page">
       <header className="editor-header">
         <div className="editor-header__left">
           <button className="editor-btn editor-btn--ghost" onClick={() => navigate(`/editor/${projectId}`)}>
             <ArrowLeft size={16} /> Back to Editor
           </button>
-          <div className="editor-header__title" style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <TestTube size={18} /> Generate Tests
+          <div className="editor-header__info" style={{ marginLeft: '1.5rem' }}>
+            <h1 className="editor-header__title" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <TestTube size={20} className="text-primary" /> Generate Tests
+            </h1>
           </div>
         </div>
       </header>
       
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
+      <div className="ai-page__content">
         {/* Left Side: Input */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1rem', borderRight: '1px solid var(--border-color)', gap: '1rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Source Code</label>
-            <textarea
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              placeholder="Paste the function or file content here..."
-              style={{
-                flex: 1,
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '1rem',
-                fontFamily: 'JetBrains Mono, monospace',
-                resize: 'none'
-              }}
-            />
+        <aside className="ai-form-side">
+          <div className="ai-form-side__header">
+            <h2>Test Generator</h2>
+            <p>Paste your function or class and let AI generate comprehensive unit tests.</p>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', height: '100px' }}>
-            <label style={{ color: 'var(--text-muted)', marginBottom: '0.5rem' }}>Test Requirements (Optional)</label>
+
+          <div className="ai-group ai-group--flex" style={{ minHeight: '300px' }}>
+            <label><Code size={12} /> Source Code</label>
+            <div className="ai-code-input-container" style={{ flex: 1, borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+              <Editor
+                height="100%"
+                defaultLanguage="javascript"
+                value={code}
+                onChange={setCode}
+                theme="vs-dark"
+                options={{
+                  fontSize: 13,
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true,
+                  fontFamily: 'JetBrains Mono, monospace',
+                  padding: { top: 16, bottom: 16 },
+                  wordWrap: 'on'
+                }}
+              />
+            </div>
+          </div>
+
+          <div className="ai-group">
+            <label><Zap size={12} /> Requirements (Optional)</label>
             <input
+              className="ai-input"
               type="text"
               value={intent}
               onChange={(e) => setIntent(e.target.value)}
               placeholder='e.g., "Use Jest", "Test edge cases for null inputs"'
-              style={{
-                backgroundColor: 'var(--bg-darker)',
-                color: 'var(--text-light)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '8px',
-                padding: '0.75rem',
-                fontFamily: 'Inter, sans-serif'
-              }}
             />
           </div>
+
           <button 
-            className="editor-btn editor-btn--primary" 
+            className="ai-btn-primary" 
             onClick={handleSubmit}
             disabled={loading || !code.trim()}
-            style={{ alignSelf: 'flex-end', padding: '0.75rem 1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
           >
-            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16, display: 'inline-block' }}></span> : <Play size={16} />}
-            {loading ? 'Generating...' : 'Generate Tests'}
+            {loading ? <span className="editor-loader__spinner" style={{ width: 16, height: 16 }}></span> : <Play size={18} />}
+            <span>{loading ? 'Generating...' : 'Generate Tests'}</span>
           </button>
-        </div>
+        </aside>
 
         {/* Right Side: Output */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '1rem', overflow: 'hidden' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-            <label style={{ color: 'var(--text-muted)' }}>Generated Tests</label>
-            {testResult && (
-              <button 
-                onClick={handleCopy}
-                style={{ 
-                  background: 'none', 
-                  border: 'none', 
-                  color: 'var(--text-muted)', 
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  fontSize: '0.85rem'
-                }}
-              >
-                {copied ? <Check size={14} color="var(--success-color)" /> : <Copy size={14} />}
-                {copied ? <span style={{ color: 'var(--success-color)' }}>Copied!</span> : 'Copy Code'}
-              </button>
-            )}
-          </div>
-          <div style={{ flex: 1, backgroundColor: 'var(--bg-darker)', border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-            {testResult ? (
-              <pre style={{ margin: 0, padding: '1rem', overflowY: 'auto', color: 'var(--text-light)', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.9rem', flex: 1 }}>
-                {testResult}
-              </pre>
-            ) : (
-              <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-muted)' }}>
-                Generated tests will appear here...
+        <main className="ai-result-side">
+          {testResult ? (
+            <div className="ai-code-block" style={{ height: '100%' }}>
+              <div className="ai-code-block__header">
+                <span>Generated Output</span>
+                <button 
+                  className="editor-btn editor-btn--ghost" 
+                  onClick={handleCopy}
+                  style={{ height: '28px', padding: '0 12px', fontSize: '11px', gap: '6px' }}
+                >
+                  {copied ? <Check size={12} className="text-success" /> : <Copy size={12} />}
+                  <span className={copied ? 'text-success' : ''}>{copied ? 'Copied' : 'Copy Code'}</span>
+                </button>
               </div>
-            )}
-          </div>
-        </div>
+              <div style={{ flex: 1 }}>
+                <Editor
+                  height="100%"
+                  defaultLanguage="javascript"
+                  value={testResult}
+                  theme="vs-dark"
+                  options={{
+                    readOnly: true,
+                    fontSize: 13,
+                    minimap: { enabled: true },
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                    fontFamily: 'JetBrains Mono, monospace',
+                    padding: { top: 16, bottom: 16 },
+                    wordWrap: 'on'
+                  }}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="ai-empty-state">
+              <TestTube size={64} />
+              <h3>No Tests Generated</h3>
+              <p>Enter your source code on the left and click generate to see AI-powered unit tests.</p>
+            </div>
+          )}
+        </main>
       </div>
     </div>
   );

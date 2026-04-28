@@ -5,18 +5,15 @@
   border: 1px solid $border;
   border-radius: $radius-lg;
   padding: 1.5rem;
+  transition: transform $transition, border-color $transition;
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  transition: $transition;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
+  gap: 1rem;
 
   &:hover {
+    transform: translateY(-4px);
     border-color: $border-hover;
-    transform: translateY(-2px);
-    background-color: $bg-soft;
   }
 
   &__header {
@@ -37,61 +34,63 @@
     color: $text-muted;
   }
 
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+  &__content {
+    flex: 1;
   }
 
-  &__tag {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
-    background-color: rgba(255, 255, 255, 0.03);
-    border: 1px solid $border;
-    border-radius: $radius-sm;
+  &__description {
+    font-size: 0.875rem;
     color: $text-muted;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   &__actions {
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem;
+    gap: 0.5rem;
     margin-top: auto;
   }
 
   &__btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 0.75rem;
+    border-radius: $radius-md;
     font-size: 0.8125rem;
     font-weight: 500;
-    border-radius: $radius-md;
-    border: 1px solid $border;
-    background: transparent;
-    color: $text-muted;
-    transition: $transition;
     cursor: pointer;
+    transition: all $transition;
+    background: transparent;
+    border: 1px solid $border;
+    color: $text-muted;
 
     &:hover {
-      border-color: $border-hover;
+      background-color: $bg-soft;
       color: $text-main;
-    }
-
-    &--primary {
-      background-color: $white;
-      color: $black;
-      border: none;
-
-      &:hover {
-        background-color: #f4f4f5;
-        color: $black;
-      }
+      border-color: $border-hover;
     }
 
     &--delete {
-        &:hover {
-            border-color: $error;
-            color: $error;
-            background-color: rgba(239, 68, 68, 0.05);
-        }
+      &:hover {
+        background-color: rgba($error, 0.1);
+        color: $error;
+        border-color: rgba($error, 0.2);
+      }
+    }
+
+    &--primary {
+      background-color: $primary;
+      color: $on-primary;
+      border-color: $primary;
+
+      &:hover {
+        background-color: rgba($primary, 0.9);
+      }
     }
   }
 }
