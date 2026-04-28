@@ -3,6 +3,7 @@ import { groqAnalyze } from "../services/ai/providers/groq.provider.js";
 import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
 import { huggingfaceAnalyze } from "../services/ai/providers/huggingface.provider.js";
 import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js";
+import { cohereAnalyze } from "../services/ai/providers/cohere.provider.js";
 
 const withTimeout = (promise, ms = 8000) => {
   return Promise.race([
@@ -42,6 +43,7 @@ Lines: ${parsedData?.totalLines || 0}`;
     { name: "Groq", fn: groqAnalyze },
     { name: "HuggingFace", fn: huggingfaceAnalyze },
     { name: "DeepInfra", fn: deepInfraAnalyze },
+    { name: "Cohere", fn: cohereAnalyze },
   ];
 
   let lastError = null;
@@ -74,7 +76,9 @@ Lines: ${parsedData?.totalLines || 0}`;
 };
 
 export const analyzeCodeSecurity = async (projectId, projectFiles) => {
-  const fileSummary = projectFiles.map(f => `File: ${f.filename}\n${f.content}`).join("\n\n");
+  const fileSummary = projectFiles
+    .map((f) => `File: ${f.filename}\n${f.content}`)
+    .join("\n\n");
   const prompt = `Analyze the following codebase for security vulnerabilities (e.g. OWASP top 10). 
 Return a JSON object with a 'highRiskIssues' count and an 'issues' array detailing the vulnerabilities. 
 If no critical issues, 'highRiskIssues' should be 0.
@@ -85,14 +89,20 @@ ${fileSummary}`;
     const aiResult = await analyzeCodeWithAI({ customPrompt: prompt });
     let result;
     try {
-      result = JSON.parse(aiResult.replace(/```json|```/g, ''));
+      result = JSON.parse(aiResult.replace(/```json|```/g, ""));
     } catch (e) {
       // Fallback if parsing fails, assume safe for now or handle appropriately
-      result = { highRiskIssues: 0, issues: ["Failed to parse AI security response"] };
+      result = {
+        highRiskIssues: 0,
+        issues: ["Failed to parse AI security response"],
+      };
     }
     return result;
   } catch (err) {
     console.error("Security scan failed:", err);
-    return { highRiskIssues: 0, issues: ["Security scan failed due to server error"] };
+    return {
+      highRiskIssues: 0,
+      issues: ["Security scan failed due to server error"],
+    };
   }
 };

@@ -9,17 +9,19 @@ export const togetherAnalyze = async (prompt) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: "Qwen/Qwen3-30B-A22B-Instruct",
+      model: "meta-llama/Llama-3-70b-chat-hf",
+
       messages: [
         { role: "system", content: "You are a senior software engineer." },
         { role: "user", content: prompt },
       ],
+
       max_tokens: 800,
       temperature: 0.3,
     }),
   });
 
-  // handle non-200 responses
+  // handle API error properly
   if (!res.ok) {
     const errText = await res.text();
     throw new Error(`Together API error: ${errText}`);
@@ -27,13 +29,13 @@ export const togetherAnalyze = async (prompt) => {
 
   const data = await res.json();
 
-  // safe extraction
-  const text = data?.choices?.[0]?.message?.content?.trim();
+  // SAFE PARSE
+  const text = data?.choices?.[0]?.message?.content;
 
   if (!text) {
     console.error("Together raw response:", data);
     throw new Error("Invalid Together response");
   }
 
-  return text;
+  return text.trim();
 };
