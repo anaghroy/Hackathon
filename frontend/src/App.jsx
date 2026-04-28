@@ -14,7 +14,14 @@ import EditorSchema from "./pages/EditorSchema";
 import EditorMemory from "./pages/EditorMemory";
 import EditorTests from "./pages/EditorTests";
 import EditorReview from "./pages/EditorReview";
+import EditorSecurity from "./pages/EditorSecurity";
+import EditorPerformance from "./pages/EditorPerformance";
 import Profile from "./pages/Profile";
+import ConnectRepo from "./pages/ConnectRepo";
+import DeploymentPanel from "./pages/DeploymentPanel";
+import LogsViewer from "./pages/LogsViewer";
+import RollbackTimeline from "./pages/RollbackTimeline";
+import EnvManager from "./pages/EnvManager";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyPending from "./pages/VerifyPending";
@@ -130,6 +137,46 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/connect-repo"
+          element={
+            <ProtectedRoute>
+              <ConnectRepo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editor/:projectId/deploy"
+          element={
+            <ProtectedRoute>
+              <DeploymentPanel />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editor/:projectId/env"
+          element={
+            <ProtectedRoute>
+              <EnvManager />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editor/:projectId/logs"
+          element={
+            <ProtectedRoute>
+              <LogsViewer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/editor/:projectId/history"
+          element={
+            <ProtectedRoute>
+              <RollbackTimeline />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="/editor/:projectId"
@@ -193,7 +240,23 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/editor/:projectId/security"
+          element={
+            <ProtectedRoute>
+              <EditorSecurity />
+            </ProtectedRoute>
+          }
+        />
 
+        <Route
+          path="/editor/:projectId/performance"
+          element={
+            <ProtectedRoute>
+              <EditorPerformance />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

@@ -31,6 +31,18 @@ export const generateTestsApi = (projectId, data) => {
   return aiApi.post(`/test/${projectId}`, data);
 };
 
+export const analyzePerformanceApi = (projectId, data) => {
+  return aiApi.post(`/performance/${projectId}`, data);
+};
+
+export const scanSecurityApi = (projectId) => {
+  return aiApi.post(`/security/${projectId}`);
+};
+
+export const applyFixApi = (data) => {
+  return aiApi.post(`/apply-fix`, data);
+};
+
 // Feature 7: Code Review
 export const reviewCodeApi = (projectId, data) => {
   return aiApi.post(`/review/${projectId}`, data);

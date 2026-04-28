@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import useProject from "../hooks/useProject";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
-import { Plus, Folder, Users, Settings, LogOut, Search, Trash2, ExternalLink, X, Layout } from "lucide-react";
+import { Plus, Folder, Users, Settings, LogOut, Search, Trash2, ExternalLink, X, Layout, GitCompare } from "lucide-react";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
@@ -162,6 +162,13 @@ const Dashboard = () => {
             <Settings size={20} />
             Settings
           </div>
+          <div 
+            className={`sidebar__item ${activeTab === 'deployments' ? 'sidebar__item--active' : ''}`}
+            onClick={() => { navigate('/connect-repo'); setIsSidebarOpen(false); }}
+          >
+            <GitCompare size={20} />
+            Deployments
+          </div>
         </div>
 
         <div className="sidebar__footer">
@@ -251,12 +258,21 @@ const Dashboard = () => {
                 </h1>
                 <p className="dashboard-page__subtitle">Manage and organize your AI code projects</p>
               </div>
-              <button 
-                className="project-card__btn project-card__btn--primary"
-                onClick={() => setIsCreateModalOpen(true)}
-              >
-                <Plus size={18} /> Create New Project
-              </button>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button 
+                  className="project-card__btn project-card__btn--ghost"
+                  onClick={() => navigate('/connect-repo')}
+                  style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '0 16px' }}
+                >
+                  <GitCompare size={18} /> Connect Repo
+                </button>
+                <button 
+                  className="project-card__btn project-card__btn--primary"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
+                  <Plus size={18} /> Create New Project
+                </button>
+              </div>
             </header>
 
             {projectLoading && projects.length === 0 ? (

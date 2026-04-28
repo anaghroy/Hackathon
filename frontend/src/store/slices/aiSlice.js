@@ -6,6 +6,8 @@ const initialState = {
   dbSchema: null,
   testCode: null,
   codeReview: null,
+  securityResult: null,
+  performanceResult: null,
   loading: false,
   error: null,
 };
@@ -29,6 +31,12 @@ export const aiSlice = createSlice({
     setCodeReview: (state, action) => {
       state.codeReview = action.payload;
     },
+    setSecurityResult: (state, action) => {
+      state.securityResult = action.payload;
+    },
+    setPerformanceResult: (state, action) => {
+      state.performanceResult = action.payload;
+    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
@@ -41,6 +49,8 @@ export const aiSlice = createSlice({
       state.dbSchema = null;
       state.testCode = null;
       state.codeReview = null;
+      state.securityResult = null;
+      state.performanceResult = null;
       state.error = null;
     }
   },
@@ -52,6 +62,8 @@ export const {
   setDbSchema,
   setTestCode,
   setCodeReview,
+  setSecurityResult,
+  setPerformanceResult,
   setLoading,
   setError,
   clearAiState
