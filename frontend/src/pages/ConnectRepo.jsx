@@ -21,12 +21,13 @@ const ConnectRepo = () => {
   });
 
   useEffect(() => {
-    fetchRepos(provider);
-  }, [provider, fetchRepos]);
+    const timer = setTimeout(() => {
+      fetchRepos(provider, searchQuery);
+    }, 500); // 500ms debounce
+    return () => clearTimeout(timer);
+  }, [provider, searchQuery, fetchRepos]);
 
-  const filteredRepos = repos.filter(repo => 
-    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const displayRepos = repos;
 
   const handleConnect = async () => {
     if (!selectedRepo) return;
@@ -152,8 +153,8 @@ const ConnectRepo = () => {
                 <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
                   <RefreshCcw size={24} className="animate-spin" style={{ color: 'rgba(255,255,255,0.2)' }} />
                 </div>
-              ) : filteredRepos.length > 0 ? (
-                filteredRepos.map(repo => (
+              ) : displayRepos.length > 0 ? (
+                displayRepos.map(repo => (
                   <button 
                     key={repo.id}
                     onClick={() => setSelectedRepo(repo)}

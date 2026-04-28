@@ -8,11 +8,11 @@ export const useRepo = () => {
   const dispatch = useDispatch();
   const repoState = useSelector((state) => state.repo);
 
-  const fetchRepos = useCallback(async (provider) => {
+  const fetchRepos = useCallback(async (provider, search = "") => {
     try {
       dispatch(setLoading(true));
       dispatch(setError(null));
-      const response = await getReposApi(provider);
+      const response = await getReposApi(provider, search);
       dispatch(setRepos(response.data.repositories || []));
       return response.data.repositories;
     } catch (err) {
