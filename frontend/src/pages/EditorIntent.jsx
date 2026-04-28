@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Play, Code, Sparkles, Wand2 } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
-import ReactDiffViewer from 'react-diff-viewer';
+import ReactDiffViewer from "react-diff-viewer-continued";
 import Editor from "@monaco-editor/react";
 
 const EditorIntent = () => {
