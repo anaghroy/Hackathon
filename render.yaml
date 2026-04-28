@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: CogniCode
+    env: docker
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    branch: main
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 3000
