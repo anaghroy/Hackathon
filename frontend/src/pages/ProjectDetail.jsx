@@ -201,7 +201,7 @@ const ProjectDetail = () => {
                 <Clock size={16} />
                 <div>
                   <label className="mono">UPDATED</label>
-                  <span>{new Date(selectedProject?.updatedAt).toLocaleDateString()}</span>
+                  <span>{new Date(selectedProject?.updatedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
                 </div>
               </div>
               <div className="meta-item">

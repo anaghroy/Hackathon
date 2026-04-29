@@ -4,9 +4,9 @@ import { useAuth } from "../hooks/useAuth";
 import useProject from "../hooks/useProject";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
-import { Plus, Folder, Users, Settings, LogOut, Search, Trash2, ExternalLink, X, Layout, GitCompare } from "lucide-react";
+import { Plus, Folder, Users, Settings, LogOut, Search, Trash2, ExternalLink, X, Layout, GitCompare, Menu } from "lucide-react";
 import toast from "react-hot-toast";
-
+import brandLogo from "../assets/Brand logo.png";
 const Dashboard = () => {
   const navigate = useNavigate();
   const { user, handleUpdateProfile, handleLogout, loading: authLoading } = useAuth();
@@ -83,22 +83,229 @@ const Dashboard = () => {
 
   const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
 
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'overview':
+        return (
+          <div className="overview-tab">
+            <header className="dashboard-page__header">
+              <div className="dashboard-page__title-group">
+                <h1 className="dashboard-page__title" style={{ fontSize: '1.25rem' }}>CogniCode Documentation</h1>
+                <p className="dashboard-page__subtitle" style={{ fontSize: '0.8125rem' }}>Platform Overview and Capabilities</p>
+              </div>
+            </header>
+            
+            <div className="overview-docs" style={{ maxWidth: '768px', paddingTop: '1rem', paddingBottom: '4rem', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+              
+              <section>
+                <h2 style={{ fontSize: '1rem', color: '#fff', fontWeight: '600', marginBottom: '0.75rem' }}>Platform Overview</h2>
+                <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.7', margin: 0 }}>
+                  CogniCode is a premium, intelligent engineering environment bridging the gap between AI-assisted development and robust infrastructure management. Explore the modules below to understand the full capabilities available within your workspace.
+                </p>
+              </section>
+
+              <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,0.05)', margin: '0' }} />
+
+              <section>
+                <h2 style={{ fontSize: '1rem', color: '#fff', fontWeight: '600', marginBottom: '1.25rem' }}>Core Modules</h2>
+                
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Smart Dashboard</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Your central command center. Provides immediate project control, rapid workspace access, and intuitive quick-action navigation.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Project Management</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Create, organize, and seamlessly update multiple independent coding projects within securely isolated application states.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Code Review System</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Intelligently audit generated code. Improve base quality, detect hidden vulnerabilities, and receive automated optimization guidance.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Graph & Analytics</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Visualize architecture and monitor performance. Gain deep insights into your progress, statistics, and system relationships over time.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Deployment Module</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Streamline release pipelines. Manage build configurations, automated deployment workflows, and secure production launch controls.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Shared Workspace</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Scale your team-based productivity. Securely share project access and align distributed engineering efforts seamlessly.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Settings & Configuration</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Customize your development experience. Manage workspace preferences, strict account controls, and platform aesthetics.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>DevOps Integration</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Build scalable infrastructure. Support robust CI/CD style processes and complex automation workflows out-of-the-box.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>AI Productivity Tools</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Accelerate development cycles with smart assistance. Leverage intelligent agents to automate boilerplate and maximize coding efficiency.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', color: '#e4e4e7', fontWeight: '500', marginBottom: '0.375rem' }}>Security & Reliability</h3>
+                    <p style={{ fontSize: '0.8125rem', color: 'rgba(255,255,255,0.65)', lineHeight: '1.6', margin: 0 }}>
+                      Ensure safe project handling at every layer. Experience stable workflows backed by an organized, enterprise-grade infrastructure.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+            </div>
+          </div>
+        );
+      case 'projects':
+        return (
+          <div className="projects-tab">
+            <header className="dashboard-page__header">
+              <div className="dashboard-page__title-group">
+                <h1 className="dashboard-page__title">My Projects</h1>
+                <p className="dashboard-page__subtitle">Manage and organize your AI code projects</p>
+              </div>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button 
+                  className="project-card__btn project-card__btn--ghost"
+                  onClick={() => navigate('/connect-repo')}
+                  style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '0 16px' }}
+                >
+                  <GitCompare size={18} /> Connect Repo
+                </button>
+                <button 
+                  className="project-card__btn project-card__btn--primary"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
+                  <Plus size={18} /> Create New Project
+                </button>
+              </div>
+            </header>
+
+            {projectLoading && projects.length === 0 ? (
+                <div className="dashboard-page__loading">
+                    <div className="loader"></div>
+                </div>
+            ) : projects.length === 0 ? (
+                <div className="dashboard-page__empty">
+                    <div className="dashboard-page__empty-icon">
+                        <Folder size={48} strokeWidth={1} />
+                    </div>
+                    <p className="dashboard-page__empty-text">You haven't created any projects yet.</p>
+                    <button className="btn btn-primary" onClick={() => setIsCreateModalOpen(true)}>
+                        Start Your First Project
+                    </button>
+                </div>
+            ) : (
+                <div className="dashboard-page__grid">
+                {projects.map((project) => {
+                    const words = project.title.split(" ");
+                    const truncatedTitle = words.length > 2 ? words.slice(0, 2).join(" ") + "..." : project.title;
+                    
+                    return (
+                    <div 
+                      key={project._id} 
+                      className="project-card"
+                      onClick={() => navigate(`/editor/${project._id}`)}
+                    >
+                      <div className="project-card__header">
+                          <h3 className="project-card__title" title={project.title}>{truncatedTitle}</h3>
+                          <span className="project-card__date">
+                            {new Date(project.updatedAt || project.createdAt || Date.now()).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                          </span>
+                      </div>
+                      <div className="project-card__content">
+                          <p className="project-card__description">
+                            {project.description || "No description provided."}
+                          </p>
+                      </div>
+                      <div className="project-card__actions">
+                          <button 
+                            className="project-card__btn project-card__btn--delete"
+                            onClick={(e) => openDeleteModal(e, project)}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                          <button className="project-card__btn">
+                            <ExternalLink size={14} /> Open
+                          </button>
+                      </div>
+                    </div>
+                )})}
+                </div>
+            )}
+          </div>
+        );
+      case 'shared':
+        return (
+          <div className="shared-tab">
+            <header className="dashboard-page__header">
+              <div className="dashboard-page__title-group">
+                <h1 className="dashboard-page__title">Shared with Me</h1>
+                <p className="dashboard-page__subtitle">Projects shared with your account</p>
+              </div>
+            </header>
+            <div className="dashboard-page__empty" style={{ border: 'none', background: 'transparent' }}>
+            </div>
+          </div>
+        );
+      case 'settings':
+        return (
+          <div className="settings-tab">
+            <header className="dashboard-page__header">
+              <div className="dashboard-page__title-group">
+                <h1 className="dashboard-page__title">Settings</h1>
+                <p className="dashboard-page__subtitle">Configure your platform preferences</p>
+              </div>
+            </header>
+            <div className="dashboard-page__empty" style={{ border: 'none', background: 'transparent' }}>
+            </div>
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="dashboard">
       {/* Top Navbar */}
       <header className="dashboard__nav navbar">
         <div className="navbar__left">
-          <button className="hamburger" onClick={toggleSidebar}>
-            <X size={24} className={isSidebarOpen ? "" : "hidden"} />
-            <Plus size={24} className={isSidebarOpen ? "hidden" : "rotate-45"} />
-          </button>
+
           <div className="navbar__brand" onClick={() => navigate("/dashboard")} style={{ cursor: 'pointer' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 17L12 22L22 17" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 12L12 17L22 12" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-            <span>SQUADRA</span>
+            <div className="navbar__brand-logo">
+              <img src={brandLogo} alt="CogniCode Logo" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+            </div>
+            <span className="navbar__brand-text">CogniCode</span>
           </div>
         </div>
 
@@ -128,6 +335,9 @@ const Dashboard = () => {
               <span className="navbar__user-name">{user?.username || "Developer"}</span>
             </div>
           </div>
+          <button className="hamburger" onClick={toggleSidebar} aria-label="Toggle sidebar">
+            <Menu size={20} />
+          </button>
         </div>
       </header>
 
@@ -181,154 +391,7 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <main className="dashboard__main dashboard-page">
-        {activeTab === 'settings' ? (
-          <div className="profile-card">
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Profile Settings</h1>
-                <p className="dashboard-page__subtitle">Manage your account information and bio.</p>
-              </div>
-            </header>
-
-            <form onSubmit={handleSubmitProfile} className="profile-form">
-              <div className="input-group">
-                <label className="input-label">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  className={`input-field ${errors.username ? "input-error" : ""}`}
-                  value={values.username}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {errors.username && <p className="error-text">{errors.username}</p>}
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">City</label>
-                <input
-                  type="text"
-                  name="city"
-                  className={`input-field ${errors.city ? "input-error" : ""}`}
-                  value={values.city}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="e.g. New York"
-                />
-                {errors.city && <p className="error-text">{errors.city}</p>}
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Bio</label>
-                <textarea
-                  name="bio"
-                  className={`input-field textarea ${errors.bio ? "input-error" : ""}`}
-                  value={values.bio}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Tell us about yourself..."
-                />
-                {errors.bio && <p className="error-text">{errors.bio}</p>}
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Date of Birth</label>
-                <input
-                  type="date"
-                  name="dob"
-                  className={`input-field ${errors.dob ? "input-error" : ""}`}
-                  value={values.dob}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {errors.dob && <p className="error-text">{errors.dob}</p>}
-              </div>
-
-              <button type="submit" className="btn btn-primary btn-full" disabled={authLoading}>
-                {authLoading ? "Updating..." : "Update Profile"}
-              </button>
-            </form>
-          </div>
-        ) : (
-          <>
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">
-                  {activeTab === 'projects' ? 'My Projects' : activeTab === 'overview' ? 'Welcome Back' : 'Shared with Me'}
-                </h1>
-                <p className="dashboard-page__subtitle">Manage and organize your AI code projects</p>
-              </div>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button 
-                  className="project-card__btn project-card__btn--ghost"
-                  onClick={() => navigate('/connect-repo')}
-                  style={{ border: '1px solid rgba(255,255,255,0.1)', padding: '0 16px' }}
-                >
-                  <GitCompare size={18} /> Connect Repo
-                </button>
-                <button 
-                  className="project-card__btn project-card__btn--primary"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  <Plus size={18} /> Create New Project
-                </button>
-              </div>
-            </header>
-
-            {projectLoading && projects.length === 0 ? (
-                <div className="dashboard-page__loading">
-                    <div className="loader"></div>
-                </div>
-            ) : projects.length === 0 ? (
-                <div className="dashboard-page__empty">
-                    <div className="dashboard-page__empty-icon">
-                        <Folder size={48} strokeWidth={1} />
-                    </div>
-                    <p className="dashboard-page__empty-text">
-                        {activeTab === 'shared' ? 'No projects shared with you.' : 'You haven\'t created any projects yet.'}
-                    </p>
-                    {activeTab !== 'shared' && (
-                        <button className="btn btn-primary" onClick={() => setIsCreateModalOpen(true)}>
-                            Start Your First Project
-                        </button>
-                    )}
-                </div>
-            ) : (
-                <div className="dashboard-page__grid">
-                {projects.map((project) => (
-                    <div 
-                      key={project._id} 
-                      className="project-card"
-                      onClick={() => navigate(`/editor/${project._id}`)}
-                    >
-                      <div className="project-card__header">
-                          <h3 className="project-card__title">{project.title}</h3>
-                          <span className="project-card__date">
-                            {new Date(project.updatedAt).toLocaleDateString()}
-                          </span>
-                      </div>
-                      <div className="project-card__content">
-                          <p className="project-card__description">
-                            {project.description || "No description provided."}
-                          </p>
-                      </div>
-                      <div className="project-card__actions">
-                          <button 
-                            className="project-card__btn project-card__btn--delete"
-                            onClick={(e) => openDeleteModal(e, project)}
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                          <button className="project-card__btn">
-                            <ExternalLink size={14} /> Open
-                          </button>
-                      </div>
-                    </div>
-                ))}
-                </div>
-            )}
-          </>
-        )}
+        {renderTabContent()}
       </main>
 
       {/* Create Project Modal */}
@@ -346,7 +409,7 @@ const Dashboard = () => {
                 <label className="input-label mono">PROJECT NAME</label>
                 <input
                   type="text"
-                  placeholder="e.g. Squadra Core Engine"
+                  placeholder="e.g. CogniCode Core Engine"
                   className="input-field"
                   value={newProject.title}
                   onChange={(e) => setNewProject({ ...newProject, title: e.target.value })}

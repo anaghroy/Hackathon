@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   GitCompare, GitGraph, Globe, Search, ArrowRight, 
-  Settings, ChevronRight, Check, AlertCircle, RefreshCcw,
+  Settings, ChevronRight, ChevronLeft, Check, AlertCircle, RefreshCcw,
   Terminal, ShieldCheck
 } from 'lucide-react';
 import { useRepo } from '../hooks/useRepo';
@@ -46,202 +46,216 @@ const ConnectRepo = () => {
   };
 
   return (
-    <div className="auth-container" style={{ minHeight: '100vh', padding: '40px 20px' }}>
-      <div className="auth-card" style={{ maxWidth: '1000px', width: '100%', padding: '0', display: 'grid', gridTemplateColumns: '400px 1fr' }}>
-        
-        {/* Left Side: Steps & Info */}
-        <aside style={{ background: '#0a0a0b', padding: '40px', borderRight: '1px solid rgba(255, 255, 255, 0.05)', display: 'flex', flexDirection: 'column', gap: '32px' }}>
-          <div>
-            <h1 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>Connect Repository</h1>
-            <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', lineHeight: '1.6' }}>
-              Integrate your version control system to enable automated AI security scans and seamless deployments.
-            </p>
-          </div>
+    <div className="dashboard" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+      {/* Top Navbar */}
+      <header className="navbar" style={{ padding: '0 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', height: '72px' }}>
+        <button 
+          className="btn btn-ghost" 
+          onClick={() => navigate('/dashboard')}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', color: 'rgba(255,255,255,0.7)', border: 'none', background: 'transparent' }}
+        >
+          <ChevronLeft size={18} /> <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Back to Dashboard</span>
+        </button>
+      </header>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: provider ? '#3b82f6' : '#1a1a1b', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '12px', fontWeight: '700' }}>1</div>
-              <div>
-                <div style={{ fontSize: '14px', fontWeight: '600' }}>Choose Provider</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>GitHub, GitLab, or Bitbucket</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: selectedRepo ? '#3b82f6' : '#1a1a1b', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '12px', fontWeight: '700' }}>2</div>
-              <div>
-                <div style={{ fontSize: '14px', fontWeight: '600' }}>Select Repository</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Choose from your projects</div>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: '#1a1a1b', display: 'flex', alignItems: 'center', justifyCenter: 'center', fontSize: '12px', fontWeight: '700' }}>3</div>
-              <div>
-                <div style={{ fontSize: '14px', fontWeight: '600' }}>Configure Build</div>
-                <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.4)' }}>Define build and install commands</div>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
-              <ShieldCheck size={20} style={{ color: '#3b82f6' }} />
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#3b82f6' }}>AI-Security Ready</span>
-            </div>
-            <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.5' }}>
-              Once connected, our DevSecOps agent will automatically scan every push for OWASP vulnerabilities.
-            </p>
-          </div>
-        </aside>
-
-        {/* Right Side: Main Interface */}
-        <main style={{ padding: '40px', overflowY: 'auto', maxHeight: '85vh' }}>
+      <main className="dashboard-page" style={{ flex: 1, padding: '3rem 2rem', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           
-          {/* Step 1: Provider Selection */}
-          <section style={{ marginBottom: '40px' }}>
-            <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
-              Select VCS Provider
-            </label>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
-              <button 
-                className={`auth-btn ${provider === 'github' ? '' : 'auth-btn--ghost'}`} 
-                onClick={() => setProvider('github')}
-                style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', background: provider === 'github' ? '#3b82f6' : '' }}
-              >
-                <GitCompare size={20} />
-                <span style={{ fontSize: '13px' }}>GitHub</span>
-              </button>
-              <button 
-                className={`auth-btn ${provider === 'gitlab' ? '' : 'auth-btn--ghost'}`} 
-                onClick={() => setProvider('gitlab')}
-                style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', background: provider === 'gitlab' ? '#3b82f6' : '' }}
-              >
-                <GitGraph size={20} />
-                <span style={{ fontSize: '13px' }}>GitLab</span>
-              </button>
-              <button 
-                className={`auth-btn ${provider === 'bitbucket' ? '' : 'auth-btn--ghost'}`} 
-                onClick={() => setProvider('bitbucket')}
-                style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', background: provider === 'bitbucket' ? '#3b82f6' : '' }}
-              >
-                <Globe size={20} />
-                <span style={{ fontSize: '13px' }}>Bitbucket</span>
-              </button>
+          <header className="dashboard-page__header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
+            <div className="dashboard-page__title-group">
+              <h1 className="dashboard-page__title">Connect Repository</h1>
+              <p className="dashboard-page__subtitle">Integrate your version control system to enable automated workflows and live deployments.</p>
             </div>
-          </section>
+          </header>
 
-          {/* Step 2: Repository List */}
-          <section style={{ marginBottom: '40px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px' }}>
-              <label style={{ fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                Select Repository
-              </label>
-              <div style={{ position: 'relative' }}>
-                <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
-                <input 
-                  className="auth-input" 
-                  placeholder="Search repos..." 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ padding: '8px 12px 8px 36px', width: '200px', fontSize: '13px' }}
-                />
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', alignItems: 'start' }}>
+            
+            {/* Left Side: Setup Steps */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: provider ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255,255,255,0.05)', color: provider ? '#3b82f6' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: provider ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid transparent', flexShrink: 0 }}>1</div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Choose Provider</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Select GitHub, GitLab, or Bitbucket.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: selectedRepo ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255,255,255,0.05)', color: selectedRepo ? '#3b82f6' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: selectedRepo ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid transparent', flexShrink: 0 }}>2</div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Select Repository</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Choose the project you want to connect.</p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', flexShrink: 0 }}>3</div>
+                  <div>
+                    <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Configure Build</h3>
+                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Define build and installation commands.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.03)', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                  <ShieldCheck size={16} style={{ color: '#3b82f6' }} />
+                  <span style={{ fontSize: '0.8125rem', fontWeight: '600', color: '#3b82f6' }}>AI-Security Ready</span>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', margin: 0 }}>
+                  Once connected, our DevSecOps agent automatically scans every push for vulnerabilities.
+                </p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
-              {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}>
-                  <RefreshCcw size={24} className="animate-spin" style={{ color: 'rgba(255,255,255,0.2)' }} />
-                </div>
-              ) : filteredRepos.length > 0 ? (
-                filteredRepos.map(repo => (
+            {/* Right Side: Main Interface */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              
+              {/* Step 1: Provider Selection */}
+              <section>
+                <label className="input-label" style={{ marginBottom: '0.75rem', display: 'block' }}>VCS Provider</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
                   <button 
-                    key={repo.id}
-                    onClick={() => setSelectedRepo(repo)}
-                    style={{ 
-                      display: 'flex', 
-                      alignItems: 'center', 
-                      justifyContent: 'space-between',
-                      padding: '12px 16px', 
-                      background: selectedRepo?.id === repo.id ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.02)', 
-                      border: `1px solid ${selectedRepo?.id === repo.id ? '#3b82f6' : 'rgba(255, 255, 255, 0.05)'}`,
-                      borderRadius: '8px',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s'
-                    }}
+                    className={`btn ${provider === 'github' ? 'btn-primary' : 'btn-ghost'}`} 
+                    onClick={() => setProvider('github')}
+                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'github' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
                   >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <Terminal size={16} style={{ color: 'rgba(255,255,255,0.4)' }} />
-                      <span style={{ fontSize: '14px', color: selectedRepo?.id === repo.id ? '#fff' : 'rgba(255,255,255,0.8)' }}>
-                        {repo.full_name || repo.name}
-                      </span>
-                    </div>
-                    {selectedRepo?.id === repo.id && <Check size={16} style={{ color: '#3b82f6' }} />}
+                    <GitCompare size={20} />
+                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>GitHub</span>
                   </button>
-                ))
-              ) : (
-                <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.2)' }}>
-                  <AlertCircle size={32} style={{ marginBottom: '12px' }} />
-                  <p>No repositories found</p>
+                  <button 
+                    className={`btn ${provider === 'gitlab' ? 'btn-primary' : 'btn-ghost'}`} 
+                    onClick={() => setProvider('gitlab')}
+                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'gitlab' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
+                  >
+                    <GitGraph size={20} />
+                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>GitLab</span>
+                  </button>
+                  <button 
+                    className={`btn ${provider === 'bitbucket' ? 'btn-primary' : 'btn-ghost'}`} 
+                    onClick={() => setProvider('bitbucket')}
+                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'bitbucket' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
+                  >
+                    <Globe size={20} />
+                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>Bitbucket</span>
+                  </button>
                 </div>
+              </section>
+
+              {/* Step 2: Repository List */}
+              <section>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <label className="input-label" style={{ margin: 0 }}>Repository</label>
+                  <div style={{ position: 'relative' }}>
+                    <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.4)' }} />
+                    <input 
+                      className="input-field" 
+                      placeholder="Search repos..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      style={{ paddingLeft: '2.25rem', height: '34px', fontSize: '0.8125rem', width: '180px' }}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '240px', overflowY: 'auto', paddingRight: '0.25rem' }}>
+                  {loading ? (
+                    <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
+                      <RefreshCcw size={20} className="animate-spin" style={{ color: 'rgba(255,255,255,0.3)' }} />
+                    </div>
+                  ) : filteredRepos.length > 0 ? (
+                    filteredRepos.map(repo => (
+                      <button 
+                        key={repo.id}
+                        onClick={() => setSelectedRepo(repo)}
+                        style={{ 
+                          display: 'flex', 
+                          alignItems: 'center', 
+                          justifyContent: 'space-between',
+                          padding: '0.75rem 1rem', 
+                          background: selectedRepo?.id === repo.id ? 'rgba(59, 130, 246, 0.08)' : 'rgba(255, 255, 255, 0.02)', 
+                          border: `1px solid ${selectedRepo?.id === repo.id ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                          borderRadius: '2px',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s',
+                          color: selectedRepo?.id === repo.id ? '#fff' : 'rgba(255,255,255,0.7)',
+                        }}
+                      >
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                          <Terminal size={14} style={{ color: selectedRepo?.id === repo.id ? '#3b82f6' : 'rgba(255,255,255,0.3)' }} />
+                          <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>
+                            {repo.full_name || repo.name}
+                          </span>
+                        </div>
+                        {selectedRepo?.id === repo.id && <Check size={16} style={{ color: '#3b82f6' }} />}
+                      </button>
+                    ))
+                  ) : (
+                    <div style={{ textAlign: 'center', padding: '2rem 0', color: 'rgba(255,255,255,0.4)' }}>
+                      <AlertCircle size={24} style={{ margin: '0 auto 0.5rem', opacity: 0.5 }} />
+                      <p style={{ fontSize: '0.8125rem', margin: 0 }}>No repositories found.</p>
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              {/* Step 3: Build Configuration */}
+              {selectedRepo && (
+                <section style={{ animation: 'fadeIn 0.3s ease-out' }}>
+                  <label className="input-label" style={{ marginBottom: '0.75rem', display: 'block' }}>Build Configuration</label>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div className="input-group">
+                      <label className="input-label" style={{ fontSize: '0.75rem', opacity: 0.8 }}>Branch</label>
+                      <input 
+                        className="input-field" 
+                        value={config.branch} 
+                        onChange={(e) => setConfig({...config, branch: e.target.value})}
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label" style={{ fontSize: '0.75rem', opacity: 0.8 }}>Root Directory</label>
+                      <input 
+                        className="input-field" 
+                        value={config.rootDir} 
+                        onChange={(e) => setConfig({...config, rootDir: e.target.value})}
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label" style={{ fontSize: '0.75rem', opacity: 0.8 }}>Install Command</label>
+                      <input 
+                        className="input-field" 
+                        value={config.installCommand} 
+                        onChange={(e) => setConfig({...config, installCommand: e.target.value})}
+                      />
+                    </div>
+                    <div className="input-group">
+                      <label className="input-label" style={{ fontSize: '0.75rem', opacity: 0.8 }}>Build Command</label>
+                      <input 
+                        className="input-field" 
+                        value={config.buildCommand} 
+                        onChange={(e) => setConfig({...config, buildCommand: e.target.value})}
+                      />
+                    </div>
+                  </div>
+
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={handleConnect}
+                    disabled={loading}
+                    style={{ width: '100%', marginTop: '1.5rem', display: 'flex', justifyContent: 'center' }}
+                  >
+                    {loading ? 'Initializing...' : 'Connect & Initialize'}
+                    {!loading && <ArrowRight size={16} style={{ marginLeft: '0.5rem' }} />}
+                  </button>
+                </section>
               )}
+
             </div>
-          </section>
-
-          {/* Step 3: Build Configuration */}
-          {selectedRepo && (
-            <section style={{ animation: 'fadeIn 0.4s ease-out' }}>
-              <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
-                Build Configuration
-              </label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div className="auth-group">
-                  <label>Branch</label>
-                  <input 
-                    className="auth-input" 
-                    value={config.branch} 
-                    onChange={(e) => setConfig({...config, branch: e.target.value})}
-                  />
-                </div>
-                <div className="auth-group">
-                  <label>Root Directory</label>
-                  <input 
-                    className="auth-input" 
-                    value={config.rootDir} 
-                    onChange={(e) => setConfig({...config, rootDir: e.target.value})}
-                  />
-                </div>
-                <div className="auth-group">
-                  <label>Install Command</label>
-                  <input 
-                    className="auth-input" 
-                    value={config.installCommand} 
-                    onChange={(e) => setConfig({...config, installCommand: e.target.value})}
-                  />
-                </div>
-                <div className="auth-group">
-                  <label>Build Command</label>
-                  <input 
-                    className="auth-input" 
-                    value={config.buildCommand} 
-                    onChange={(e) => setConfig({...config, buildCommand: e.target.value})}
-                  />
-                </div>
-              </div>
-
-              <button 
-                className="auth-btn" 
-                onClick={handleConnect}
-                disabled={loading}
-                style={{ width: '100%', marginTop: '32px', height: '52px' }}
-              >
-                {loading ? 'Initializing...' : 'Connect & Initialize'}
-                {!loading && <ArrowRight size={18} style={{ marginLeft: '10px' }} />}
-              </button>
-            </section>
-          )}
-
-        </main>
-      </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 };

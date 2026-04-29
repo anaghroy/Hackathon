@@ -5,8 +5,8 @@
   grid-template-areas:
     "nav nav"
     "sidebar main";
-  grid-template-columns: 240px 1fr;
-  grid-template-rows: 64px 1fr;
+  grid-template-columns: 260px 1fr;
+  grid-template-rows: 72px 1fr;
   height: 100vh;
   width: 100vw;
   background-color: $bg-main;
@@ -15,28 +15,33 @@
 
   &__nav {
     grid-area: nav;
-    border-bottom: 1px solid $border;
-    background-color: $bg-main;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: transparent;
     z-index: 100;
   }
 
   &__sidebar {
     grid-area: sidebar;
-    background-color: $bg-panel;
-    border-right: 1px solid $border;
+    background-color: transparent;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
     overflow-y: auto;
     transition: transform $transition;
 
     @media (max-width: 1024px) {
       position: fixed;
       left: 0;
-      top: 64px;
+      top: 72px;
       bottom: 0;
+      width: 260px;
       transform: translateX(-100%);
       z-index: 90;
+      background: $bg-panel;
 
-      &--open {
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+
+      &.sidebar--open {
         transform: translateX(0);
+        box-shadow: 20px 0 40px rgba(0, 0, 0, 0.5);
       }
     }
   }
@@ -44,15 +49,15 @@
   &__main {
     grid-area: main;
     overflow-y: auto;
-    padding: 2rem;
-    background-color: $bg-main;
+    padding: 2.5rem 3rem;
+    background: $bg-main;
 
     @media (max-width: 1024px) {
       grid-column: 1 / -1;
     }
 
     @media (max-width: 768px) {
-      padding: 1rem;
+      padding: 1.25rem 1rem;
     }
   }
 }

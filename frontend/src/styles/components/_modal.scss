@@ -6,18 +6,32 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
   padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 .modal-content {
-  background-color: $bg-panel;
-  border: 1px solid $border;
-  border-radius: $radius-lg;
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: $radius-xl;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
@@ -25,46 +39,51 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--danger {
-    border-color: rgba($error, 0.3);
+    border-color: rgba($error, 0.4);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba($error, 0.1) inset;
   }
 }
 
 .modal-header {
-  padding: 1.5rem;
-  border-bottom: 1px solid $border;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background: rgba(255, 255, 255, 0.02);
 
   h2 {
     font-size: 1.25rem;
     font-weight: 700;
     margin: 0;
+    color: $white;
   }
 
   .close-btn {
-    background: none;
-    border: none;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.05);
     color: $text-muted;
     cursor: pointer;
     padding: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: $radius-sm;
+    border-radius: 50%;
     transition: all $transition;
 
     &:hover {
-      background-color: $bg-soft;
-      color: $text-main;
+      background: rgba(255, 255, 255, 0.1);
+      color: $white;
+      transform: rotate(90deg);
     }
   }
 }
 
 .modal-body {
-  padding: 1.5rem;
+  padding: 1.5rem 1.75rem;
   
   p {
     color: $text-muted;
@@ -78,13 +97,14 @@
 }
 
 .modal-form {
-  padding: 1.5rem;
+  padding: 1.5rem 1.75rem;
 }
 
 .modal-actions {
-  padding: 1.5rem;
-  border-top: 1px solid $border;
+  padding: 1.25rem 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+  background: rgba(255, 255, 255, 0.01);
 }

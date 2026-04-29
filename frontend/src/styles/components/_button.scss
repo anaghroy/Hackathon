@@ -4,14 +4,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1.5rem;
-  border-radius: $radius-md;
-  font-size: 0.9375rem;
-  font-weight: 500;
+  padding: 0.625rem 1.25rem;
+  border-radius: $radius-lg;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all $transition;
   border: 1px solid transparent;
   gap: 0.5rem;
+  letter-spacing: 0.01em;
 
   &:disabled {
     opacity: 0.5;
@@ -19,34 +20,41 @@
   }
 
   &-primary {
-    background-color: $primary;
+    background: linear-gradient(135deg, $primary 0%, #2563eb 100%);
     color: $on-primary;
-    border-color: $primary;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 
     &:hover:not(:disabled) {
-      background-color: rgba($primary, 0.9);
+      background: linear-gradient(135deg, lighten($primary, 5%) 0%, #2563eb 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
     }
   }
 
   &-ghost {
-    background-color: transparent;
-    color: $text-muted;
-    border-color: $border;
+    background-color: rgba(255, 255, 255, 0.03);
+    color: $text-main;
+    border-color: rgba(255, 255, 255, 0.1);
 
     &:hover:not(:disabled) {
-      background-color: $bg-soft;
-      color: $text-main;
-      border-color: $border-hover;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: $white;
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
   }
 
   &-danger {
-    background-color: $error;
+    background: linear-gradient(135deg, $error 0%, #dc2626 100%);
     color: $white;
-    border-color: $error;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     &:hover:not(:disabled) {
-      background-color: rgba($error, 0.9);
+      background: linear-gradient(135deg, lighten($error, 5%) 0%, #dc2626 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
     }
   }
 

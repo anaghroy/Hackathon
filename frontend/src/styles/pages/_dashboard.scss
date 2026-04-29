@@ -4,39 +4,47 @@
   &__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2.5rem;
+    align-items: flex-end;
+    margin-bottom: 3rem;
     gap: 1rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
     @media (max-width: 640px) {
       flex-direction: column;
       align-items: flex-start;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
     }
   }
 
   &__title-group {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
   }
 
   &__title {
-    font-size: 1.875rem;
+    font-size: 1.5rem;
     font-weight: 700;
-    color: $text-main;
-    letter-spacing: -0.02em;
+    color: $white;
+    letter-spacing: -0.04em;
     margin: 0;
+    background: linear-gradient(135deg, #ffffff, #a1a1aa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
   &__subtitle {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     color: $text-muted;
+    font-weight: 400;
   }
 
   &__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.25rem;
     
     @media (max-width: 640px) {
         grid-template-columns: 1fr;
@@ -48,15 +56,28 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 2rem;
+    padding: 6rem 2rem;
     text-align: center;
-    background-color: $bg-panel;
-    border: 1px dashed $border;
-    border-radius: $radius-lg;
-    gap: 1rem;
+    background: rgba(10, 10, 10, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: $radius-xl;
+    gap: 1.5rem;
+    transition: all $transition;
+
+    &:hover {
+      border-color: rgba(59, 130, 246, 0.3);
+      background: rgba(59, 130, 246, 0.02);
+    }
 
     &-icon {
-      color: $text-light;
+      color: rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 1.5rem;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+
       svg {
         width: 48px;
         height: 48px;
@@ -65,6 +86,7 @@
 
     &-text {
       color: $text-muted;
+      font-size: 1.125rem;
     }
   }
 }
