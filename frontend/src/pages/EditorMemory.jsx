@@ -139,7 +139,7 @@ const EditorMemory = () => {
                       </div>
                       <div className="memory-card__date">
                         <Calendar size={12} style={{ marginRight: '4px', verticalAlign: 'middle' }} />
-                        {mem.createdAt ? new Date(mem.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'Just now'}
+                        {mem.createdAt ? new Date(mem.createdAt).toLocaleDateString("en-US", { month: 'short', day: 'numeric', year: 'numeric' }) : 'Just now'}
                       </div>
                     </div>
                     <p className="memory-card__description">

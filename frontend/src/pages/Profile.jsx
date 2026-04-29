@@ -153,7 +153,7 @@ const Profile = () => {
               </div>
               <div className="stat-item">
                 <Calendar size={16} />
-                <span>Joined {new Date(user?.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</span>
+                <span>Joined {new Date(user?.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
               </div>
             </div>
           </aside>
