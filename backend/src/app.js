@@ -14,6 +14,7 @@ import memoryRoutes from "./routes/memory.routes.js";
 import repoRouter from "./routes/repo.routes.js";
 import deployRouter from "./routes/deploy.routes.js";
 import envRouter from "./routes/env.routes.js";
+import accountSettingRouter from "./routes/accountSetting.routes.js";
 import { config } from "./config/config.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -65,6 +66,7 @@ app.use("/api/memory", memoryRoutes);
 app.use("/api/repos", repoRouter);
 app.use("/api/deploy", deployRouter);
 app.use("/api/env", envRouter);
+app.use("/api/settings", accountSettingRouter);
 
 // Serve React build with correct absolute path
 app.use(express.static(path.join(__dirname, "../public"), { index: false }));
