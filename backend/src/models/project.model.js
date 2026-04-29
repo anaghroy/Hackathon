@@ -16,6 +16,24 @@ const projectSchema = new mongoose.Schema({
       content: String,
     },
   ],
+  collaborators: [
+    {
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      role: {
+        type: String,
+        enum: ["viewer", "editor", "admin"],
+        default: "viewer",
+      },
+      addedAt: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
   repoProvider: {
     type: String,
     enum: ["github", "gitlab", "bitbucket"],
@@ -31,7 +49,7 @@ const projectSchema = new mongoose.Schema({
     of: String,
     default: {},
   },
-  
+
   createdAt: {
     type: Date,
     default: Date.now,

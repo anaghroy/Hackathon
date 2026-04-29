@@ -1,4 +1,5 @@
 import Project from "../models/project.model.js";
+import User from "../models/user.model.js";
 
 /**
  * @desc Create a new project
@@ -31,12 +32,11 @@ export const createProject = async (req, res) => {
   }
 };
 
-
 /**
  * @desc Get all projects
  * @route GET /api/projects
  * @access Private
- * @returns 
+ * @returns
  */
 export const getProjects = async (req, res) => {
   try {
@@ -58,12 +58,11 @@ export const getProjects = async (req, res) => {
   }
 };
 
-
 /**
  * @desc Get single project
  * @route GET /api/projects/:id
  * @access Private
- * @returns 
+ * @returns
  */
 export const getSingleProject = async (req, res) => {
   try {
@@ -96,15 +95,17 @@ export const updateProject = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, files } = req.body;
-    
+
     // Only update fields that are provided
     const updateData = {};
     if (title !== undefined) updateData.title = title;
     if (description !== undefined) updateData.description = description;
     if (files !== undefined) updateData.files = files;
 
-    const project = await Project.findByIdAndUpdate(id, updateData, { new: true });
-    
+    const project = await Project.findByIdAndUpdate(id, updateData, {
+      new: true,
+    });
+
     return res.status(200).json({
       message: "Project updated successfully",
       success: true,
@@ -141,5 +142,84 @@ export const deleteProject = async (req, res) => {
       success: false,
       error: error.message,
     });
+  }
+};
+
+/**
+ * @desc Get shared projects
+ * @route GET /api/projects/shared
+ * @access Private
+ */
+export const getSharedProjects = async (req, res) => {
+  try {
+    const sharedProjects = await Project.find({
+      "collaborators.user": req.user.id,
+    }).populate("user", "username email picture"); // Populate owner details to show on frontend
+
+    res.status(200).json({ success: true, projects: sharedProjects });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ success: false, message: "Error fetching shared projects" });
+  }
+};
+
+/**
+ * @desc Add collaborator
+ * @route POST /api/projects/:id/collaborators
+ * @access Private
+ * @body { email, role }
+ */
+export const addCollaborator = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { email, role } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ success: false, message: "Email is required" });
+    }
+
+    // Check if project exists
+    const project = await Project.findById(id);
+    if (!project) {
+      return res.status(404).json({ success: false, message: "Project not found" });
+    }
+
+    // Verify ownership
+    if (project.user.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: "Only the owner can add collaborators" });
+    }
+
+    // Find the user to add
+    const collaboratorUser = await User.findOne({ email: email.toLowerCase() });
+    if (!collaboratorUser) {
+      return res.status(404).json({ success: false, message: "User not found with this email" });
+    }
+
+    // Prevent adding oneself
+    if (collaboratorUser._id.toString() === req.user.id) {
+      return res.status(400).json({ success: false, message: "You cannot add yourself as a collaborator" });
+    }
+
+    // Check if already a collaborator
+    const isAlreadyCollaborator = project.collaborators.some(
+      (c) => c.user.toString() === collaboratorUser._id.toString()
+    );
+
+    if (isAlreadyCollaborator) {
+      return res.status(400).json({ success: false, message: "User is already a collaborator" });
+    }
+
+    // Add collaborator
+    project.collaborators.push({
+      user: collaboratorUser._id,
+      role: role || "viewer"
+    });
+
+    await project.save();
+
+    res.status(200).json({ success: true, message: "Collaborator added successfully", project });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error adding collaborator", error: error.message });
   }
 };

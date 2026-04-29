@@ -6,6 +6,8 @@ import {
   getSingleProject,
   updateProject,
   deleteProject,
+  getSharedProjects,
+  addCollaborator,
 } from "../controllers/project.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 
@@ -41,5 +43,19 @@ projectRouter.put("/:id", authUser, updateProject);
  * @access Private
  */
 projectRouter.delete("/:id", authUser, deleteProject);
+
+/**
+ * @desc Get shared projects
+ * @route GET /api/projects/shared
+ * @access Private
+ */
+projectRouter.get("/shared", authUser, getSharedProjects);
+/**
+ * @desc Add collaborator
+ * @route POST /api/projects/:id/collaborators
+ * @access Private
+ * @body { email, role }
+ */
+projectRouter.post("/:id/collaborators", authUser, addCollaborator);
 
 export default projectRouter;
