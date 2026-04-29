@@ -20,6 +20,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
   }
 
   &__title {
@@ -27,6 +28,8 @@
     font-weight: 600;
     color: $text-main;
     margin: 0;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   &__subtitle {
@@ -42,6 +45,18 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    overflow-x: auto;
+    padding-left: 12px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      gap: 8px;
+    }
   }
 
   &__btn {

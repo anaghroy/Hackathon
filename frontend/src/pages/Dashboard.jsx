@@ -16,8 +16,11 @@ import {
   X,
   Layout,
   GitCompare,
+  Menu,
+  Rocket,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import brandLogo from "../assets/Brand logo.png";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -111,48 +114,13 @@ const Dashboard = () => {
       {/* Top Navbar */}
       <header className="dashboard__nav navbar">
         <div className="navbar__left">
-          <button className="hamburger" onClick={toggleSidebar}>
-            <X size={24} className={isSidebarOpen ? "" : "hidden"} />
-            <Plus
-              size={24}
-              className={isSidebarOpen ? "hidden" : "rotate-45"}
-            />
-          </button>
           <div
             className="navbar__brand"
             onClick={() => navigate("/dashboard")}
             style={{ cursor: "pointer" }}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M12 2L2 7L12 12L22 7L12 2Z"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M2 17L12 22L22 17"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-              <path
-                d="M2 12L12 17L22 12"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>SQUADRA</span>
+            <img src={brandLogo} alt="CogniCode Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
+            <span>CogniCode</span>
           </div>
         </div>
 
@@ -185,6 +153,7 @@ const Dashboard = () => {
               ) : (
                 user?.username?.charAt(0).toUpperCase() || "U"
               )}
+              <div className="status-indicator status-indicator--online"></div>
             </div>
             <div className="navbar__user-info">
               <span className="navbar__user-name">
@@ -192,6 +161,9 @@ const Dashboard = () => {
               </span>
             </div>
           </div>
+          <button className="hamburger" onClick={toggleSidebar} style={{ marginLeft: "8px" }}>
+            <Menu size={24} />
+          </button>
         </div>
       </header>
 
@@ -241,19 +213,19 @@ const Dashboard = () => {
             Settings
           </div>
           <div
-            className={`sidebar__item ${activeTab === "deployments" ? "sidebar__item--active" : ""}`}
+            className={`sidebar__item ${activeTab === "deployment" ? "sidebar__item--active" : ""}`}
             onClick={() => {
               navigate("/connect-repo");
               setIsSidebarOpen(false);
             }}
           >
-            <GitCompare size={20} />
-            Deployments
+            <Rocket size={20} />
+            Deployment
           </div>
         </div>
 
-        <div className="sidebar__footer">
-          <div className="sidebar__item logout-btn" onClick={handleLogout}>
+        <div className="sidebar__footer" style={{ padding: '2rem 1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+          <div className="sidebar__item logout-btn" onClick={handleLogout} style={{ width: '100%', justifyContent: 'center' }}>
             <LogOut size={20} />
             Logout
           </div>
@@ -262,105 +234,117 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <main className="dashboard__main dashboard-page">
-        {activeTab === "settings" ? (
-          <div className="profile-card">
+        {activeTab === "overview" && (
+          <div className="overview-docs">
+            <header className="docs-header">
+              <h1 className="docs-title">Platform Documentation</h1>
+              <p className="docs-lead">
+                Welcome to CogniCode, the premium AI-powered development environment. 
+                Our platform provides institutional-grade tools to build, manage, and scale your mission-critical applications.
+              </p>
+            </header>
+
+            <div className="docs-content">
+              <section className="docs-section">
+                <h2 className="docs-subtitle">Core Capabilities</h2>
+                <div className="docs-grid">
+                  <div className="docs-item">
+                    <h3>Smart Dashboard</h3>
+                    <p>Centralized control center for all your projects and active deployments.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Project Management</h3>
+                    <p>Create, organize, and manage your repositories with a streamlined interface.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Code Review</h3>
+                    <p>Automated AI-driven code analysis for bugs, performance, and best practices.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Graph & Analytics</h3>
+                    <p>Interactive visual representations of your system architecture and schemas.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Deployment System</h3>
+                    <p>Connect GitHub repositories and push to production with zero friction.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Shared Workspace</h3>
+                    <p>Collaborate with your team securely on projects and live codebases.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>DevOps Integration</h3>
+                    <p>Built-in CI/CD, environment variables, and scalable infrastructure tools.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>AI Productivity Tools</h3>
+                    <p>Context-aware editor, intent-based modifications, and memory timeline.</p>
+                  </div>
+                  <div className="docs-item">
+                    <h3>Security & Reliability</h3>
+                    <p>Vulnerability scanning and robust error handling across all features.</p>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "shared" && (
+          <div className="shared-page">
             <header className="dashboard-page__header">
               <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Profile Settings</h1>
-                <p className="dashboard-page__subtitle">
-                  Manage your account information and bio.
+                <h1 className="dashboard-page__title">Shared With Me</h1>
+                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
+                  Projects and workspaces shared by your team.
                 </p>
               </div>
             </header>
-
-            <form onSubmit={handleSubmitProfile} className="profile-form">
-              <div className="input-group">
-                <label className="input-label">Username</label>
-                <input
-                  type="text"
-                  name="username"
-                  className={`input-field ${errors.username ? "input-error" : ""}`}
-                  value={values.username}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {errors.username && (
-                  <p className="error-text">{errors.username}</p>
-                )}
+            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
+              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
+                <Users size={48} strokeWidth={1} />
               </div>
-
-              <div className="input-group">
-                <label className="input-label">City</label>
-                <input
-                  type="text"
-                  name="city"
-                  className={`input-field ${errors.city ? "input-error" : ""}`}
-                  value={values.city}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="e.g. New York"
-                />
-                {errors.city && <p className="error-text">{errors.city}</p>}
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Bio</label>
-                <textarea
-                  name="bio"
-                  className={`input-field textarea ${errors.bio ? "input-error" : ""}`}
-                  value={values.bio}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  placeholder="Tell us about yourself..."
-                />
-                {errors.bio && <p className="error-text">{errors.bio}</p>}
-              </div>
-
-              <div className="input-group">
-                <label className="input-label">Date of Birth</label>
-                <input
-                  type="date"
-                  name="dob"
-                  className={`input-field ${errors.dob ? "input-error" : ""}`}
-                  value={values.dob}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                {errors.dob && <p className="error-text">{errors.dob}</p>}
-              </div>
-
-              <button
-                type="submit"
-                className="btn btn-primary btn-full"
-                disabled={authLoading}
-              >
-                {authLoading ? "Updating..." : "Update Profile"}
-              </button>
-            </form>
+              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
+                No projects have been shared with you yet.
+              </p>
+            </div>
           </div>
-        ) : (
+        )}
+
+        {activeTab === "settings" && (
+          <div className="settings-page">
+            <header className="dashboard-page__header">
+              <div className="dashboard-page__title-group">
+                <h1 className="dashboard-page__title">Settings</h1>
+                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
+                  Manage your personal account preferences.
+                </p>
+              </div>
+            </header>
+            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
+              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
+                <Settings size={48} strokeWidth={1} />
+              </div>
+              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
+                Settings panel is currently being updated.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {activeTab === "projects" && (
           <>
             <header className="dashboard-page__header">
               <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">
-                  {activeTab === "projects"
-                    ? "My Projects"
-                    : activeTab === "overview"
-                      ? "Welcome Back"
-                      : "Shared with Me"}
-                </h1>
-                <p className="dashboard-page__subtitle">
-                  Manage and organize your AI code projects
+                <h1 className="dashboard-page__title">My Projects</h1>
+                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
+                  Manage and organize your AI code projects.
                 </p>
               </div>
               <div style={{ display: "flex", gap: "12px" }}>
                 <button
                   className="project-card__btn project-card__btn--ghost"
                   onClick={() => navigate("/connect-repo")}
-                  style={{
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    padding: "0 16px",
-                  }}
                 >
                   <GitCompare size={18} /> Connect Repo
                 </button>
@@ -378,23 +362,19 @@ const Dashboard = () => {
                 <div className="loader"></div>
               </div>
             ) : projects.length === 0 ? (
-              <div className="dashboard-page__empty">
-                <div className="dashboard-page__empty-icon">
+              <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
+                <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
                   <Folder size={48} strokeWidth={1} />
                 </div>
-                <p className="dashboard-page__empty-text">
-                  {activeTab === "shared"
-                    ? "No projects shared with you."
-                    : "You haven't created any projects yet."}
+                <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
+                  You haven't created any projects yet.
                 </p>
-                {activeTab !== "shared" && (
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => setIsCreateModalOpen(true)}
-                  >
-                    Start Your First Project
-                  </button>
-                )}
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setIsCreateModalOpen(true)}
+                >
+                  Start Your First Project
+                </button>
               </div>
             ) : (
               <div className="dashboard-page__grid">
@@ -423,13 +403,13 @@ const Dashboard = () => {
                     </div>
                     <div className="project-card__actions">
                       <button
-                        className="project-card__btn project-card__btn--delete"
-                        onClick={(e) => openDeleteModal(e, project)}
+                         className="project-card__btn project-card__btn--delete"
+                         onClick={(e) => openDeleteModal(e, project)}
                       >
-                        <Trash2 size={14} />
+                         <Trash2 size={14} />
                       </button>
                       <button className="project-card__btn">
-                        <ExternalLink size={14} /> Open
+                         <ExternalLink size={14} /> Open
                       </button>
                     </div>
                   </div>
@@ -461,7 +441,7 @@ const Dashboard = () => {
                 <label className="input-label mono">PROJECT NAME</label>
                 <input
                   type="text"
-                  placeholder="e.g. Squadra Core Engine"
+                  placeholder="e.g. CogniCode Core Engine"
                   className="input-field"
                   value={newProject.title}
                   onChange={(e) =>
@@ -516,38 +496,33 @@ const Dashboard = () => {
           <div
             className="modal-content modal-content--danger"
             onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: '400px' }}
           >
-            <header className="modal-header">
-              <h2>Delete Project?</h2>
-              <button
-                className="close-btn"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                <X size={20} />
-              </button>
-            </header>
-            <div className="modal-body">
-              <p>
-                Are you sure you want to delete{" "}
-                <strong className="white">"{projectToDelete?.title}"</strong>?
-                This action cannot be undone and all mission data will be
-                permanently erased.
+            <div className="modal-body" style={{ textAlign: 'center', padding: '2.5rem 2rem' }}>
+              <div style={{ color: '#ef4444', marginBottom: '1.5rem' }}>
+                <Trash2 size={48} strokeWidth={1.5} />
+              </div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: '700', color: '#fff', marginBottom: '0.75rem' }}>Delete Project</h2>
+              <p style={{ fontSize: '0.875rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', marginBottom: '2rem' }}>
+                Are you sure you want to delete <strong style={{ color: '#fff' }}>"{projectToDelete?.title}"</strong>? This action cannot be undone.
               </p>
-            </div>
-            <div className="modal-actions">
-              <button
-                className="btn btn-ghost"
-                onClick={() => setIsDeleteModalOpen(false)}
-              >
-                Cancel
-              </button>
-              <button
-                className="btn btn-danger"
-                onClick={handleDeleteConfirm}
-                disabled={projectLoading}
-              >
-                {projectLoading ? "Deleting..." : "Confirm Delete"}
-              </button>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setIsDeleteModalOpen(false)}
+                  style={{ flex: 1 }}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="btn btn-danger"
+                  onClick={handleDeleteConfirm}
+                  disabled={projectLoading}
+                  style={{ flex: 1 }}
+                >
+                  {projectLoading ? "Deleting..." : "Confirm"}
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -131,12 +131,12 @@ const ArchitectureGraphInner = () => {
     const enhancedEdges = layoutedEdges.map(edge => ({
       ...edge,
       type: 'default', // Bezier for smooth curves like reference
-      style: { stroke: 'rgba(99, 102, 241, 0.4)', strokeWidth: 2 },
+      style: { stroke: 'rgba(54, 118, 222, 0.4)', strokeWidth: 2 },
       animated: true,
       className: 'flowing-edge',
       markerEnd: {
         type: MarkerType.ArrowClosed,
-        color: 'rgba(99, 102, 241, 0.6)',
+        color: 'rgba(54, 118, 222, 0.6)',
       },
     }));
 
@@ -225,7 +225,7 @@ const ArchitectureGraphInner = () => {
               border: 'none',
               color: '#fff',
               padding: '8px 12px',
-              borderRadius: '8px',
+              borderRadius: '0',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -236,7 +236,7 @@ const ArchitectureGraphInner = () => {
             <ArrowLeft size={16} /> Back
           </button>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Cpu size={20} style={{ color: '#6366f1' }} />
+            <Cpu size={20} style={{ color: '#3676de' }} />
             <span style={{ fontWeight: '600', fontSize: '15px' }}>Architecture Graph</span>
           </div>
         </div>
@@ -245,11 +245,11 @@ const ArchitectureGraphInner = () => {
           <button 
             onClick={() => performFetch(true)}
             style={{
-              background: '#6366f1',
+              background: '#3676de',
               color: '#fff',
               border: 'none',
               padding: '8px 16px',
-              borderRadius: '8px',
+              borderRadius: '0',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
@@ -288,11 +288,11 @@ const ArchitectureGraphInner = () => {
 
           {error && (
             <div style={{ position: 'absolute', inset: 0, zIndex: 110, display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#0b0d11' }}>
-              <div style={{ textAlign: 'center', maxWidth: '400px', padding: '40px', borderRadius: '24px', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+              <div style={{ textAlign: 'center', maxWidth: '400px', padding: '40px', borderRadius: '0', background: 'rgba(239, 68, 68, 0.05)', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
                 <AlertTriangle size={48} color="#ef4444" style={{ marginBottom: '20px', margin: '0 auto' }} />
                 <h3 style={{ color: '#fff', marginBottom: '12px' }}>Analysis Failed</h3>
                 <p style={{ color: '#94a3b8', fontSize: '14px', marginBottom: '24px' }}>{error}</p>
-                <button onClick={() => performFetch(true)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '10px', cursor: 'pointer', fontWeight: '700' }}>
+                <button onClick={() => performFetch(true)} style={{ background: '#ef4444', color: '#fff', border: 'none', padding: '12px 24px', borderRadius: '0', cursor: 'pointer', fontWeight: '700' }}>
                   Retry Scan
                 </button>
               </div>
@@ -313,12 +313,12 @@ const ArchitectureGraphInner = () => {
               proOptions={{ hideAttribution: true }}
             >
               <Background color="#111" gap={20} variant="dots" />
-              <Controls style={{ background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }} />
+              <Controls style={{ background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0' }} />
               <MiniMap 
-                style={{ background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px' }}
+                style={{ background: '#050505', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0' }}
                 nodeColor={(n) => {
                   if (n.type === 'folder') return '#3b82f6';
-                  if (n.type === 'page') return '#8b5cf6';
+                  if (n.type === 'page') return '#3676de';
                   if (n.type === 'component') return '#22d3ee';
                   if (n.type === 'api') return '#ec4899';
                   if (n.type === 'database') return '#10b981';
@@ -334,7 +334,7 @@ const ArchitectureGraphInner = () => {
                   background: 'rgba(17, 19, 24, 0.85)', 
                   backdropFilter: 'blur(12px)',
                   padding: '12px 20px', 
-                  borderRadius: '16px', 
+                  borderRadius: '0', 
                   border: '1px solid rgba(255,255,255,0.08)',
                   boxShadow: '0 12px 40px rgba(0,0,0,0.4)',
                   color: '#fff'
@@ -352,9 +352,9 @@ const ArchitectureGraphInner = () => {
               </Panel>
 
               <Panel position="top-right">
-                <div style={{ display: 'flex', gap: '8px', background: 'rgba(17, 19, 24, 0.85)', backdropFilter: 'blur(12px)', padding: '6px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
-                  <button onClick={() => onLayout('TB')} title="Vertical Flow" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '6px', borderRadius: '8px' }}><Layers size={18} /></button>
-                  <button onClick={() => onLayout('LR')} title="Horizontal Flow" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '6px', borderRadius: '8px', transform: 'rotate(-90deg)' }}><Layers size={18} /></button>
+                <div style={{ display: 'flex', gap: '8px', background: 'rgba(17, 19, 24, 0.85)', backdropFilter: 'blur(12px)', padding: '6px', borderRadius: '0', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <button onClick={() => onLayout('TB')} title="Vertical Flow" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '6px', borderRadius: '0' }}><Layers size={18} /></button>
+                  <button onClick={() => onLayout('LR')} title="Horizontal Flow" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '6px', borderRadius: '0', transform: 'rotate(-90deg)' }}><Layers size={18} /></button>
                 </div>
               </Panel>
             </ReactFlow>
@@ -382,24 +382,24 @@ const ArchitectureGraphInner = () => {
                   <div style={{ 
                     width: '44px', 
                     height: '44px', 
-                    borderRadius: '12px', 
-                    background: 'rgba(99, 102, 241, 0.1)', 
+                    borderRadius: '0', 
+                    background: 'rgba(54, 118, 222, 0.1)', 
                     display: 'flex', 
                     alignItems: 'center', 
                     justifyContent: 'center',
-                    color: '#6366f1',
-                    border: '1px solid rgba(99, 102, 241, 0.2)'
+                    color: '#3676de',
+                    border: '1px solid rgba(54, 118, 222, 0.2)'
                   }}>
                     {selectedNode.type === 'folder' ? <Folder size={22} /> : <File size={22} />}
                   </div>
                   <div>
                     <h3 style={{ fontSize: '17px', fontWeight: '700', margin: 0, color: '#fff' }}>{selectedNode.data?.label || 'Unknown'}</h3>
-                    <span style={{ fontSize: '10px', color: '#6366f1', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800' }}>{selectedNode.type}</span>
+                    <span style={{ fontSize: '10px', color: '#3676de', textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: '800' }}>{selectedNode.type}</span>
                   </div>
                 </div>
                 <button 
                   onClick={() => setSelectedNode(null)}
-                  style={{ background: 'rgba(255,255,255,0.03)', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '8px', borderRadius: '8px' }}
+                  style={{ background: 'rgba(255,255,255,0.03)', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: '8px', borderRadius: '0' }}
                 >
                   <X size={18} />
                 </button>
@@ -410,7 +410,7 @@ const ArchitectureGraphInner = () => {
                   <h4 style={{ fontSize: '11px', color: '#475569', textTransform: 'uppercase', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '800' }}>
                     <Info size={14} /> Information
                   </h4>
-                  <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '0', padding: '20px', border: '1px solid rgba(255,255,255,0.08)' }}>
                     <div style={{ marginBottom: '16px' }}>
                       <label style={{ fontSize: '10px', color: '#555', display: 'block', marginBottom: '4px', fontWeight: '700' }}>PATH</label>
                       <code style={{ fontSize: '12px', color: '#888', wordBreak: 'break-all', fontFamily: "'JetBrains Mono', monospace" }}>{selectedNode.data?.path || 'N/A'}</code>
@@ -429,11 +429,11 @@ const ArchitectureGraphInner = () => {
                     <Link2 size={14} /> Topological Links
                   </h4>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                    <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '16px', padding: '16px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '0', padding: '16px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
                       <div style={{ fontSize: '10px', color: '#555', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '700' }}>Inbound</div>
                       <div style={{ fontSize: '22px', fontWeight: '800', color: '#fff' }}>{edges.filter(e => e.target === selectedNode.id).length}</div>
                     </div>
-                    <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '16px', padding: '16px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.015)', borderRadius: '0', padding: '16px', border: '1px solid rgba(255,255,255,0.08)', textAlign: 'center' }}>
                       <div style={{ fontSize: '10px', color: '#555', textTransform: 'uppercase', marginBottom: '4px', fontWeight: '700' }}>Outbound</div>
                       <div style={{ fontSize: '22px', fontWeight: '800', color: '#fff' }}>{edges.filter(e => e.source === selectedNode.id).length}</div>
                     </div>
@@ -444,7 +444,7 @@ const ArchitectureGraphInner = () => {
                   <h4 style={{ fontSize: '11px', color: '#475569', textTransform: 'uppercase', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '800' }}>
                     <Activity size={14} /> AI Analysis
                   </h4>
-                  <div style={{ background: 'rgba(99, 102, 241, 0.05)', borderRadius: '16px', padding: '20px', border: '1px solid rgba(99, 102, 241, 0.15)', fontSize: '13px', color: '#cbd5e1', lineHeight: '1.7' }}>
+                  <div style={{ background: 'rgba(54, 118, 222, 0.05)', borderRadius: '0', padding: '20px', border: '1px solid rgba(54, 118, 222, 0.15)', fontSize: '13px', color: '#cbd5e1', lineHeight: '1.7' }}>
                     {selectedNode.type === 'folder' 
                       ? `This structural node consolidates children modules. It defines a functional namespace and boundary within the system.`
                       : `This module is part of the system's logic flow. Its connectivity indicates it plays a ${edges.filter(e => e.target === selectedNode.id).length > 2 ? 'core' : 'supporting'} role in the architecture.`}
@@ -460,6 +460,7 @@ const ArchitectureGraphInner = () => {
       {!selectedNode && globalExplanation && (
         <div style={{
           position: 'absolute',
+          display: 'none',
           bottom: '24px',
           left: '50%',
           transform: 'translateX(-50%)',
@@ -467,14 +468,14 @@ const ArchitectureGraphInner = () => {
           background: 'rgba(5, 5, 5, 0.9)',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(255,255,255,0.1)',
-          borderRadius: '16px',
+          borderRadius: '0',
           padding: '16px 20px',
           boxShadow: '0 12px 40px rgba(0,0,0,0.8)',
           zIndex: 5
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <Activity size={15} color="#6366f1" />
-            <span style={{ fontSize: '11px', fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Architecture Summary</span>
+            <Activity size={15} color="#3676de" />
+            <span style={{ fontSize: '11px', fontWeight: '800', color: '#fff', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Architecture Summary HIDDEN</span>
           </div>
           <p style={{ fontSize: '12px', color: '#94a3b8', lineHeight: '1.6', margin: 0 }}>{globalExplanation.substring(0, 200)}...</p>
         </div>
@@ -483,9 +484,9 @@ const ArchitectureGraphInner = () => {
       <style>{`
         .spin { animation: spin 1s linear infinite; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .loader-ring { width: 40px; height: 40px; border: 3px solid rgba(99, 102, 241, 0.1); border-top: 3px solid #6366f1; border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-ring { width: 40px; height: 40px; border: 3px solid rgba(54, 118, 222, 0.1); border-top: 3px solid #3676de; border-radius: 0; animation: spin 1s linear infinite; }
         .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 0; }
         
         /* Modern Data Flow Animation */
         .flowing-edge path {

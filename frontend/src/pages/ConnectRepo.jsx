@@ -6,6 +6,42 @@ import {
   Terminal, ShieldCheck
 } from 'lucide-react';
 import { useRepo } from '../hooks/useRepo';
+import brandLogo from '../assets/Brand logo.png';
+
+const deploymentStyles = `
+  @media (max-width: 640px) {
+    .deployment-header {
+      height: 64px !important;
+      padding: 0 1rem !important;
+    }
+    .deployment-branding span {
+      font-size: 1rem !important;
+    }
+    .deployment-back-btn span {
+      display: none !important;
+    }
+    .deployment-back-btn::after {
+      content: 'Back' !important;
+      font-size: 0.8125rem !important;
+    }
+    .deployment-back-btn {
+      padding: 0.5rem 0 !important;
+      border: none !important;
+      background: transparent !important;
+      left: 1rem !important;
+    }
+    .deployment-main {
+      padding: 1.5rem 1rem !important;
+    }
+    .deployment-content {
+      gap: 1.5rem !important;
+    }
+    .deployment-grid {
+      grid-template-columns: 1fr !important;
+      gap: 1.5rem !important;
+    }
+  }
+`;
 
 const ConnectRepo = () => {
   const navigate = useNavigate();
@@ -47,20 +83,26 @@ const ConnectRepo = () => {
   };
 
   return (
-    <div className="dashboard" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div className="dashboard" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+      <style>{deploymentStyles}</style>
       {/* Top Navbar */}
-      <header className="navbar" style={{ padding: '0 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', height: '72px' }}>
+      <header className="navbar deployment-header" style={{ padding: '0 2rem', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px', flexShrink: 0 }}>
+        <div className="deployment-branding" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <img src={brandLogo} alt="CogniCode Logo" style={{ width: '28px', height: '28px', objectFit: 'contain' }} />
+          <span style={{ fontSize: '1.25rem', fontWeight: '800', color: '#fff', letterSpacing: '-0.02em' }}>CogniCode</span>
+        </div>
+        
         <button 
-          className="btn btn-ghost" 
+          className="btn btn-ghost deployment-back-btn" 
           onClick={() => navigate('/dashboard')}
-          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem', color: 'rgba(255,255,255,0.7)', border: 'none', background: 'transparent' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)', fontSize: '0.8125rem', fontWeight: '600', borderRadius: '0' }}
         >
-          <ChevronLeft size={18} /> <span style={{ fontSize: '0.875rem', fontWeight: '500' }}>Back to Dashboard</span>
+          <ChevronLeft size={16} /> <span>Back to Dashboard</span>
         </button>
       </header>
 
-      <main className="dashboard-page" style={{ flex: 1, padding: '3rem 2rem', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <main className="dashboard-page deployment-main" style={{ flex: 1, padding: '1.5rem 2rem', display: 'flex', justifyContent: 'center', overflowY: 'visible' }}>
+        <div className="deployment-content" style={{ width: '100%', maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
           
           <header className="dashboard-page__header" style={{ borderBottom: 'none', paddingBottom: 0 }}>
             <div className="dashboard-page__title-group">
@@ -69,14 +111,14 @@ const ConnectRepo = () => {
             </div>
           </header>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', alignItems: 'start' }}>
+          <div className="deployment-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', alignItems: 'start' }}>
             
             {/* Left Side: Setup Steps */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', padding: '2rem', borderRadius: '0', border: '1px solid rgba(255,255,255,0.05)' }}>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: provider ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255,255,255,0.05)', color: provider ? '#3b82f6' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: provider ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid transparent', flexShrink: 0 }}>1</div>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '0', background: provider ? 'rgba(54, 118, 222, 0.1)' : 'rgba(255,255,255,0.05)', color: provider ? '#3676de' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: provider ? '1px solid rgba(54, 118, 222, 0.2)' : '1px solid transparent', flexShrink: 0 }}>1</div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Choose Provider</h3>
                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Select GitHub, GitLab, or Bitbucket.</p>
@@ -84,7 +126,7 @@ const ConnectRepo = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: selectedRepo ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255,255,255,0.05)', color: selectedRepo ? '#3b82f6' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: selectedRepo ? '1px solid rgba(59, 130, 246, 0.2)' : '1px solid transparent', flexShrink: 0 }}>2</div>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '0', background: selectedRepo ? 'rgba(54, 118, 222, 0.1)' : 'rgba(255,255,255,0.05)', color: selectedRepo ? '#3676de' : 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', border: selectedRepo ? '1px solid rgba(54, 118, 222, 0.2)' : '1px solid transparent', flexShrink: 0 }}>2</div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Select Repository</h3>
                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Choose the project you want to connect.</p>
@@ -92,7 +134,7 @@ const ConnectRepo = () => {
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '2px', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', flexShrink: 0 }}>3</div>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '0', background: 'rgba(255,255,255,0.05)', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: '600', flexShrink: 0 }}>3</div>
                   <div>
                     <h3 style={{ fontSize: '0.875rem', fontWeight: '500', color: '#fff', marginBottom: '0.25rem' }}>Configure Build</h3>
                     <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0, lineHeight: '1.5' }}>Define build and installation commands.</p>
@@ -100,10 +142,10 @@ const ConnectRepo = () => {
                 </div>
               </div>
 
-              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(59, 130, 246, 0.03)', borderRadius: '4px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+              <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(54, 118, 222, 0.03)', borderRadius: '0', border: '1px solid rgba(54, 118, 222, 0.1)' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', marginBottom: '0.5rem' }}>
-                  <ShieldCheck size={16} style={{ color: '#3b82f6' }} />
-                  <span style={{ fontSize: '0.8125rem', fontWeight: '600', color: '#3b82f6' }}>AI-Security Ready</span>
+                  <ShieldCheck size={16} style={{ color: '#3676de' }} />
+                  <span style={{ fontSize: '0.8125rem', fontWeight: '600', color: '#3676de' }}>AI-Security Ready</span>
                 </div>
                 <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.6)', lineHeight: '1.6', margin: 0 }}>
                   Once connected, our DevSecOps agent automatically scans every push for vulnerabilities.
@@ -121,27 +163,33 @@ const ConnectRepo = () => {
                   <button 
                     className={`btn ${provider === 'github' ? 'btn-primary' : 'btn-ghost'}`} 
                     onClick={() => setProvider('github')}
-                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'github' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
+                    style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'github' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto', borderRadius: '0' }}
                   >
                     <GitCompare size={20} />
-                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>GitHub</span>
+                    <span style={{ fontSize: '0.8125rem', fontWeight: '600' }}>GitHub</span>
                   </button>
-                  <button 
-                    className={`btn ${provider === 'gitlab' ? 'btn-primary' : 'btn-ghost'}`} 
-                    onClick={() => setProvider('gitlab')}
-                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'gitlab' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
-                  >
-                    <GitGraph size={20} />
-                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>GitLab</span>
-                  </button>
-                  <button 
-                    className={`btn ${provider === 'bitbucket' ? 'btn-primary' : 'btn-ghost'}`} 
-                    onClick={() => setProvider('bitbucket')}
-                    style={{ padding: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: provider !== 'bitbucket' ? '1px solid rgba(255,255,255,0.1)' : 'none', height: 'auto' }}
-                  >
-                    <Globe size={20} />
-                    <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>Bitbucket</span>
-                  </button>
+                  <div style={{ position: 'relative' }}>
+                    <button 
+                      className="btn btn-ghost" 
+                      disabled
+                      style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', height: 'auto', width: '100%', opacity: 0.5, borderRadius: '0', cursor: 'not-allowed' }}
+                    >
+                      <GitGraph size={20} />
+                      <span style={{ fontSize: '0.8125rem', fontWeight: '600' }}>GitLab</span>
+                    </button>
+                    <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'rgba(54, 118, 222, 0.1)', color: '#3676de', fontSize: '10px', fontWeight: '700', padding: '2px 6px', border: '1px solid rgba(54, 118, 222, 0.2)', textTransform: 'uppercase' }}>Soon</span>
+                  </div>
+                  <div style={{ position: 'relative' }}>
+                    <button 
+                      className="btn btn-ghost" 
+                      disabled
+                      style={{ padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', border: '1px solid rgba(255,255,255,0.05)', height: 'auto', width: '100%', opacity: 0.5, borderRadius: '0', cursor: 'not-allowed' }}
+                    >
+                      <Globe size={20} />
+                      <span style={{ fontSize: '0.8125rem', fontWeight: '600' }}>Bitbucket</span>
+                    </button>
+                    <span style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'rgba(54, 118, 222, 0.1)', color: '#3676de', fontSize: '10px', fontWeight: '700', padding: '2px 6px', border: '1px solid rgba(54, 118, 222, 0.2)', textTransform: 'uppercase' }}>Soon</span>
+                  </div>
                 </div>
               </section>
 
@@ -149,14 +197,14 @@ const ConnectRepo = () => {
               <section>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                   <label className="input-label" style={{ margin: 0 }}>Repository</label>
-                  <div style={{ position: 'relative' }}>
-                    <Search size={14} style={{ position: 'absolute', left: '0.75rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.4)' }} />
+                  <div style={{ position: 'relative', flex: 1, maxWidth: '280px' }}>
+                    <Search size={14} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.4)', zIndex: 1 }} />
                     <input 
                       className="input-field" 
-                      placeholder="Search repos..." 
+                      placeholder="Search repositories..." 
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      style={{ paddingLeft: '2.25rem', height: '34px', fontSize: '0.8125rem', width: '180px' }}
+                      style={{ paddingLeft: '2.75rem', height: '40px', fontSize: '0.875rem', width: '100%', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)' }}
                     />
                   </div>
                 </div>
@@ -176,21 +224,21 @@ const ConnectRepo = () => {
                           alignItems: 'center', 
                           justifyContent: 'space-between',
                           padding: '0.75rem 1rem', 
-                          background: selectedRepo?.id === repo.id ? 'rgba(59, 130, 246, 0.08)' : 'rgba(255, 255, 255, 0.02)', 
-                          border: `1px solid ${selectedRepo?.id === repo.id ? 'rgba(59, 130, 246, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
-                          borderRadius: '2px',
+                          background: selectedRepo?.id === repo.id ? 'rgba(54, 118, 222, 0.08)' : 'rgba(255, 255, 255, 0.02)', 
+                          border: `1px solid ${selectedRepo?.id === repo.id ? 'rgba(54, 118, 222, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                          borderRadius: '0',
                           cursor: 'pointer',
                           transition: 'all 0.2s',
                           color: selectedRepo?.id === repo.id ? '#fff' : 'rgba(255,255,255,0.7)',
                         }}
                       >
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                          <Terminal size={14} style={{ color: selectedRepo?.id === repo.id ? '#3b82f6' : 'rgba(255,255,255,0.3)' }} />
+                          <Terminal size={14} style={{ color: selectedRepo?.id === repo.id ? '#3676de' : 'rgba(255,255,255,0.3)' }} />
                           <span style={{ fontSize: '0.8125rem', fontWeight: '500' }}>
                             {repo.full_name || repo.name}
                           </span>
                         </div>
-                        {selectedRepo?.id === repo.id && <Check size={16} style={{ color: '#3b82f6' }} />}
+                        {selectedRepo?.id === repo.id && <Check size={16} style={{ color: '#3676de' }} />}
                       </button>
                     ))
                   ) : (

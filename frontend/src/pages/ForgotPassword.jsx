@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
 import { ArrowLeft, ArrowRight } from "lucide-react";
+import brandLogo from "../assets/Brand logo.png";
 
 const ForgotPassword = () => {
   const { handleForgotPassword, loading } = useAuth();
@@ -24,8 +25,8 @@ const ForgotPassword = () => {
     <div className="forgot-password-page">
       <header className="forgot-header">
         <Link to="/login" className="logo-link">
-          <ArrowLeft />
-          <span>SQUADRA NETWORK</span>
+          <img src={brandLogo} alt="CogniCode Logo" style={{ width: "24px", height: "24px", objectFit: "contain", marginRight: "8px" }} />
+          <span>CogniCode NETWORK</span>
         </Link>
       </header>
 
@@ -65,7 +66,7 @@ const ForgotPassword = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-white btn-full"
                 disabled={loading}
               >
                 {loading ? "SENDING..." : "SEND RESET LINK"}
@@ -92,9 +93,9 @@ const ForgotPassword = () => {
         </section>
       </main>
 
-      <footer className="forgot-footer mono">
+      <footer className="auth-footer mono">
         <div className="footer-left">
-          © 2024 SQUADRA INSTITUTIONAL. ALL RIGHTS RESERVED.
+          © 2024 CogniCode INSTITUTIONAL. ALL RIGHTS RESERVED.
         </div>
         <div className="footer-right">
           <Link to="#">SUPPORT</Link>

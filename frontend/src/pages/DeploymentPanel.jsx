@@ -102,20 +102,36 @@ const DeploymentPanel = () => {
             <button 
               className={`ai-card ${activeTab === 'current' ? 'active' : ''}`}
               onClick={() => setActiveTab('current')}
-              style={{ textAlign: 'left', width: '100%', borderLeft: activeTab === 'current' ? '4px solid #3b82f6' : '' }}
+              style={{ 
+                textAlign: 'left', 
+                width: '100%', 
+                borderLeft: activeTab === 'current' ? '4px solid #3b82f6' : '1px solid rgba(255,255,255,0.05)',
+                background: activeTab === 'current' ? 'rgba(59, 130, 246, 0.05)' : 'rgba(255,255,255,0.02)',
+                color: '#fff',
+                borderRadius: '0',
+                padding: '16px'
+              }}
             >
               <div className="ai-card__title"><Server size={16} /> Live Deployment</div>
             </button>
             <button 
               className={`ai-card ${activeTab === 'history' ? 'active' : ''}`}
               onClick={() => setActiveTab('history')}
-              style={{ textAlign: 'left', width: '100%', borderLeft: activeTab === 'history' ? '4px solid #3b82f6' : '' }}
+              style={{ 
+                textAlign: 'left', 
+                width: '100%', 
+                borderLeft: activeTab === 'history' ? '4px solid #3b82f6' : '1px solid rgba(255,255,255,0.05)',
+                background: activeTab === 'history' ? 'rgba(59, 130, 246, 0.05)' : 'rgba(255,255,255,0.02)',
+                color: '#fff',
+                borderRadius: '0',
+                padding: '16px'
+              }}
             >
               <div className="ai-card__title"><History size={16} /> Deployment History</div>
             </button>
           </div>
 
-          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '0', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
               <ShieldCheck size={20} style={{ color: '#10b981' }} />
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#10b981' }}>Security Verified</span>
@@ -173,7 +189,7 @@ const DeploymentPanel = () => {
                           <div style={{ 
                             height: '6px', 
                             background: isComplete ? '#10b981' : isActive ? '#3b82f6' : 'rgba(255,255,255,0.1)',
-                            borderRadius: '4px',
+                            borderRadius: '0',
                             transition: 'all 0.4s ease'
                           }} />
                           <span style={{ 
@@ -190,7 +206,7 @@ const DeploymentPanel = () => {
                   </div>
 
                   {/* Commit Info */}
-                  <div style={{ display: 'flex', gap: '32px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }}>
+                  <div style={{ display: 'flex', gap: '32px', padding: '20px', background: 'rgba(255,255,255,0.02)', borderRadius: '0' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '4px' }}>Commit</label>
                       <span className="mono" style={{ fontSize: '13px' }}>{currentDeployment.commitHash?.substring(0, 7) || 'HEAD'}</span>

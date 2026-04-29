@@ -11,7 +11,7 @@ const NodeWrapper = ({ children, selected, type, label, icon: Icon, color }) => 
       className={`custom-node custom-node--${type} ${selected ? 'custom-node--selected' : ''}`}
       style={{
         padding: '14px 24px',
-        borderRadius: '32px', // Highly rounded like reference
+        borderRadius: '0', // Sharp edges as requested
         background: selected ? 'rgba(255, 255, 255, 0.04)' : '#050505',
         border: `1.5px solid ${selected ? color : 'rgba(255, 255, 255, 0.1)'}`,
         boxShadow: selected 
@@ -42,7 +42,7 @@ const NodeWrapper = ({ children, selected, type, label, icon: Icon, color }) => 
       <div style={{
         width: '38px',
         height: '38px',
-        borderRadius: '50%',
+        borderRadius: '0',
         background: `${color}15`,
         display: 'flex',
         alignItems: 'center',
@@ -105,7 +105,7 @@ export const ComponentNode = memo(({ data, selected }) => (
 ));
 
 export const PageNode = memo(({ data, selected }) => (
-  <NodeWrapper type="page" label={data.label} icon={Layout} color="#8b5cf6" selected={selected} />
+  <NodeWrapper type="page" label={data.label} icon={Layout} color="#3676de" selected={selected} />
 ));
 
 export const HookNode = memo(({ data, selected }) => (
@@ -117,7 +117,7 @@ export const UtilNode = memo(({ data, selected }) => (
 ));
 
 export const ServiceNode = memo(({ data, selected }) => (
-  <NodeWrapper type="service" label={data.label} icon={Layers} color="#6366f1" selected={selected} />
+  <NodeWrapper type="service" label={data.label} icon={Layers} color="#3676de" selected={selected} />
 ));
 
 export const ApiNode = memo(({ data, selected }) => (

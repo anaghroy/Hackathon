@@ -38,7 +38,7 @@
   .react-flow__minimap {
     background: #111318 !important;
     border: 1px solid rgba(255,255,255,0.1) !important;
-    border-radius: 12px !important;
+    border-radius: 0 !important;
   }
 
   .spin {
@@ -69,7 +69,7 @@
     }
     &::-webkit-scrollbar-thumb {
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
+      border-radius: 0;
     }
   }
 }

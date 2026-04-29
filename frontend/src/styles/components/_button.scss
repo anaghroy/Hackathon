@@ -20,15 +20,24 @@
   }
 
   &-primary {
-    background: linear-gradient(135deg, $primary 0%, #2563eb 100%);
+    background-color: $primary;
     color: $on-primary;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, lighten($primary, 5%) 0%, #2563eb 100%);
+      background-color: lighten($primary, 5%);
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+    }
+  }
+
+  &-white {
+    background-color: $white;
+    color: $black;
+    border: 1px solid $white;
+
+    &:hover:not(:disabled) {
+      background-color: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
     }
   }
 
@@ -42,19 +51,17 @@
       color: $white;
       border-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
   }
 
   &-danger {
-    background: linear-gradient(135deg, $error 0%, #dc2626 100%);
+    background-color: $error;
     color: $white;
     border: 1px solid rgba(255, 255, 255, 0.1);
 
     &:hover:not(:disabled) {
-      background: linear-gradient(135deg, lighten($error, 5%) 0%, #dc2626 100%);
+      background-color: lighten($error, 5%);
       transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.3);
     }
   }
 

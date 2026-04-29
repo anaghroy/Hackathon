@@ -147,7 +147,7 @@ const Profile = () => {
             </div>
 
             <div className="sidebar-stats">
-              <div className="stat-item">
+              <div className="stat-item verified">
                 <Shield size={16} />
                 <span>Verified Account</span>
               </div>

@@ -5,6 +5,7 @@ import { githubLoginUrl, googleLoginUrl } from "../services/authApi.service";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
 import { Eye, EyeOff } from "lucide-react";
+import brandLogo from "../assets/Brand logo.png";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -32,7 +33,10 @@ const Login = () => {
   return (
     <div className="login-page">
       <header className="auth-header">
-        <div className="logo">SQUADRA</div>
+        <div className="logo">
+          <img src={brandLogo} alt="COGNICODE Logo" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
+          <span>COGNICODE</span>
+        </div>
         <div className="header-right">
           <Link to="/register" className="nav-link mono">SIGN UP</Link>
         </div>
@@ -49,7 +53,7 @@ const Login = () => {
             
             <div className="visual-footer">
               <span className="line"></span>
-              <span className="brand-tag mono">SQUADRA SYSTEMS INC.</span>
+              <span className="brand-tag mono">CogniCode SYSTEMS INC.</span>
             </div>
           </div>
           <div className="visual-grid"></div>
@@ -70,7 +74,7 @@ const Login = () => {
                   className={`input-field ${errors.identifier ? "input-error" : ""}`}
                   type="text"
                   name="identifier"
-                  placeholder="name@squadra.com"
+                  placeholder="name@cognicode.com"
                   value={values.identifier}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -113,7 +117,7 @@ const Login = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-white btn-full"
                 disabled={loading}
               >
                 {loading ? "Authenticating..." : "SIGN IN"}
@@ -148,6 +152,7 @@ const Login = () => {
           </div>
         </section>
       </main>
+      
     </div>
   );
 };

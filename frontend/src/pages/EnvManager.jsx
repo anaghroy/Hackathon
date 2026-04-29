@@ -130,13 +130,13 @@ const EnvManager = () => {
             </p>
           </div>
 
-          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '0', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
               <ShieldCheck size={20} style={{ color: '#3b82f6' }} />
-              <span style={{ fontSize: '13px', fontWeight: '600', color: '#3b82f6' }}>Vault Protection</span>
+              <span style={{ fontSize: '13px', fontWeight: '600', color: '#fff', color: '#3b82f6' }}>Vault Protection</span>
             </div>
             <p style={{ fontSize: '12px', color: 'rgba(255,255,255,0.6)', lineHeight: '1.5' }}>
-              Squadra uses AES-256 encryption for all environment secrets.
+              CogniCode uses AES-256 encryption for all environment secrets.
             </p>
           </div>
         </aside>
@@ -160,25 +160,25 @@ const EnvManager = () => {
                     alignItems: 'center',
                     background: 'rgba(255,255,255,0.02)',
                     padding: '12px',
-                    borderRadius: '12px',
+                    borderRadius: '0',
                     border: '1px solid rgba(255,255,255,0.05)'
                   }}
                 >
                   <input 
-                    className="auth-input" 
+                    className="ai-input" 
                     placeholder="VARIABLE_NAME" 
                     value={v.key}
                     onChange={(e) => handleChange(v.id, 'key', e.target.value)}
-                    style={{ background: 'transparent', border: 'none', fontSize: '13px', fontWeight: '600' }}
+                    style={{ background: 'transparent', border: 'none', fontSize: '13px', fontWeight: '600', color: '#fff' }}
                   />
                   <div style={{ position: 'relative' }}>
                     <input 
-                      className="auth-input" 
+                      className="ai-input" 
                       type={showValues[v.id] ? 'text' : 'password'}
                       placeholder="••••••••••••" 
                       value={v.value}
                       onChange={(e) => handleChange(v.id, 'value', e.target.value)}
-                      style={{ background: 'transparent', border: 'none', fontSize: '13px', paddingRight: '40px' }}
+                      style={{ background: 'transparent', border: 'none', fontSize: '13px', paddingRight: '40px', color: '#fff' }}
                     />
                     <button 
                       onClick={() => toggleShow(v.id)}

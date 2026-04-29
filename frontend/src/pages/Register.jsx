@@ -8,6 +8,7 @@ import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
 import { useEffect } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import brandLogo from "../assets/Brand logo.png";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -58,7 +59,10 @@ const Register = () => {
   return (
     <div className="register-page">
       <header className="auth-header">
-        <div className="logo">SQUADRA</div>
+        <div className="logo">
+          <img src={brandLogo} alt="COGNICODE Logo" style={{ width: "28px", height: "28px", objectFit: "contain" }} />
+          <span>COGNICODE</span>
+        </div>
         <div className="header-right">
           <span className="mono">Already have an account?</span>
           <Link to="/login" className="nav-link mono">Login</Link>
@@ -68,14 +72,14 @@ const Register = () => {
       <main className="auth-container">
         <section className="auth-visual">
           <div className="visual-content">
-            <div className="status-badge mono">
-              <span className="icon">🛡</span> ENTERPRISE GRADE SECURITY
-            </div>
-            <h1>Join the elite <br />SQUADRA network.</h1>
+
+            <h1>Join the elite <br />COGNICODE network.</h1>
             <p>
               Precision-engineered tools for high-stakes institutional 
               environments. Secure your node today.
             </p>
+
+
           </div>
           <div className="visual-grid"></div>
           <div className="visual-overlay"></div>
@@ -116,7 +120,7 @@ const Register = () => {
                 <input
                   type="text"
                   name="username"
-                  placeholder="e.g. squadra_admin"
+                  placeholder="e.g. cognicode_admin"
                   className={`input-field ${errors.username ? "input-error" : ""}`}
                   value={values.username}
                   onChange={handleChange}
@@ -178,7 +182,7 @@ const Register = () => {
 
               <button
                 type="submit"
-                className="btn btn-primary"
+                className="btn btn-white btn-full"
                 disabled={loading}
               >
                 {loading ? "Initializing..." : "REGISTER ACCOUNT"}
@@ -187,6 +191,7 @@ const Register = () => {
           </div>
         </section>
       </main>
+     
     </div>
   );
 };
