@@ -55,7 +55,7 @@ const EditorTests = () => {
 
           <div className="ai-group ai-group--flex" style={{ minHeight: '300px' }}>
             <label><Code size={12} /> Source Code</label>
-            <div className="ai-code-input-container" style={{ flex: 1, borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
+            <div className="ai-code-input-container" style={{ flex: 1, borderRadius: '0', overflow: 'hidden', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
               <Editor
                 height="100%"
                 defaultLanguage="javascript"

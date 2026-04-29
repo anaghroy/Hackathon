@@ -29,7 +29,7 @@ const ProjectDetail = () => {
   const [editValues, setEditValues] = useState({ title: "", description: "" });
   const [chatMessage, setChatMessage] = useState("");
   const [messages, setMessages] = useState([
-    { role: "assistant", content: "Hello! I'm your Squadra AI assistant. How can I help you with your project today?" }
+    { role: "assistant", content: "Hello! I'm your CogniCode AI assistant. How can I help you with your project today?" }
   ]);
   
   const chatEndRef = useRef(null);
@@ -208,7 +208,7 @@ const ProjectDetail = () => {
                 <Layout size={16} />
                 <div>
                   <label className="mono">NODES</label>
-                  <span>SQUADRA-V4-ALPHA</span>
+                  <span>CogniCode-V4-ALPHA</span>
                 </div>
               </div>
               <div className="meta-item">
@@ -237,7 +237,7 @@ const ProjectDetail = () => {
           <header className="chat-header">
             <div className="title">
               <Bot size={20} />
-              <span className="mono">SQUADRA ASSISTANT</span>
+              <span className="mono">CogniCode ASSISTANT</span>
             </div>
             <div className="status-dot"></div>
           </header>

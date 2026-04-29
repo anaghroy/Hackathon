@@ -42,8 +42,8 @@
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 
   &--danger {
-    border-color: rgba($error, 0.4);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba($error, 0.1) inset;
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 32px 64px -12px rgba(0, 0, 0, 0.9);
   }
 }
 

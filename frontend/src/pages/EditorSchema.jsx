@@ -167,7 +167,7 @@ const EditorSchema = () => {
                
                <div className="ai-code-block" style={{ flex: '0 0 auto', maxHeight: '400px' }}>
                  <div className="ai-code-block__header">
-                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '0', marginRight: '12px' }}>
                      <Code size={12} />
                      <span>Generated Schema</span>
                    </div>
@@ -210,7 +210,7 @@ const EditorSchema = () => {
                       style={{ 
                         flex: 1, 
                         backgroundColor: 'rgba(255,255,255,0.02)', 
-                        borderRadius: '12px', 
+                        borderRadius: '0', 
                         padding: '20px', 
                         overflow: 'hidden', 
                         display: 'flex', 

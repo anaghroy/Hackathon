@@ -69,7 +69,7 @@ const LogsViewer = () => {
           </div>
         </div>
         <div className="editor-header__right">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '8px', marginRight: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '0', marginRight: '12px' }}>
             <button 
               className={`editor-btn ${logType === 'build' ? 'editor-btn--primary' : 'editor-btn--ghost'}`}
               onClick={() => setLogType('build')}
@@ -104,7 +104,7 @@ const LogsViewer = () => {
           <div className="ai-card" style={{ animation: 'none' }}>
             <div className="ai-card__title"><Search size={16} /> Search Logs</div>
             <input 
-              className="auth-input" 
+              className="ai-input" 
               placeholder="Filter by keyword..." 
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -123,7 +123,7 @@ const LogsViewer = () => {
             </label>
           </div>
 
-          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
+          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(16, 185, 129, 0.05)', borderRadius: '0', border: '1px solid rgba(16, 185, 129, 0.1)' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
               <CheckCircle2 size={20} style={{ color: '#10b981' }} />
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#10b981' }}>Health OK</span>
@@ -155,8 +155,8 @@ const LogsViewer = () => {
               fontSize: '13px',
               lineHeight: '1.6',
               overflowY: 'auto',
-              borderBottomLeftRadius: '12px',
-              borderBottomRightRadius: '12px'
+              borderBottomLeftRadius: '0',
+              borderBottomRightRadius: '0'
             }}>
               {filteredLogs.length > 0 ? (
                 filteredLogs.map((log, i) => (

@@ -104,7 +104,7 @@ const RollbackTimeline = () => {
             </div>
           )}
 
-          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+          <div style={{ marginTop: 'auto', padding: '20px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '0', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
             <div style={{ display: 'flex', gap: '12px', marginBottom: '12px' }}>
               <ShieldCheck size={20} style={{ color: '#3b82f6' }} />
               <span style={{ fontSize: '13px', fontWeight: '600', color: '#3b82f6' }}>Snapshot Protection</span>
@@ -149,7 +149,7 @@ const RollbackTimeline = () => {
                       top: '0', 
                       width: '20px', 
                       height: '20px', 
-                      borderRadius: '50%', 
+                      borderRadius: '0', 
                       background: getStatusColor(deploy.status),
                       boxShadow: `0 0 15px ${getStatusColor(deploy.status)}44`,
                       border: '4px solid #0D0D0D',
@@ -170,7 +170,7 @@ const RollbackTimeline = () => {
                               fontSize: '10px', 
                               fontWeight: '800', 
                               padding: '2px 8px', 
-                              borderRadius: '4px', 
+                              borderRadius: '0', 
                               background: `${getStatusColor(deploy.status)}22`, 
                               color: getStatusColor(deploy.status),
                               textTransform: 'uppercase'

@@ -1,5 +1,5 @@
 // Colors
-$primary: #3b82f6; 
+$primary: #3676de; 
 $on-primary: #ffffff;
 $accent: #ffffff; // High-end focus
 $accent-alt: #a1a1aa; 
@@ -10,8 +10,8 @@ $bg-soft: #0a0a0a;
 $card-bg: rgba(0, 0, 0, 0.8);
 
 $text-main: #ffffff;
-$text-muted: #888888;
-$text-light: #555555;
+$text-muted: rgba(255, 255, 255, 0.7);
+$text-light: rgba(255, 255, 255, 0.5);
 
 $border: rgba(255, 255, 255, 0.08);
 $border-hover: rgba(255, 255, 255, 0.15);
@@ -19,15 +19,15 @@ $border-hover: rgba(255, 255, 255, 0.15);
 $success: #10b981;
 $error: #ef4444;
 $info: #3b82f6;
-$warning: #f59e0b;
+$warning: #efa647;
 $white: #ffffff;
 $black: #000000;
 
 // Spacing & Radius
-$radius-xl: 4px;
-$radius-lg: 4px;
-$radius-md: 2px;
-$radius-sm: 2px;
+$radius-xl: 0;
+$radius-lg: 0;
+$radius-md: 0;
+$radius-sm: 0;
 $transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 
 // Typography

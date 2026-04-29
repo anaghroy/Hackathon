@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
 import { Eye, EyeOff, ArrowRight, ArrowLeft, Shield, CircleHelp, Check, Circle, RotateCcw } from "lucide-react";
+import brandLogo from "../assets/Brand logo.png";
 
 const ResetPassword = () => {
   const { handleResetPassword, loading } = useAuth();
@@ -36,8 +37,9 @@ const ResetPassword = () => {
     <div className="reset-password-page">
       <header className="reset-header">
         <div className="logo-area">
-          <Link to="/" className="logo-area">
-            SQUADRA
+          <Link to="/" className="logo-area" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src={brandLogo} alt="CogniCode Logo" style={{ width: "32px", height: "32px", objectFit: "contain" }} />
+            CogniCode
           </Link>
         </div>
         
@@ -138,7 +140,7 @@ const ResetPassword = () => {
 
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-white btn-full"
               disabled={loading}
             >
               {loading ? "UPDATING..." : "RESET PASSWORD"}
@@ -159,9 +161,9 @@ const ResetPassword = () => {
         </div>
       </main>
 
-      <footer className="reset-footer mono">
+      <footer className="auth-footer mono">
         <div className="footer-left">
-          © 2024 SQUADRA SYSTEMS. ALL RIGHTS RESERVED.
+          © 2024 CogniCode SYSTEMS. ALL RIGHTS RESERVED.
         </div>
         <div className="footer-right">
           <Link to="#">PRIVACY POLICY</Link>

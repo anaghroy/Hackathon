@@ -480,6 +480,7 @@ const EditorPage = () => {
   }
 
   const projectTitle = selectedProject?.title || 'Untitled Project';
+  const displayTitle = projectTitle.length > 20 ? projectTitle.substring(0, 17) + '...' : projectTitle;
   const shortId = projectId.substring(0, 8);
 
   return (
@@ -488,7 +489,7 @@ const EditorPage = () => {
       <header className="editor-header">
         <div className="editor-header__left">
           <div className="editor-header__info">
-            <h1 className="editor-header__title">{projectTitle}</h1>
+            <h1 className="editor-header__title" title={projectTitle}>{displayTitle}</h1>
             <span className="editor-header__subtitle">ID: {shortId}</span>
           </div>
         </div>
@@ -767,54 +768,48 @@ const EditorPage = () => {
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/security`)}
-                style={{ borderColor: 'rgba(239, 68, 68, 0.2)' }}
               >
-                <ShieldAlert size={20} className="text-error" style={{ color: '#ef4444' }} />
+                <ShieldAlert size={20} />
                 <span>Security Fixer</span>
               </button>
 
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/performance`)}
-                style={{ borderColor: 'rgba(59, 130, 246, 0.2)' }}
               >
-                <Activity size={20} className="text-primary" style={{ color: '#3b82f6' }} />
+                <Activity size={20} />
                 <span>Profiler</span>
               </button>
 
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/deploy`)}
-                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
               >
-                <Rocket size={20} style={{ color: '#3b82f6' }} />
+                <Rocket size={20} />
                 <span>Deployments</span>
               </button>
 
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/env`)}
-                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
               >
-                <Lock size={20} style={{ color: '#3b82f6' }} />
+                <Lock size={20} />
                 <span>Env Secrets</span>
               </button>
 
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/logs`)}
-                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
               >
-                <Terminal size={20} style={{ color: '#3b82f6' }} />
+                <Terminal size={20} />
                 <span>Runtime Logs</span>
               </button>
 
               <button 
                 className="editor-tool-card" 
                 onClick={() => navigate(`/editor/${projectId}/history`)}
-                style={{ borderColor: 'rgba(59, 130, 246, 0.4)', background: 'rgba(59, 130, 246, 0.05)' }}
               >
-                <History size={20} style={{ color: '#3b82f6' }} />
+                <History size={20} />
                 <span>Rollback History</span>
               </button>
             </div>
