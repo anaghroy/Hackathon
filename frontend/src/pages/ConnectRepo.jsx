@@ -166,8 +166,8 @@ const ConnectRepo = () => {
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0' }}>
                       <RefreshCcw size={20} className="animate-spin" style={{ color: 'rgba(255,255,255,0.3)' }} />
                     </div>
-                  ) : filteredRepos.length > 0 ? (
-                    filteredRepos.map(repo => (
+                  ) : displayRepos.length > 0 ? (
+                    displayRepos.map(repo => (
                       <button 
                         key={repo.id}
                         onClick={() => setSelectedRepo(repo)}
