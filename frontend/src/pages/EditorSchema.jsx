@@ -68,7 +68,8 @@ const EditorSchema = () => {
       const result = await generateDbSchema(projectId, { prompt });
       setSchemaCode(result.code || result.schema || JSON.stringify(result, null, 2));
       if (result.mermaid) {
-        setMermaidGraph(result.mermaid);
+        const cleanedMermaid = result.mermaid.replace(/```mermaid/gi, '').replace(/```/g, '').trim();
+        setMermaidGraph(cleanedMermaid);
       }
     } catch (error) {
       console.error(error);

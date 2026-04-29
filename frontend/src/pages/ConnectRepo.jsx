@@ -21,12 +21,13 @@ const ConnectRepo = () => {
   });
 
   useEffect(() => {
-    fetchRepos(provider);
-  }, [provider, fetchRepos]);
+    const timer = setTimeout(() => {
+      fetchRepos(provider, searchQuery);
+    }, 500); // 500ms debounce
+    return () => clearTimeout(timer);
+  }, [provider, searchQuery, fetchRepos]);
 
-  const filteredRepos = repos.filter(repo => 
-    repo.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const displayRepos = repos;
 
   const handleConnect = async () => {
     if (!selectedRepo) return;

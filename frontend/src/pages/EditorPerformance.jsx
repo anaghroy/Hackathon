@@ -7,6 +7,7 @@ import {
 import { useAI } from '../hooks/useAI';
 import Editor from "@monaco-editor/react";
 import ReactDiffViewer from 'react-diff-viewer-continued';
+import TypewriterText from '../components/TypewriterText';
 
 const EditorPerformance = () => {
   const { projectId } = useParams();
@@ -112,7 +113,8 @@ const EditorPerformance = () => {
                   <ul className="ai-list">
                     {performanceResult.bottlenecks?.map((b, i) => (
                       <li key={i} className="ai-list__item">
-                        <Zap size={14} className="text-warning" /> {b}
+                        <Zap size={14} className="text-warning" /> 
+                        <TypewriterText text={b} delay={i * 200} speed={10} />
                       </li>
                     ))}
                   </ul>
@@ -126,7 +128,8 @@ const EditorPerformance = () => {
                   <ul className="ai-list">
                     {performanceResult.suggestions?.map((s, i) => (
                       <li key={i} className="ai-list__item">
-                        <CheckCircle2 size={14} className="text-primary" /> {s}
+                        <CheckCircle2 size={14} className="text-primary" />
+                        <TypewriterText text={s} delay={(performanceResult.bottlenecks?.length || 0) * 200 + i * 200} speed={10} />
                       </li>
                     ))}
                   </ul>

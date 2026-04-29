@@ -9,8 +9,8 @@ export const connectRepoApi = (data) => {
   return repoApi.post("/connect", data);
 };
 
-export const getReposApi = (provider) => {
-  return repoApi.get(`/${provider}/list`);
+export const getReposApi = (provider, search = "") => {
+  return repoApi.get(`/${provider}/list`, { params: { search } });
 };
 
 export default repoApi;

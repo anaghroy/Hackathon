@@ -124,7 +124,13 @@ export const getLogs = async (req, res) => {
     const latestDeployment = await Deployment.findOne({ project: projectId }).sort({ createdAt: -1 });
 
     if (!latestDeployment) {
-      return res.status(404).json({ success: false, message: "No deployments found for this project." });
+      return res.status(200).json({ 
+        success: true, 
+        message: "No deployments found for this project yet.",
+        deploymentId: null,
+        status: "NONE",
+        logs: []
+      });
     }
 
     // Filter logs if needed (dummy filtering logic based on type could be added)

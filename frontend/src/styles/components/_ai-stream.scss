@@ -1,0 +1,17 @@
+.ai-stream-text {
+  transition: opacity 0.3s ease;
+}
+
+.ai-stream-cursor {
+  display: inline-block;
+  font-family: monospace;
+  font-weight: bold;
+  color: #3b82f6; /* Use primary color */
+  margin-left: 2px;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}

@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useAI } from '../hooks/useAI';
 import ReactDiffViewer from 'react-diff-viewer-continued';
+import TypewriterText from '../components/TypewriterText';
 
 const EditorSecurity = () => {
   const { projectId } = useParams();
@@ -128,7 +129,7 @@ const EditorSecurity = () => {
                   <span>{selectedIssue.issue} Analysis</span>
                 </div>
                 <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'rgba(255,255,255,0.8)' }}>
-                  {selectedIssue.explanation}
+                  <TypewriterText text={selectedIssue.explanation} speed={5} />
                 </p>
                 <div style={{ marginTop: '16px', display: 'flex', gap: '12px' }}>
                   <div className="ai-badge ai-badge--low">Line: {selectedIssue.line}</div>
