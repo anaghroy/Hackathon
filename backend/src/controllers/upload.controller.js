@@ -20,9 +20,8 @@ export const uploadProjectFiles = async (req, res) => {
       $push: { files: { $each: files } },
     });
 
-        await deleteCache(buildExplainKey(projectId));
+    await deleteCache(buildExplainKey(projectId));
 
-    console.log("📂 Files updated → cache cleared");
     res.json({
       message: "Files uploaded successfully",
       count: files.length,

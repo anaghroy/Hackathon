@@ -1,3 +1,5 @@
+import { parse } from "@babel/parser";
+
 export const generateGraph = (files) => {
   try {
     let nodes = [];
@@ -7,7 +9,6 @@ export const generateGraph = (files) => {
       return { nodes: [], edges: [] };
     }
 
-    // Filter out invalid file entries and normalize paths
     const validFiles = files.filter(f => f && f.filename);
     const filePaths = validFiles.map((f) => f.filename.replace(/\\/g, "/"));
     const pathSet = new Set(filePaths);
@@ -16,14 +17,11 @@ export const generateGraph = (files) => {
       return { nodes: [], edges: [] };
     }
 
-    // Helper to get node type based on path and filename
     const getNodeType = (path) => {
       if (!path) return "file";
       const p = path.toLowerCase();
-      const parts = path.split("/");
-      const filename = parts[parts.length - 1]?.toLowerCase() || "";
-      
-      // Order matters: more specific first
+      const filename = path.split("/").pop()?.toLowerCase() || "";
+
       if (p.includes("/pages/")) return "page";
       if (p.includes("/components/")) return "component";
       if (p.includes("/hooks/")) return "hook";
@@ -33,162 +31,166 @@ export const generateGraph = (files) => {
       if (p.includes("/models/") || p.includes("/schemas/")) return "database";
       if (p.includes("/middleware/")) return "middleware";
       if (p.includes("/services/")) return "service";
-      
-      // Root / Config
+
       if (filename === "package.json") return "config";
-      if (filename === "dockerfile" || filename.includes("docker-compose")) return "config";
-      if (filename.startsWith(".env") || filename.includes("config") || filename.includes("setup")) return "config";
-      
+      if (filename === "dockerfile") return "config";
+
       return "file";
     };
 
-    // Add folders
+    // -------------------------
+    // FOLDERS
+    // -------------------------
     const folders = new Set();
     filePaths.forEach((path) => {
-      if (!path) return;
       const parts = path.split("/");
       let current = "";
       for (let i = 0; i < parts.length - 1; i++) {
         current += (current ? "/" : "") + parts[i];
-        if (current) folders.add(current);
+        folders.add(current);
       }
     });
 
     folders.forEach((folder) => {
-      const parts = folder.split("/");
       nodes.push({
         id: folder,
         type: "folder",
-        data: { 
-          label: parts[parts.length - 1] || folder, 
-          path: folder, 
-          isFolder: true 
-        },
+        data: { label: folder.split("/").pop(), path: folder },
         position: { x: 0, y: 0 },
       });
     });
 
-    // Add files
+    // -------------------------
+    // FILES + AST PARSING
+    // -------------------------
     validFiles.forEach((file) => {
       const path = file.filename.replace(/\\/g, "/");
-      const type = getNodeType(path);
-      const parts = path.split("/");
-      
+
       nodes.push({
         id: path,
-        type: type,
-        data: { 
-          label: parts[parts.length - 1] || path, 
-          path: path, 
-          isFolder: false,
-          size: file.content?.length || 0
-        },
+        type: getNodeType(path),
+        data: { label: path.split("/").pop(), path },
         position: { x: 0, y: 0 },
       });
 
-      // Parent-child edges (Folder -> File/Subfolder)
-      if (parts.length > 1) {
-        const parent = parts.slice(0, -1).join("/");
-        if (parent) {
-          edges.push({
-            id: `e-${parent}-${path}`,
-            source: parent,
-            target: path,
-            type: "smoothstep",
-            style: { stroke: "rgba(255,255,255,0.05)" }
-          });
-        }
+      // Folder edge
+      const parent = path.split("/").slice(0, -1).join("/");
+      if (parent) {
+        edges.push({
+          id: `e-${parent}-${path}`,
+          source: parent,
+          target: path,
+        });
       }
 
-      // Logical Connections (Imports/Requires)
-      if (file.content) {
-        const importRegex = /import\s+.*?from\s+['"](.*?)['"]|require\(['"](.*?)['"]\)|import\(['"](.*?)['"]\)/g;
-        let match;
-        const seenDeps = new Set();
-        
-        while ((match = importRegex.exec(file.content)) !== null) {
-          let importPath = match[1] || match[2] || match[3];
-          if (!importPath) continue;
+      // -------------------------
+      // AST PARSING START
+      // -------------------------
+      if (!file.content) return;
 
-          // Relative imports
-          if (importPath.startsWith(".")) {
-            let normalized = importPath.replace(/\\/g, "/");
-            const currentDir = path.split("/").slice(0, -1).join("/");
-            
-            let absoluteImport;
-            if (normalized.startsWith("./")) {
-              absoluteImport = (currentDir ? currentDir + "/" : "") + normalized.substring(2);
-            } else if (normalized.startsWith("../")) {
-              let upCount = 0;
-              let temp = normalized;
-              while (temp.startsWith("../")) {
-                upCount++;
-                temp = temp.substring(3);
-              }
-              const dirParts = currentDir.split("/");
-              if (dirParts.length >= upCount) {
-                absoluteImport = dirParts.slice(0, dirParts.length - upCount).join("/") + (dirParts.length > upCount ? "/" : "") + temp;
-              }
-            }
+      let ast;
+      try {
+        ast = parse(file.content, {
+          sourceType: "module",
+          plugins: ["jsx", "typescript"],
+        });
+      } catch (err) {
+        console.log("Parse failed:", path);
+        return;
+      }
 
-            if (!absoluteImport) continue;
+      const dependencies = new Set();
 
-            const extensions = ["", ".js", ".jsx", ".ts", ".tsx", ".json", "/index.js", "/index.jsx", "/index.ts", "/index.tsx"];
-            const targetFile = extensions
-              .map(ext => absoluteImport + ext)
-              .find(p => pathSet.has(p));
+      const resolveImport = (importPath) => {
+        if (!importPath.startsWith(".")) return null;
 
-            if (targetFile && targetFile !== path && !seenDeps.has(targetFile)) {
-              seenDeps.add(targetFile);
-              edges.push({
-                id: `dep-${path}-${targetFile}`,
-                source: path,
-                target: targetFile,
-                label: "imports",
-                animated: true,
-                style: { stroke: "rgba(99, 102, 241, 0.4)", strokeWidth: 1.5 }
-              });
-            }
+        const currentDir = path.split("/").slice(0, -1).join("/");
+
+        let absolute = "";
+
+        if (importPath.startsWith("./")) {
+          absolute = currentDir + "/" + importPath.slice(2);
+        } else {
+          let up = 0;
+          let temp = importPath;
+          while (temp.startsWith("../")) {
+            up++;
+            temp = temp.slice(3);
           }
-          
-          // Detect API calls from frontend to backend
-          if ((importPath.includes("axios") || file.content.includes("fetch(")) && !seenDeps.has("__api__")) {
-            const apiMatch = file.content.match(/['"]\/(api\/.*?)['"]/);
-            if (apiMatch) {
-              const apiPath = apiMatch[1];
-              // Try to find a route file that matches this API path
-              const routeFile = filePaths.find(p => (p.includes("routes") || p.includes("api")) && p.toLowerCase().includes(apiPath.split("/")[1]?.toLowerCase() || ""));
-              if (routeFile && routeFile !== path) {
-                seenDeps.add("__api__");
-                edges.push({
-                  id: `api-${path}-${routeFile}`,
-                  source: path,
-                  target: routeFile,
-                  label: "calls api",
-                  animated: true,
-                  style: { stroke: "#ec4899", strokeWidth: 2, strokeDasharray: "5 5" }
-                });
-              }
-            }
+
+          const parts = currentDir.split("/");
+          absolute =
+            parts.slice(0, parts.length - up).join("/") +
+            (parts.length > up ? "/" : "") +
+            temp;
+        }
+
+        const exts = [
+          "",
+          ".js",
+          ".jsx",
+          ".ts",
+          ".tsx",
+          ".json",
+          "/index.js",
+          "/index.jsx",
+        ];
+
+        return exts.map(ext => absolute + ext).find(p => pathSet.has(p));
+      };
+
+      const walk = (node) => {
+        if (!node || typeof node !== "object") return;
+
+        // import x from '...'
+        if (node.type === "ImportDeclaration") {
+          const dep = resolveImport(node.source.value);
+          if (dep) dependencies.add(dep);
+        }
+
+        // require('...')
+        if (
+          node.type === "CallExpression" &&
+          node.callee?.name === "require"
+        ) {
+          const arg = node.arguments?.[0]?.value;
+          const dep = resolveImport(arg);
+          if (dep) dependencies.add(dep);
+        }
+
+        // dynamic import()
+        if (node.type === "ImportExpression") {
+          const arg = node.source?.value;
+          const dep = resolveImport(arg);
+          if (dep) dependencies.add(dep);
+        }
+
+        for (const key in node) {
+          const child = node[key];
+          if (Array.isArray(child)) {
+            child.forEach(walk);
+          } else if (typeof child === "object") {
+            walk(child);
           }
         }
-      }
+      };
+
+      walk(ast);
+
+      dependencies.forEach((target) => {
+        edges.push({
+          id: `dep-${path}-${target}`,
+          source: path,
+          target,
+          label: "imports",
+          animated: true,
+        });
+      });
     });
 
-    // Remove potential duplicate edges
-    const finalEdges = [];
-    const edgeIds = new Set();
-    edges.forEach(edge => {
-      if (edge && edge.id && !edgeIds.has(edge.id)) {
-        edgeIds.add(edge.id);
-        finalEdges.push(edge);
-      }
-    });
-
-    return { nodes, edges: finalEdges };
-  } catch (error) {
-    console.error("Graph generation error:", error);
+    return { nodes, edges };
+  } catch (err) {
+    console.error("Graph error:", err);
     return { nodes: [], edges: [] };
   }
 };
-
