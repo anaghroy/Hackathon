@@ -1,1 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Geist:wght@400;500;600;700;800&display=swap');
+/* Inter */
+@font-face {
+  font-family: "Inter";
+  src: url("/frontend/src/assets/fonts/Inter-Regular.otf") format("otf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/frontend/src/assets/fonts/Inter-Medium.otf") format("otf");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/frontend/src/assets/fonts/Inter-SemiBold.otf") format("otf");
+  font-weight: 600;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/frontend/src/assets/fonts/Inter-Bold.otf") format("otf");
+  font-weight: 700;
+}
+
+/* JetBrains Mono */
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/frontend/src/assets/fonts/JetBrainsMono-Regular.ttf") format("ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/frontend/src/assets/fonts/JetBrainsMono-Medium.ttf") format("ttf");
+  font-weight: 500;
+}
