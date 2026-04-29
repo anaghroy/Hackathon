@@ -12,8 +12,6 @@ export const openRouterAnalyze = async (prompt) => {
 
   for (const model of MODELS) {
     try {
-      console.log("Trying OpenRouter:", model);
-
       const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
@@ -42,7 +40,6 @@ export const openRouterAnalyze = async (prompt) => {
 
       console.log("Success OpenRouter:", model);
       return text;
-
     } catch (err) {
       console.log(`Failed model: ${model}`);
       lastError = err;
