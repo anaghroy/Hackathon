@@ -5,6 +5,7 @@ import { config } from "../config/config.js";
 import { redisClient } from "../config/redis.js";
 import { imagekit } from "../services/image.service.js";
 import { resetPasswordTemplate } from "../emails/resetPassword.template.js";
+import { verifyEmailTemplate } from "../emails/verifyEmail.template.js";
 import { loginLimiter } from "../utils/rateLimiter.js";
 
 /**
@@ -38,17 +39,12 @@ export async function register(req, res) {
 
     const backendUrl = config.FRONTEND_URL || "http://localhost:3000";
 
+    const verifyUrl = `${backendUrl}/api/auth/verify-email?token=${emailVerificationToken}`;
+
     await sendEmail({
       to: email,
       subject: "Welcome to CogniCode",
-      html: `
-        <p>Hi ${username},</p>
-        <p>Thank you for registering at <strong>CogniCode</strong>. We're excited to have you on board!</p>
-        <p>Please verify your email address by clicking the link below:</p>
-        <a href="${backendUrl}/api/auth/verify-email?token=${emailVerificationToken}">Verify Email</a>
-        <p>If you did not create an account, please ignore this email.</p>
-        <p>Best regards,<br>The CogniCode Team</p>
-      `,
+      html: verifyEmailTemplate(verifyUrl, username),
     });
 
     res.status(201).json({
@@ -323,16 +319,12 @@ export async function resendVerificationEmail(req, res) {
 
     const backendUrl = config.FRONTEND_URL || "http://localhost:3000";
 
+    const verifyUrl = `${backendUrl}/api/auth/verify-email?token=${emailVerificationToken}`;
+
     await sendEmail({
       to: email,
-      subject: "Verify your Perplexity account!",
-      html: `
-        <p>Hi ${user.username},</p>
-        <p>You requested to resend the verification email. Please verify your email address by clicking the link below:</p>
-        <a href="${backendUrl}/api/auth/verify-email?token=${emailVerificationToken}">Verify Email</a>
-        <p>If you did not request this, please ignore this email.</p>
-        <p>Best regards,<br>The Perplexity Team</p>
-      `,
+      subject: "Verify your CogniCode account!",
+      html: verifyEmailTemplate(verifyUrl, user.username),
     });
 
     return res.status(200).json({
