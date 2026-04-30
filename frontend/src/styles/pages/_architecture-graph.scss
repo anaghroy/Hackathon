@@ -5,6 +5,7 @@
   .custom-node {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     
+    
     &--selected {
       border-width: 1.5px !important;
     }
@@ -24,7 +25,7 @@
     button {
       background: #111318;
       border-bottom: 1px solid rgba(255,255,255,0.05);
-      color: #94a3b8;
+      color: #b89594;
       fill: #94a3b8;
       
       &:hover {

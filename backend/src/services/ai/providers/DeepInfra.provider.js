@@ -11,7 +11,7 @@ const deepinfra = axios.create({
 
 export const deepInfraAnalyze = async (prompt) => {
   const res = await deepinfra.post("/chat/completions", {
-    model: "meta-llama/Meta-Llama-3-70B-Instruct",
+    model: "meta-llama/Meta-Llama-3.1-70B-Instruct",
     messages: [{ role: "user", content: prompt }],
   });
 

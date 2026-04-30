@@ -28,7 +28,8 @@ const DeploymentPanel = () => {
 
     // Poll every 5 seconds if deployment is active
     pollInterval.current = setInterval(() => {
-      if (currentDeployment && ['building', 'deploying', 'queued'].includes(currentDeployment.status)) {
+      const status = currentDeployment?.status?.toLowerCase();
+      if (status && ['building', 'deploying', 'queued'].includes(status)) {
         fetchDeployStatus(projectId);
       }
     }, 5000);
@@ -45,9 +46,10 @@ const DeploymentPanel = () => {
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'success': return '#10b981';
+  const getStatusColor = (status = '') => {
+    const s = status.toLowerCase();
+    switch (s) {
+      case 'success': return '#16c11f';
       case 'failed': return '#ef4444';
       case 'building':
       case 'deploying': return '#3b82f6';
@@ -55,8 +57,9 @@ const DeploymentPanel = () => {
     }
   };
 
-  const getStatusIcon = (status) => {
-    switch (status) {
+  const getStatusIcon = (status = '') => {
+    const s = status.toLowerCase();
+    switch (s) {
       case 'success': return <CheckCircle2 size={18} />;
       case 'failed': return <AlertCircle size={18} />;
       case 'building':
@@ -153,7 +156,7 @@ const DeploymentPanel = () => {
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
                         <span style={{ fontSize: '24px', fontWeight: '700' }}>
-                          Deployment {currentDeployment.status.toUpperCase()}
+                          Deployment {currentDeployment.status?.toUpperCase()}
                         </span>
                         <div style={{ color: getStatusColor(currentDeployment.status) }}>
                           {getStatusIcon(currentDeployment.status)}
@@ -163,9 +166,9 @@ const DeploymentPanel = () => {
                         Production • {currentDeployment.branch || 'main'} • {new Date(currentDeployment.createdAt).toLocaleString()}
                       </p>
                     </div>
-                    {currentDeployment.status === 'success' && (
+                    {currentDeployment.status?.toLowerCase() === 'success' && (
                       <a 
-                        href={currentDeployment.url} 
+                        href={currentDeployment.url || '#'} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="editor-btn editor-btn--primary"
@@ -180,8 +183,9 @@ const DeploymentPanel = () => {
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '4px', marginBottom: '32px' }}>
                     {['Queued', 'Building', 'Deploying', 'Live'].map((stage, idx) => {
                       const stages = ['queued', 'building', 'deploying', 'success'];
-                      const currentIdx = stages.indexOf(currentDeployment.status);
-                      const isComplete = idx < currentIdx || currentDeployment.status === 'success';
+                      const currentStatus = currentDeployment.status?.toLowerCase();
+                      const currentIdx = stages.indexOf(currentStatus);
+                      const isComplete = idx < currentIdx || currentStatus === 'success';
                       const isActive = idx === currentIdx;
 
                       return (

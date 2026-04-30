@@ -11,7 +11,7 @@ const NodeWrapper = ({ children, selected, type, label, icon: Icon, color }) => 
       className={`custom-node custom-node--${type} ${selected ? 'custom-node--selected' : ''}`}
       style={{
         padding: '14px 24px',
-        borderRadius: '0', // Sharp edges as requested
+        borderRadius: '2rem',
         background: selected ? 'rgba(255, 255, 255, 0.04)' : '#050505',
         border: `1.5px solid ${selected ? color : 'rgba(255, 255, 255, 0.1)'}`,
         boxShadow: selected 
@@ -42,7 +42,7 @@ const NodeWrapper = ({ children, selected, type, label, icon: Icon, color }) => 
       <div style={{
         width: '38px',
         height: '38px',
-        borderRadius: '0',
+        borderRadius: '2rem',
         background: `${color}15`,
         display: 'flex',
         alignItems: 'center',

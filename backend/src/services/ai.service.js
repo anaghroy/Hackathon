@@ -1,22 +1,58 @@
 import { geminiAnalyze } from "../services/ai/providers/gemini.provider.js";
 import { groqAnalyze } from "../services/ai/providers/groq.provider.js";
-import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
 import { huggingfaceAnalyze } from "../services/ai/providers/huggingface.provider.js";
-import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js";
-import { cohereAnalyze } from "../services/ai/providers/cohere.provider.js";
 import { openRouterAnalyze } from "../services/ai/providers/openrouter.provider.js";
+import { cohereAnalyze } from "../services/ai/providers/cohere.provider.js";
+import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
+import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js";
 
-const withTimeout = (promise, ms = 8000) => {
+// -----------------------------
+// CONFIG
+// -----------------------------
+const TIMEOUT_MS = 15000;
+const MAX_PROMPT_LENGTH = 12000;
+const MIN_VALID_LENGTH = 50;
+
+// -----------------------------
+// TIMEOUT WRAPPER
+// -----------------------------
+const withTimeout = (promise, ms = TIMEOUT_MS) => {
   return Promise.race([
     promise,
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Timeout")), ms),
+      setTimeout(() => reject(new Error("timeout")), ms),
     ),
   ]);
 };
 
-// Retry wrapper
-const retry = async (fn, retries = 2) => {
+// ERROR CLASSIFICATION
+
+const isRetryable = (err) => {
+  const msg = err.message?.toLowerCase() || "";
+
+  return (
+    msg.includes("timeout") ||
+    msg.includes("econnreset") ||
+    msg.includes("503") ||
+    msg.includes("loading")
+  );
+};
+
+const shouldSkipProvider = (err) => {
+  const msg = err.message?.toLowerCase() || "";
+
+  return (
+    msg.includes("402") || // no credits
+    msg.includes("quota") ||
+    msg.includes("not found") ||
+    msg.includes("invalid model") ||
+    msg.includes("401")
+  );
+};
+
+// RETRY LOGIC
+
+const retry = async (fn, retries = 1) => {
   let lastError;
 
   for (let i = 0; i <= retries; i++) {
@@ -24,12 +60,40 @@ const retry = async (fn, retries = 2) => {
       return await fn();
     } catch (err) {
       lastError = err;
-      console.log(`Retry ${i + 1} failed`);
+
+      if (!isRetryable(err)) {
+        throw err; // don't retry useless errors
+      }
+
+      console.log(`Retry ${i + 1} (retryable error)`);
     }
   }
 
   throw lastError;
 };
+
+// RESPONSE VALIDATION
+
+const isValidResponse = (res) => {
+  return (
+    typeof res === "string" &&
+    res.length > MIN_VALID_LENGTH &&
+    !res.toLowerCase().includes("error") &&
+    !res.toLowerCase().includes("failed")
+  );
+};
+
+// PROMPT TRIMMER
+
+const trimPrompt = (prompt) => {
+  if (!prompt) return "";
+
+  return prompt.length > MAX_PROMPT_LENGTH
+    ? prompt.slice(-MAX_PROMPT_LENGTH)
+    : prompt;
+};
+
+// MAIN ANALYZER
 
 export const analyzeCodeWithAI = async (parsedData) => {
   const prompt =
@@ -38,14 +102,17 @@ export const analyzeCodeWithAI = async (parsedData) => {
 Files: ${parsedData?.totalFiles || 0}
 Lines: ${parsedData?.totalLines || 0}`;
 
+  const safePrompt = trimPrompt(prompt);
+
+  // CLEAN provider order
   const providers = [
-    { name: "Gemini", fn: geminiAnalyze },
-    { name: "DeepInfra", fn: deepInfraAnalyze },
-    { name: "OpenRouter", fn: openRouterAnalyze },
-    { name: "Together", fn: togetherAnalyze },
-    { name: "HuggingFace", fn: huggingfaceAnalyze },
     { name: "Groq", fn: groqAnalyze },
+    { name: "OpenRouter", fn: openRouterAnalyze },
+    { name: "Gemini", fn: geminiAnalyze },
+    { name: "HuggingFace", fn: huggingfaceAnalyze },
     { name: "Cohere", fn: cohereAnalyze },
+    { name: "DeepInfra", fn: deepInfraAnalyze },
+    { name: "Together", fn: togetherAnalyze },
   ];
 
   let lastError = null;
@@ -55,19 +122,25 @@ Lines: ${parsedData?.totalLines || 0}`;
       console.log(`Trying ${provider.name}`);
 
       const result = await retry(
-        () => withTimeout(provider.fn(prompt), 8000),
-        1, // retry count
+        () => withTimeout(provider.fn(safePrompt), TIMEOUT_MS),
+        1,
       );
 
-      // validate response
-      if (result && result.length > 20) {
+      if (isValidResponse(result)) {
         console.log(`Success with ${provider.name}`);
         return result;
       }
 
       throw new Error("Invalid response");
     } catch (err) {
-      console.error(`${provider.name} failed:`, err.message);
+      const msg = err.message || "";
+
+      if (shouldSkipProvider(err)) {
+        console.log(`⏭Skipping ${provider.name} (non-retryable issue)`);
+        continue;
+      }
+
+      console.error(`${provider.name} failed:`, msg);
       lastError = err;
     }
   }
@@ -77,31 +150,53 @@ Lines: ${parsedData?.totalLines || 0}`;
   return "AI system overloaded. Please try again.";
 };
 
+// SECURITY ANALYSIS
+
 export const analyzeCodeSecurity = async (projectId, projectFiles) => {
-  const fileSummary = projectFiles
-    .map((f) => `File: ${f.filename}\n${f.content}`)
-    .join("\n\n");
-  const prompt = `Analyze the following codebase for security vulnerabilities (e.g. OWASP top 10). 
-Return a JSON object with a 'highRiskIssues' count and an 'issues' array detailing the vulnerabilities. 
-If no critical issues, 'highRiskIssues' should be 0.
+  try {
+    const MAX_FILES = 5;
+    const MAX_FILE_CHARS = 2000;
+
+    const fileSummary = projectFiles
+      .slice(0, MAX_FILES)
+      .map(
+        (f) =>
+          `File: ${f.filename}\n${(f.content || "").slice(0, MAX_FILE_CHARS)}`,
+      )
+      .join("\n\n");
+
+    const prompt = `Analyze the following codebase for security vulnerabilities (OWASP Top 10).
+
+Return STRICT JSON:
+{
+  "highRiskIssues": number,
+  "issues": string[]
+}
+
+If no critical issues, set "highRiskIssues": 0.
+
 Code:
 ${fileSummary}`;
 
-  try {
-    const aiResult = await analyzeCodeWithAI({ customPrompt: prompt });
-    let result;
+    const aiResult = await analyzeCodeWithAI({
+      customPrompt: prompt,
+    });
+
+    let parsed;
+
     try {
-      result = JSON.parse(aiResult.replace(/```json|```/g, ""));
-    } catch (e) {
-      // Fallback if parsing fails, assume safe for now or handle appropriately
-      result = {
+      parsed = JSON.parse(aiResult.replace(/```json|```/g, ""));
+    } catch {
+      parsed = {
         highRiskIssues: 0,
-        issues: ["Failed to parse AI security response"],
+        issues: ["Failed to parse AI response"],
       };
     }
-    return result;
+
+    return parsed;
   } catch (err) {
     console.error("Security scan failed:", err);
+
     return {
       highRiskIssues: 0,
       issues: ["Security scan failed due to server error"],

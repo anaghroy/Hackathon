@@ -61,6 +61,7 @@ authRouter.post("/login", loginValidator, login);
  * @access Private
  */
 authRouter.get("/get-me", authUser, getMe);
+authRouter.get("/profile", authUser, getMe); // Alias for standardized tests
 
 /**
  * @route GET /api/auth/verify-email

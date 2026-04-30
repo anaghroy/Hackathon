@@ -7,7 +7,7 @@ const cohere = new CohereClient({
 
 export const cohereAnalyze = async (prompt) => {
   const res = await cohere.chat({
-    model: "command-a",
+    model: "command",
     message: prompt,
     temperature: 0.3,
     maxTokens: 1200,

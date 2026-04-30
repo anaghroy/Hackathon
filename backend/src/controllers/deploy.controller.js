@@ -38,8 +38,7 @@ export const triggerDeployment = async (req, res) => {
     return res.status(202).json({
       success: true,
       message: "Deployment triggered and queued.",
-      deploymentId: deployment._id,
-      status: deployment.status,
+      deployment,
     });
   } catch (error) {
     console.error("Error triggering deployment:", error);
@@ -96,9 +95,11 @@ async function simulateDeploymentProcess(deploymentId, project) {
     await wait(2000);
 
     // Stage 3: SUCCESS
+    const simulatedUrl = `https://${project.repoName.split('/')[1] || 'app'}.cognicode.dev`;
     await Deployment.findByIdAndUpdate(deploymentId, {
       status: "SUCCESS",
-      $push: { logs: { message: `Container started. Deployment live.`, type: "system" } }
+      url: simulatedUrl,
+      $push: { logs: { message: `Container started. Deployment live at ${simulatedUrl}`, type: "system" } }
     });
 
   } catch (error) {
@@ -232,7 +233,7 @@ export const getDeploymentStatus = async (req, res) => {
     const { projectId } = req.params;
     const deployment = await Deployment.findOne({ project: projectId }).sort({ createdAt: -1 });
     if (!deployment) {
-      return res.status(404).json({ success: false, message: "No deployment found." });
+      return res.status(200).json({ success: true, deployment: null });
     }
     return res.status(200).json({ success: true, deployment });
   } catch (error) {

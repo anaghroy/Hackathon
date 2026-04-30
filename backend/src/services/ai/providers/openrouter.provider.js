@@ -2,9 +2,10 @@ import fetch from "node-fetch";
 import { config } from "../../../config/config.js";
 
 const MODELS = [
+  "deepseek/deepseek-chat",
   "meta-llama/llama-3.1-8b-instruct",
   "mistralai/mistral-7b-instruct",
-  "deepseek-ai/deepseek-chat",
+  "x-ai/grok-3-mini:free",
 ];
 
 export const openRouterAnalyze = async (prompt) => {

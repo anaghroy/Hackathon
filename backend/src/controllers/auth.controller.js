@@ -95,7 +95,7 @@ export async function login(req, res) {
     });
 
     if (!user) {
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Invalid username/email or password",
         success: false,
       });
@@ -115,7 +115,7 @@ export async function login(req, res) {
       const consumed = await loginLimiter.consume(key);
       console.log("RATE STATE AFTER FAIL:", consumed);
 
-      return res.status(400).json({
+      return res.status(401).json({
         message: "Invalid username/email or password",
         success: false,
       });
@@ -186,7 +186,11 @@ export async function getMe(req, res) {
   res.status(200).json({
     message: "User details fetched successfully",
     success: true,
-    user,
+    id: user._id,
+    user: {
+      ...user.toObject(),
+      id: user._id,
+    },
   });
 }
 
@@ -198,7 +202,8 @@ export async function getMe(req, res) {
  */
 export async function verifyEmail(req, res) {
   const { token } = req.query;
-  const frontendUrl = config.FRONTEND_URL + "/login" || "http://localhost:5173/login";
+  const frontendUrl =
+    config.FRONTEND_URL + "/login" || "http://localhost:5173/login";
 
   try {
     const decoded = jwt.verify(token, config.JWT_SECRET);

@@ -16,6 +16,9 @@ const deploymentSchema = new mongoose.Schema(
       type: String,
       default: "latest",
     },
+    url: {
+      type: String,
+    },
     logs: [
       {
         timestamp: { type: Date, default: Date.now },

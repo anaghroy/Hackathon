@@ -11,6 +11,13 @@ export const createProject = async (req, res) => {
   try {
     const { title, description } = req.body;
 
+    if (!title) {
+      return res.status(400).json({
+        message: "Title is required",
+        success: false,
+      });
+    }
+
     const project = await Project.create({
       user: req.user.id,
       title,
@@ -20,7 +27,10 @@ export const createProject = async (req, res) => {
     return res.status(201).json({
       message: "Project created successfully",
       success: true,
-      project,
+      project: {
+        ...project.toObject(),
+        id: project._id,
+      },
     });
   } catch (error) {
     console.error("Project Creation Error:", error);
