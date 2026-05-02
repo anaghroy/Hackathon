@@ -20,6 +20,7 @@ import {
   bulkInviteApi,
   getRecentCollaboratorsApi,
 } from "../services/projectApi.service";
+import toast from "react-hot-toast";
 
 export const useProject = () => {
   const dispatch = useDispatch();
@@ -65,14 +66,28 @@ export const useProject = () => {
   };
 
   // Update project
-  const updateProject = async (id, data) => {
+  const updateProject = async (id, payload) => {
     try {
-      const res = await updateProjectApi(id, data);
-      dispatch(updateProjectInState(res.data.project));
-      return res.data;
+      dispatch(setLoading(true));
+      // Normalize payload (backend expects title)
+      const apiPayload = {
+        title: payload.name || payload.title,
+        description: payload.description,
+      };
+
+      const res = await updateProjectApi(id, apiPayload);
+      if (res.data.success) {
+        dispatch(updateProjectInState(res.data.project));
+        toast.success("Project updated successfully");
+        return res.data;
+      }
     } catch (err) {
-      dispatch(setError(err.message));
+      const message = err.response?.data?.message || err.message;
+      dispatch(setError(message));
+      toast.error(message);
       throw err;
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

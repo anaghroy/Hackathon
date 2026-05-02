@@ -5,10 +5,10 @@
   background-color: $bg-panel;
   border: 1px solid $border;
   border-radius: 0;
-  padding: 2.5rem;
+  padding: 0.5rem;
   
   @media (max-width: 640px) {
-    padding: 1.5rem;
+    padding: 0px;
   }
 }
 

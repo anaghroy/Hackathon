@@ -135,7 +135,7 @@
       .avatar-wrapper {
         width: 140px;
         height: 140px;
-        border-radius: 0px;
+        border-radius: 50% !important;
         position: relative;
         cursor: pointer;
         background-color: $bg-soft;
@@ -145,11 +145,11 @@
         transition: $transition;
         box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
 
-        \u0026::before {
+        &::before {
           content: '';
           position: absolute;
           inset: -6px;
-          border-radius: 0px;
+          border-radius: 50% !important;
           border: 1px solid rgba(16, 185, 129, 0.3);
           animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
         }
@@ -172,7 +172,8 @@
           width: 100%;
           height: 100%;
           object-fit: cover;
-          border-radius: 0px;
+          border-radius: 50% !important;
+          overflow: hidden;
           transition: transform 0.5s ease;
         }
 
@@ -186,7 +187,8 @@
           font-weight: 600;
           color: $text-muted;
           background: $bg-panel;
-          border-radius: 0px;
+          border-radius: 50% !important;
+          overflow: hidden;
         }
 
         .avatar-overlay {
@@ -202,7 +204,7 @@
           opacity: 0;
           transition: all 0.3s ease;
           color: $white;
-          border-radius: 0px;
+          border-radius: 50% !important;
 
           span {
             font-size: 0.65rem;

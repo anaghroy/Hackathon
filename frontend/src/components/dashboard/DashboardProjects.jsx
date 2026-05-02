@@ -1,12 +1,13 @@
 import React from 'react';
-import { Folder, Plus, GitCompare, Trash2, ExternalLink } from 'lucide-react';
+import { Folder, Plus, GitCompare, Trash2, ExternalLink, Pencil } from 'lucide-react';
 
 const DashboardProjects = ({ 
   projects, 
   projectLoading, 
   navigate, 
   setIsCreateModalOpen, 
-  openDeleteModal 
+  openDeleteModal,
+  openEditModal 
 }) => {
   return (
     <>
@@ -79,13 +80,20 @@ const DashboardProjects = ({
               </div>
               <div className="project-card__actions">
                 <button
+                   className="project-card__btn project-card__btn--edit"
+                   onClick={(e) => openEditModal(e, project)}
+                   title="Edit Project"
+                >
+                   <Pencil size={14} />
+                </button>
+                <button
                    className="project-card__btn project-card__btn--delete"
                    onClick={(e) => openDeleteModal(e, project)}
                 >
                    <Trash2 size={14} />
                 </button>
-                <button className="project-card__btn">
-                   <ExternalLink size={14} /> Open
+                <button className="project-card__btn" title="Open Project">
+                   <ExternalLink size={14} />
                 </button>
               </div>
             </div>
