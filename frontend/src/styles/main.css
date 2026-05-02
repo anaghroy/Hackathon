@@ -93,6 +93,11 @@ button, input, textarea {
   font-family: inherit;
 }
 
+/* Global Sharp Edge Rule - Strict */
+* {
+  border-radius: 0px !important;
+}
+
 .dashboard {
   display: grid;
   grid-template-areas: "nav nav" "sidebar main";
@@ -184,7 +189,7 @@ button, input, textarea {
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 0;
+  border-radius: 0px;
   overflow: hidden;
 }
 .navbar__brand-logo img {
@@ -217,7 +222,7 @@ button, input, textarea {
   gap: 0.75rem;
   cursor: pointer;
   padding: 0.375rem;
-  border-radius: 50px;
+  border-radius: 0px;
   background: transparent;
   border: none;
   transition: all all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -228,7 +233,7 @@ button, input, textarea {
 .navbar__user-avatar {
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: 0px;
   background: #3676de;
   display: flex;
   align-items: center;
@@ -245,7 +250,7 @@ button, input, textarea {
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
-  border-radius: 50%;
+  border-radius: 0px;
 }
 .navbar__user .status-indicator {
   position: absolute;
@@ -253,7 +258,7 @@ button, input, textarea {
   right: -1px;
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: 0px;
   border: 2px solid #050505;
   background: #10b981;
   z-index: 10;
@@ -300,7 +305,7 @@ button, input, textarea {
   cursor: pointer;
   width: 40px;
   height: 40px;
-  border-radius: 0;
+  border-radius: 0px;
   transition: all all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   align-items: center;
   justify-content: center;
@@ -376,7 +381,7 @@ button, input, textarea {
   align-items: center;
   gap: 0.625rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 0;
+  border-radius: 0px;
   color: rgba(255, 255, 255, 0.7);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -425,7 +430,7 @@ button, input, textarea {
   justify-content: center;
   gap: 0.625rem;
   padding: 0.5rem 0.75rem;
-  border-radius: 0;
+  border-radius: 0px;
   background: transparent;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.7);
@@ -453,7 +458,7 @@ button, input, textarea {
   align-items: center;
   justify-content: center;
   padding: 0.625rem 1.25rem;
-  border-radius: 0;
+  border-radius: 0px;
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -724,7 +729,7 @@ button, input, textarea {
   height: 22px;
   border: 3px solid rgba(255, 255, 255, 0.35);
   border-top-color: #ffffff;
-  border-radius: 50%;
+  border-radius: 0px;
   animation: spin 0.8s linear infinite;
 }
 
@@ -783,7 +788,7 @@ button, input, textarea {
   position: absolute;
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: 0px;
   border: 3px solid transparent;
   border-top-color: #3676de;
   border-right-color: rgba(54, 118, 222, 0.3);
@@ -796,7 +801,7 @@ button, input, textarea {
   left: -3px;
   right: -3px;
   bottom: -3px;
-  border-radius: 50%;
+  border-radius: 0px;
   border: 3px solid transparent;
   border-top-color: #3676de;
   filter: blur(8px);
@@ -850,7 +855,7 @@ button, input, textarea {
   align-items: center;
   background-color: #0a0a0a;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0;
+  border-radius: 0px;
   padding: 0 1rem;
   width: 100%;
   transition: border-color all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
@@ -887,7 +892,7 @@ button, input, textarea {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 0;
+  border-radius: 0px;
   padding: 1.25rem;
   transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   cursor: pointer;
@@ -972,7 +977,7 @@ button, input, textarea {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.625rem 1.125rem;
-  border-radius: 0;
+  border-radius: 0px;
   font-size: 0.8125rem;
   font-weight: 600;
   cursor: pointer;
@@ -1040,7 +1045,7 @@ button, input, textarea {
 .modal-content {
   background: rgba(10, 10, 10, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0;
+  border-radius: 0px;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
   width: 100%;
   max-width: 500px;
@@ -1079,7 +1084,7 @@ button, input, textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
+  border-radius: 0px;
   transition: all all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 .modal-header .close-btn:hover {
@@ -1290,7 +1295,7 @@ button, input, textarea {
 .auth-visual .visual-content .visual-image-container .floating-card {
   position: relative;
   width: 100%;
-  border-radius: 12px;
+  border-radius: 0px;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -1316,7 +1321,7 @@ button, input, textarea {
   height: 20px;
   background: rgba(0, 0, 0, 0.4);
   filter: blur(20px);
-  border-radius: 50%;
+  border-radius: 0px;
   transform: rotateX(70deg);
   animation: shadow-pulse 8s ease-in-out infinite;
 }
@@ -1613,7 +1618,7 @@ button, input, textarea {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px dashed rgba(255, 255, 255, 0.1);
-  border-radius: 0;
+  border-radius: 0px;
   gap: 1.5rem;
   transition: all all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
@@ -1755,7 +1760,7 @@ button, input, textarea {
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   padding: 0.5rem 0.75rem;
-  border-radius: 0;
+  border-radius: 0px;
 }
 .project-detail-page .btn-minimal:hover {
   color: #ffffff;
@@ -1874,7 +1879,7 @@ button, input, textarea {
   flex: 1;
   background-color: #050505;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 0;
+  border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1948,7 +1953,7 @@ button, input, textarea {
   width: 8px;
   height: 8px;
   background-color: #10b981;
-  border-radius: 50%;
+  border-radius: 0px;
   box-shadow: 0 0 8px #10b981;
 }
 .project-detail-page .ai-chat-sidebar .chat-messages {
@@ -2076,7 +2081,7 @@ button, input, textarea {
   height: 40px;
   border: 2px solid rgba(255, 255, 255, 0.05);
   border-top: 2px solid #ffffff;
-  border-radius: 50%;
+  border-radius: 0px;
   animation: rotate 1s linear infinite;
 }
 .profile-page .profile-loading-screen p {
@@ -2093,7 +2098,7 @@ button, input, textarea {
   height: 16px;
   border: 2px solid rgba(0, 0, 0, 0.1);
   border-top: 2px solid #000000;
-  border-radius: 50%;
+  border-radius: 0px;
   animation: rotate 0.8s linear infinite;
 }
 .profile-page .profile-header-nav {
@@ -2181,7 +2186,7 @@ button, input, textarea {
 .profile-page .profile-sidebar .avatar-section .avatar-wrapper {
   width: 140px;
   height: 140px;
-  border-radius: 50%;
+  border-radius: 0px;
   position: relative;
   cursor: pointer;
   background-color: #0a0a0a;
@@ -2195,7 +2200,7 @@ button, input, textarea {
   content: "";
   position: absolute;
   inset: -6px;
-  border-radius: 50%;
+  border-radius: 0px;
   border: 1px solid rgba(16, 185, 129, 0.3);
   animation: pulse-ring 2s cubic-bezier(0.455, 0.03, 0.515, 0.955) infinite;
 }
@@ -2215,7 +2220,7 @@ button, input, textarea {
   height: 100%;
   -o-object-fit: cover;
      object-fit: cover;
-  border-radius: 50%;
+  border-radius: 0px;
   transition: transform 0.5s ease;
 }
 .profile-page .profile-sidebar .avatar-section .avatar-wrapper .avatar-initials {
@@ -2228,7 +2233,7 @@ button, input, textarea {
   font-weight: 600;
   color: rgba(255, 255, 255, 0.7);
   background: #050505;
-  border-radius: 50%;
+  border-radius: 0px;
 }
 .profile-page .profile-sidebar .avatar-section .avatar-wrapper .avatar-overlay {
   position: absolute;
@@ -2243,7 +2248,7 @@ button, input, textarea {
   opacity: 0;
   transition: all 0.3s ease;
   color: #ffffff;
-  border-radius: 50%;
+  border-radius: 0px;
 }
 .profile-page .profile-sidebar .avatar-section .avatar-wrapper .avatar-overlay span {
   font-size: 0.65rem;
@@ -2994,7 +2999,7 @@ button, input, textarea {
 }
 .verify-page .blob {
   position: absolute;
-  border-radius: 50%;
+  border-radius: 0px;
   filter: blur(120px);
   z-index: 0;
   opacity: 0.1;
@@ -3004,14 +3009,14 @@ button, input, textarea {
   right: -5%;
   width: 400px;
   height: 400px;
-  background: #ffffff;
+  background: #3b82f6;
 }
 .verify-page .blob-2 {
   bottom: -10%;
   left: -5%;
   width: 300px;
   height: 300px;
-  background: #a1a1aa;
+  background: #2563eb;
 }
 
 .verify-card {
@@ -3036,11 +3041,11 @@ button, input, textarea {
   height: 64px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
+  border-radius: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: #3b82f6;
   animation: pulseSubtle 3s infinite ease-in-out;
 }
 .verify-card .card-header {
@@ -3653,8 +3658,8 @@ button, input, textarea {
   gap: 4px;
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 10px;
-  border-radius: 0;
+  padding: 8px 8px;
+  border-radius: 0px;
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.25, 0.1, 0.25, 1);
   border: 1px solid transparent;
@@ -3922,7 +3927,7 @@ button, input, textarea {
 .editor-memory-list__item .bullet {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: 0px;
   background-color: #10b981;
   margin-top: 5px;
   flex-shrink: 0;
@@ -4179,7 +4184,7 @@ button, input, textarea {
   display: none;
   width: 8px;
   height: 8px;
-  border-radius: 50%;
+  border-radius: 0px;
   background-color: rgba(255, 255, 255, 0.5);
   margin-left: 4px;
 }
@@ -4245,7 +4250,7 @@ button, input, textarea {
   width: 48px;
   height: 48px;
   border: 3px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
+  border-radius: 0px;
   border-top-color: #3676de;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 24px;
@@ -4728,10 +4733,10 @@ button, input, textarea {
   color: #10b981;
 }
 .ai-card--warning {
-  border-color: rgba(239, 166, 71, 0.15);
+  border-color: rgba(245, 158, 11, 0.15);
 }
 .ai-card--warning .ai-card__title svg {
-  color: #efa647;
+  color: #f59e0b;
 }
 
 .ai-code-block {
@@ -4835,8 +4840,8 @@ button, input, textarea {
   color: #ef4444;
 }
 .ai-badge--medium {
-  background: rgba(239, 166, 71, 0.1);
-  color: #efa647;
+  background: rgba(245, 158, 11, 0.1);
+  color: #f59e0b;
 }
 .ai-badge--low {
   background: rgba(59, 130, 246, 0.1);
@@ -4988,7 +4993,7 @@ button, input, textarea {
   height: 48px;
   border: 3px solid rgba(99, 102, 241, 0.1);
   border-top: 3px solid #6366f1;
-  border-radius: 50%;
+  border-radius: 0px;
   animation: spin 1s linear infinite;
 }
 .architecture-page {

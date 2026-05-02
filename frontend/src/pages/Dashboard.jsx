@@ -4,6 +4,9 @@ import { useAuth } from "../hooks/useAuth";
 import useProject from "../hooks/useProject";
 import useForm from "../hooks/useForm";
 import { authValidator } from "../utils/validators";
+import ProjectSearch from "../components/ProjectSearch";
+import AccountSettings from "./AccountSettings";
+import SharedProjects from "./SharedProjects";
 import {
   Plus,
   Folder,
@@ -23,8 +26,6 @@ import toast from "react-hot-toast";
 import brandLogo from "../assets/Brand logo.png";
 
 const DashboardOverview = React.lazy(() => import("../components/dashboard/DashboardOverview"));
-const DashboardShared = React.lazy(() => import("../components/dashboard/DashboardShared"));
-const DashboardSettings = React.lazy(() => import("../components/dashboard/DashboardSettings"));
 const DashboardProjects = React.lazy(() => import("../components/dashboard/DashboardProjects"));
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -252,9 +253,9 @@ const Dashboard = () => {
             My Projects
           </div>
           <div
-            className="sidebar__item"
+            className={`sidebar__item ${activeTab === "shared" ? "sidebar__item--active" : ""}`}
             onClick={() => {
-              navigate("/shared-projects");
+              setActiveTab("shared");
               setIsSidebarOpen(false);
             }}
           >
@@ -264,7 +265,7 @@ const Dashboard = () => {
           <div
             className={`sidebar__item ${activeTab === "settings" ? "sidebar__item--active" : ""}`}
             onClick={() => {
-              navigate("/account-settings");
+              setActiveTab("settings");
               setIsSidebarOpen(false);
             }}
           >
@@ -292,7 +293,10 @@ const Dashboard = () => {
         >
           <div
             className="sidebar__item logout-btn"
-            onClick={handleLogout}
+            onClick={async () => {
+              await handleLogout();
+              navigate("/");
+            }}
             style={{ width: "100%", justifyContent: "center" }}
           >
             <LogOut size={20} />
@@ -360,44 +364,14 @@ const Dashboard = () => {
         )}
 
         {activeTab === "shared" && (
-          <div className="shared-page">
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Shared With Me</h1>
-                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
-                  Projects and workspaces shared by your team.
-                </p>
-              </div>
-            </header>
-            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
-              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
-                <Users size={48} strokeWidth={1} />
-              </div>
-              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
-                No projects have been shared with you yet.
-              </p>
-            </div>
+          <div className="dashboard-shared-container">
+            <SharedProjects onBack={() => setActiveTab("projects")} />
           </div>
         )}
 
         {activeTab === "settings" && (
-          <div className="settings-page">
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Settings</h1>
-                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
-                  Manage your personal account preferences.
-                </p>
-              </div>
-            </header>
-            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
-              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
-                <Settings size={48} strokeWidth={1} />
-              </div>
-              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
-                Settings panel is currently being updated.
-              </p>
-            </div>
+          <div className="dashboard-settings-container">
+            <AccountSettings onBack={() => setActiveTab("projects")} />
           </div>
         )}
 

@@ -8,7 +8,7 @@ import {
 import { getSettings, updateSettings } from '../services/settings.service';
 import { toast } from 'react-hot-toast';
 
-const AccountSettings = () => {
+const AccountSettings = ({ onBack }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -61,7 +61,7 @@ const AccountSettings = () => {
         <div className="settings-page__header">
           <div className="settings-page__title-group">
             <button 
-              onClick={() => navigate('/dashboard')}
+              onClick={onBack || (() => navigate('/dashboard'))}
               className="settings-page__back-btn"
             >
               <ArrowLeft size={20} />

@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
-const SharedProjects = () => {
+const SharedProjects = ({ onBack }) => {
   const navigate = useNavigate();
   const { fetchSharedProjects, loading } = useProject();
   const [sharedProjects, setSharedProjects] = useState([]);
@@ -48,7 +48,7 @@ const SharedProjects = () => {
         {/* Header */}
         <header className="shared-projects__header">
           <div className="shared-projects__title-group">
-            <button onClick={() => navigate('/dashboard')} className="shared-projects__back-btn">
+            <button onClick={onBack || (() => navigate('/dashboard'))} className="shared-projects__back-btn">
               <ArrowLeft size={20} />
             </button>
             <h1 className="shared-projects__title">Shared with Me</h1>
@@ -72,7 +72,7 @@ const SharedProjects = () => {
             <Users size={48} strokeWidth={1} />
             <h3>No Shared Projects</h3>
             <p>Projects that others share with you will appear here.</p>
-            <button onClick={() => navigate('/dashboard')} className="btn btn-primary">
+            <button onClick={onBack || (() => navigate('/dashboard'))} className="btn btn-primary">
               Back to My Projects
             </button>
           </div>
