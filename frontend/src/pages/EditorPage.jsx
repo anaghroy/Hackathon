@@ -523,7 +523,6 @@ const EditorPage = () => {
   }
 
   const projectTitle = selectedProject?.title || 'Untitled Project';
-  const displayTitle = projectTitle.length > 20 ? projectTitle.substring(0, 17) + '...' : projectTitle;
   const shortId = projectId.substring(0, 8);
 
   return (
@@ -532,7 +531,7 @@ const EditorPage = () => {
       <header className="editor-header">
         <div className="editor-header__left">
           <div className="editor-header__info">
-            <h1 className="editor-header__title" title={projectTitle}>{displayTitle}</h1>
+            <h1 className="editor-header__title" title={projectTitle}>{projectTitle}</h1>
             <span className="editor-header__subtitle">ID: {shortId}</span>
           </div>
         </div>

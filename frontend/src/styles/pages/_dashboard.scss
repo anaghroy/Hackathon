@@ -91,27 +91,36 @@
 }
 
 .overview-docs {
-  max-width: 900px;
+  max-width: 100%;
   margin: 0;
-  padding: 1rem 0;
+  padding: 0;
+  width: 100%;
   
   .docs-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
     margin-bottom: 3rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    gap: 0.5rem;
     
     .docs-title {
-      font-size: 1.75rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: $white;
-      margin-bottom: 1rem;
-      letter-spacing: -0.03em;
+      margin: 0;
+      letter-spacing: -0.04em;
     }
     
     .docs-lead {
-      font-size: 0.9375rem;
+      font-size: 0.875rem;
       color: $text-muted;
       line-height: 1.6;
       max-width: 640px;
       font-weight: 400;
+      margin: 0;
     }
   }
   

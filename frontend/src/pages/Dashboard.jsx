@@ -21,6 +21,7 @@ import {
   GitCompare,
   Menu,
   Rocket,
+  Pencil,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import brandLogo from "../assets/Brand logo.png";
@@ -44,19 +45,23 @@ const Dashboard = () => {
     bulkInvite,
     fetchRecentCollaborators,
     loading: projectLoading,
+    updateProject,
   } = useProject();
 
   const [activeTab, setActiveTab] = useState("projects");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isBulkInviteOpen, setIsBulkInviteOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
+  const [projectToEdit, setProjectToEdit] = useState(null);
   const [newProject, setNewProject] = useState({ title: "", description: "" });
-  const [bulkInviteData, setBulkInviteData] = useState({ 
-    email: "", 
-    selectedProjectIds: [], 
-    role: "viewer" 
+  const [editProjectData, setEditProjectData] = useState({ title: "", description: "" });
+  const [bulkInviteData, setBulkInviteData] = useState({
+    email: "",
+    selectedProjectIds: [],
+    role: "viewer"
   });
   const [recentCollaborators, setRecentCollaborators] = useState([]);
 
@@ -119,6 +124,32 @@ const Dashboard = () => {
       setProjectToDelete(null);
     } catch (error) {
       toast.error("Failed to delete project");
+    }
+  };
+
+  const openEditModal = (e, project) => {
+    e.stopPropagation();
+    setProjectToEdit(project);
+    setEditProjectData({
+      title: project.title,
+      description: project.description || ""
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleUpdateProject = async (e) => {
+    e.preventDefault();
+    if (!editProjectData.title.trim()) {
+      toast.error("Project name is required");
+      return;
+    }
+
+    try {
+      await updateProject(projectToEdit._id, editProjectData);
+      setIsEditModalOpen(false);
+      setProjectToEdit(null);
+    } catch (error) {
+      // Toast error is handled in hook
     }
   };
 
@@ -187,9 +218,9 @@ const Dashboard = () => {
         </div>
 
         <div className="navbar__center">
-          <ProjectSearch 
-            projects={projects} 
-            onProjectClick={(id) => navigate(`/editor/${id}`)} 
+          <ProjectSearch
+            projects={projects}
+            onProjectClick={(id) => navigate(`/editor/${id}`)}
           />
         </div>
 
@@ -312,7 +343,7 @@ const Dashboard = () => {
             <header className="docs-header">
               <h1 className="docs-title">Platform Documentation</h1>
               <p className="docs-lead">
-                Welcome to CogniCode, the premium AI-powered development environment. 
+                Welcome to CogniCode, the premium AI-powered development environment.
                 Our platform provides institutional-grade tools to build, manage, and scale your mission-critical applications.
               </p>
             </header>
@@ -446,13 +477,21 @@ const Dashboard = () => {
                     </div>
                     <div className="project-card__actions">
                       <button
-                         className="project-card__btn project-card__btn--delete"
-                         onClick={(e) => openDeleteModal(e, project)}
+                        className="project-card__btn project-card__btn--edit"
+                        onClick={(e) => openEditModal(e, project)}
+                        title="Edit Project"
                       >
-                         <Trash2 size={14} />
+                        <Pencil size={14} />
                       </button>
-                      <button className="project-card__btn">
-                         <ExternalLink size={14} /> Open
+                      <button
+                        className="project-card__btn project-card__btn--delete"
+                        onClick={(e) => openDeleteModal(e, project)}
+                        title="Delete Project"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                      <button className="project-card__btn" title="Open Project">
+                        <ExternalLink size={14} />
                       </button>
                     </div>
                   </div>
@@ -469,7 +508,7 @@ const Dashboard = () => {
           className="modal-overlay"
           onClick={() => setIsCreateModalOpen(false)}
         >
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-standard-v3 create-project-modal" onClick={(e) => e.stopPropagation()}>
             <header className="modal-header">
               <h2>Initialize Project</h2>
               <button
@@ -530,6 +569,73 @@ const Dashboard = () => {
         </div>
       )}
 
+      {/* Edit Project Modal */}
+      {isEditModalOpen && (
+        <div
+          className="modal-overlay"
+          onClick={() => setIsEditModalOpen(false)}
+        >
+          <div className="modal-standard-v3 create-project-modal" onClick={(e) => e.stopPropagation()}>
+            <header className="modal-header">
+              <h2>Edit Project</h2>
+              <button
+                className="close-btn"
+                onClick={() => setIsEditModalOpen(false)}
+              >
+                <X size={20} />
+              </button>
+            </header>
+            <form onSubmit={handleUpdateProject} className="modal-form">
+              <div className="input-group">
+                <label className="input-label mono">PROJECT NAME</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Updated Project Name"
+                  className="input-field"
+                  value={editProjectData.title}
+                  onChange={(e) =>
+                    setEditProjectData({ ...editProjectData, title: e.target.value })
+                  }
+                  autoFocus
+                />
+              </div>
+              <div className="input-group">
+                <label className="input-label mono">
+                  DESCRIPTION (OPTIONAL)
+                </label>
+                <textarea
+                  placeholder="What is this project about?"
+                  className="input-field textarea"
+                  value={editProjectData.description}
+                  onChange={(e) =>
+                    setEditProjectData({
+                      ...editProjectData,
+                      description: e.target.value,
+                    })
+                  }
+                />
+              </div>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="btn btn-ghost"
+                  onClick={() => setIsEditModalOpen(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={projectLoading}
+                >
+                  {projectLoading ? "Saving..." : "Save Changes"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Delete Confirmation Modal */}
       {isDeleteModalOpen && (
         <div
@@ -539,56 +645,35 @@ const Dashboard = () => {
           <div
             className="modal-content modal-content--danger"
             onClick={(e) => e.stopPropagation()}
-            style={{ maxWidth: "400px" }}
           >
-            <div
-              className="modal-body"
-              style={{ textAlign: "center", padding: "2.5rem 2rem" }}
-            >
-              <div style={{ color: "#ef4444", marginBottom: "1.5rem" }}>
-                <Trash2 size={48} strokeWidth={1.5} />
-              </div>
-              <h2
-                style={{
-                  fontSize: "1.25rem",
-                  fontWeight: "700",
-                  color: "#fff",
-                  marginBottom: "0.75rem",
-                }}
+            <div className="modal-header">
+              <h2>Delete Project</h2>
+              <button
+                className="close-btn"
+                onClick={() => setIsDeleteModalOpen(false)}
               >
-                Delete Project
-              </h2>
-              <p
-                style={{
-                  fontSize: "0.875rem",
-                  color: "rgba(255,255,255,0.6)",
-                  lineHeight: "1.6",
-                  marginBottom: "2rem",
-                }}
-              >
-                Are you sure you want to delete{" "}
-                <strong style={{ color: "#fff" }}>
-                  "{projectToDelete?.title}"
-                </strong>
-                ? This action cannot be undone.
+                <X size={20} />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                Are you sure you want to delete <strong className="white">"{projectToDelete?.title}"</strong>? This action cannot be undone.
               </p>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <button
-                  className="btn btn-ghost"
-                  onClick={() => setIsDeleteModalOpen(false)}
-                  style={{ flex: 1 }}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="btn btn-danger"
-                  onClick={handleDeleteConfirm}
-                  disabled={projectLoading}
-                  style={{ flex: 1 }}
-                >
-                  {projectLoading ? "Deleting..." : "Confirm"}
-                </button>
-              </div>
+            </div>
+            <div className="modal-actions">
+              <button
+                className="btn btn-ghost"
+                onClick={() => setIsDeleteModalOpen(false)}
+              >
+                Cancel
+              </button>
+              <button
+                className="btn btn-danger"
+                onClick={handleDeleteConfirm}
+                disabled={projectLoading}
+              >
+                {projectLoading ? "Deleting..." : "Confirm Delete"}
+              </button>
             </div>
           </div>
         </div>
@@ -596,11 +681,11 @@ const Dashboard = () => {
       {/* Bulk Invite Modal */}
       {isBulkInviteOpen && (
         <div className="modal-overlay">
-          <div className="modal-content" style={{ maxWidth: "500px" }}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">Invite Team to Projects</h2>
+              <h2>Invite Team</h2>
               <button
-                className="modal-close"
+                className="close-btn"
                 onClick={() => setIsBulkInviteOpen(false)}
               >
                 <X size={20} />
@@ -615,7 +700,7 @@ const Dashboard = () => {
                   placeholder="Enter colleague's email..."
                   list="recent-emails"
                   value={bulkInviteData.email}
-                  onChange={(e) => setBulkInviteData({...bulkInviteData, email: e.target.value})}
+                  onChange={(e) => setBulkInviteData({ ...bulkInviteData, email: e.target.value })}
                   required
                 />
                 <datalist id="recent-emails">
@@ -627,49 +712,30 @@ const Dashboard = () => {
 
               <div className="input-group">
                 <label className="input-label">SELECT PROJECTS</label>
-                <div className="projects-selection-list" style={{ 
-                  maxHeight: "200px", 
-                  overflowY: "auto", 
-                  background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  padding: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "8px"
-                }}>
+                <div className="projects-selection-list">
                   {projects.map(project => (
-                    <label 
-                      key={project._id} 
-                      className="project-selection-item"
-                      style={{ 
-                        display: "flex", 
-                        alignItems: "center", 
-                        gap: "10px",
-                        cursor: "pointer",
-                        padding: "4px 8px",
-                        borderRadius: "4px",
-                        background: bulkInviteData.selectedProjectIds.includes(project._id) ? "rgba(255,255,255,0.05)" : "transparent"
-                      }}
+                    <label
+                      key={project._id}
+                      className={`project-selection-item ${bulkInviteData.selectedProjectIds.includes(project._id) ? 'selected' : ''}`}
                     >
-                      <input 
-                        type="checkbox" 
+                      <input
+                        type="checkbox"
                         checked={bulkInviteData.selectedProjectIds.includes(project._id)}
                         onChange={() => toggleProjectSelection(project._id)}
                       />
-                      <span style={{ fontSize: "0.875rem" }}>{project.title}</span>
+                      <span>{project.title}</span>
                     </label>
                   ))}
-                  {projects.length === 0 && <p style={{ fontSize: "0.875rem", color: "rgba(255,255,255,0.4)" }}>No projects found</p>}
+                  {projects.length === 0 && <p className="empty-text">No projects found</p>}
                 </div>
               </div>
 
               <div className="input-group">
                 <label className="input-label">ASSIGN ROLE</label>
-                <select 
+                <select
                   className="input-field"
                   value={bulkInviteData.role}
-                  onChange={(e) => setBulkInviteData({...bulkInviteData, role: e.target.value})}
-                  style={{ background: "#1a1a1a", color: "white" }}
+                  onChange={(e) => setBulkInviteData({ ...bulkInviteData, role: e.target.value })}
                 >
                   <option value="viewer">Viewer (Read-only)</option>
                   <option value="editor">Editor (Can edit)</option>
@@ -680,12 +746,12 @@ const Dashboard = () => {
               <div className="modal-actions">
                 <button
                   type="button"
-                  className="modal-btn modal-btn--secondary"
+                  className="btn btn-ghost"
                   onClick={() => setIsBulkInviteOpen(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="modal-btn modal-btn--primary">
+                <button type="submit" className="btn btn-primary">
                   Send Invites
                 </button>
               </div>
@@ -694,157 +760,6 @@ const Dashboard = () => {
         </div>
       )}
 
-      <style>{`
-        .projects-selection-list::-webkit-scrollbar {
-          width: 4px;
-        }
-        .projects-selection-list::-webkit-scrollbar-thumb {
-          background: rgba(255,255,255,0.1);
-          border-radius: 2px;
-        }
-        .modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background: rgba(0,0,0,0.85);
-          backdrop-filter: blur(12px);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1000;
-        }
-        .modal-content {
-          background: #0f0f0f;
-          border: 1px solid rgba(255,255,255,0.08);
-          padding: 2.5rem;
-          width: 95%;
-          max-width: 500px;
-          box-shadow: 0 30px 60px -12px rgba(0,0,0,0.8);
-          border-radius: 4px;
-          position: relative;
-        }
-        .modal-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 2rem;
-          padding-bottom: 1.25rem;
-          border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        .modal-title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          color: #fff;
-          letter-spacing: -0.02em;
-        }
-        .modal-close {
-          background: rgba(255,255,255,0.05);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: rgba(255,255,255,0.6);
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 4px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          transition: all 0.2s ease;
-        }
-        .modal-close:hover {
-          background: rgba(255,255,255,0.1);
-          color: #fff;
-          border-color: rgba(255,255,255,0.2);
-        }
-        .modal-form {
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-        }
-        .modal-btn {
-          padding: 0.75rem 1.5rem;
-          font-size: 0.875rem;
-          font-weight: 600;
-          border-radius: 4px;
-          cursor: pointer;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-        }
-        .modal-btn--primary {
-          background: #fff;
-          color: #000;
-          border: 1px solid #fff;
-        }
-        .modal-btn--primary:hover {
-          background: rgba(255,255,255,0.9);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(255,255,255,0.15);
-        }
-        .modal-btn--secondary {
-          background: transparent;
-          color: rgba(255,255,255,0.7);
-          border: 1px solid rgba(255,255,255,0.15);
-        }
-        .modal-btn--secondary:hover {
-          background: rgba(255,255,255,0.05);
-          color: #fff;
-          border-color: rgba(255,255,255,0.3);
-        }
-        .projects-selection-list {
-          border-radius: 4px;
-          scrollbar-width: thin;
-        }
-        .input-field {
-          background: rgba(255,255,255,0.03);
-          border: 1px solid rgba(255,255,255,0.1);
-          color: #fff;
-          padding: 0.875rem;
-          border-radius: 4px;
-          font-size: 0.9rem;
-          transition: all 0.2s ease;
-        }
-        .input-field:focus {
-          outline: none;
-          border-color: rgba(255,255,255,0.3);
-          background: rgba(255,255,255,0.05);
-        }
-        .input-label {
-          font-size: 0.7rem;
-          font-weight: 700;
-          color: rgba(255,255,255,0.4);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          margin-bottom: 0.5rem;
-          display: block;
-        }
-        /* Custom checkbox style */
-        .project-selection-item input[type="checkbox"] {
-          appearance: none;
-          width: 16px;
-          height: 16px;
-          border: 1px solid rgba(255,255,255,0.2);
-          border-radius: 2px;
-          background: transparent;
-          cursor: pointer;
-          position: relative;
-        }
-        .project-selection-item input[type="checkbox"]:checked {
-          background: #fff;
-          border-color: #fff;
-        }
-        .project-selection-item input[type="checkbox"]:checked::after {
-          content: '✓';
-          position: absolute;
-          color: #000;
-          font-size: 12px;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-        }
-      `}</style>
     </div>
   );
 };
