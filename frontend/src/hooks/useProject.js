@@ -15,6 +15,10 @@ import {
   getSingleProjectApi,
   updateProjectApi,
   deleteProjectApi,
+  getSharedProjectsApi,
+  addCollaboratorApi,
+  bulkInviteApi,
+  getRecentCollaboratorsApi,
 } from "../services/projectApi.service";
 
 export const useProject = () => {
@@ -84,6 +88,53 @@ export const useProject = () => {
     }
   };
 
+  // Get shared projects
+  const fetchSharedProjects = async () => {
+    try {
+      dispatch(setLoading(true));
+      const res = await getSharedProjectsApi();
+      return res.data.projects;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  };
+
+  // Add collaborator
+  const addCollaborator = async (id, data) => {
+    try {
+      const res = await addCollaboratorApi(id, data);
+      return res.data;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
+  // Bulk Invite
+  const bulkInvite = async (data) => {
+    try {
+      const res = await bulkInviteApi(data);
+      return res.data;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
+  // Recent Collaborators
+  const fetchRecentCollaborators = async () => {
+    try {
+      const res = await getRecentCollaboratorsApi();
+      return res.data.collaborators;
+    } catch (err) {
+      dispatch(setError(err.message));
+      throw err;
+    }
+  };
+
   return {
     projects,
     selectedProject,
@@ -94,6 +145,10 @@ export const useProject = () => {
     getProject,
     updateProject,
     deleteProject,
+    fetchSharedProjects,
+    addCollaborator,
+    bulkInvite,
+    fetchRecentCollaborators,
   };
 };
 

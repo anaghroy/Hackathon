@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Project from "../models/project.model.js";
 import User from "../models/user.model.js";
 
@@ -185,7 +186,13 @@ export const addCollaborator = async (req, res) => {
     const { id } = req.params;
     const { email, role } = req.body;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.warn(`Invalid Project ID format: ${id}`);
+      return res.status(400).json({ success: false, message: "Invalid Project ID format" });
+    }
+
     if (!email) {
+      console.warn("AddCollaborator failed: Email is missing from request body");
       return res.status(400).json({ success: false, message: "Email is required" });
     }
 
@@ -196,40 +203,201 @@ export const addCollaborator = async (req, res) => {
     }
 
     // Verify ownership
-    if (project.user.toString() !== req.user.id) {
+    if (!project.user || project.user.toString() !== req.user.id) {
       return res.status(403).json({ success: false, message: "Only the owner can add collaborators" });
     }
 
     // Find the user to add
-    const collaboratorUser = await User.findOne({ email: email.toLowerCase() });
+    const collaboratorUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (!collaboratorUser) {
-      return res.status(404).json({ success: false, message: "User not found with this email" });
+      return res.status(404).json({ success: false, message: "User not found with this email. Make sure the user is registered." });
     }
 
     // Prevent adding oneself
     if (collaboratorUser._id.toString() === req.user.id) {
+      console.warn(`AddCollaborator failed: User ${req.user.id} tried to add themselves`);
       return res.status(400).json({ success: false, message: "You cannot add yourself as a collaborator" });
     }
 
     // Check if already a collaborator
-    const isAlreadyCollaborator = project.collaborators.some(
-      (c) => c.user.toString() === collaboratorUser._id.toString()
+    const isAlreadyCollaborator = project.collaborators && project.collaborators.some(
+      (c) => c.user && c.user.toString() === collaboratorUser._id.toString()
     );
 
     if (isAlreadyCollaborator) {
+      console.warn(`AddCollaborator failed: User ${collaboratorUser.email} is already a collaborator on project ${id}`);
       return res.status(400).json({ success: false, message: "User is already a collaborator" });
     }
 
+    // Validate role against enum
+    const validRoles = ["viewer", "editor", "admin"];
+    const assignedRole = (role || "viewer").toLowerCase();
+    if (!validRoles.includes(assignedRole)) {
+      console.warn(`AddCollaborator failed: Invalid role '${role}' specified`);
+      return res.status(400).json({ success: false, message: `Invalid role: ${role}. Valid roles are viewer, editor, admin.` });
+    }
+
     // Add collaborator
+    if (!project.collaborators) project.collaborators = [];
     project.collaborators.push({
       user: collaboratorUser._id,
-      role: role || "viewer"
+      role: assignedRole
     });
 
     await project.save();
 
-    res.status(200).json({ success: true, message: "Collaborator added successfully", project });
+    res.status(200).json({ 
+      success: true, 
+      message: "Collaborator added successfully", 
+      project 
+    });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error adding collaborator", error: error.message });
+    console.error("Add Collaborator Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Error adding collaborator", 
+      error: error.message 
+    });
+  }
+};
+
+/**
+ * @desc Invite collaborator to multiple projects
+ * @route POST /api/projects/bulk-invite
+ * @access Private
+ * @body { email, projectIds, role }
+ */
+export const inviteToMultipleProjects = async (req, res) => {
+  try {
+    const { email, projectIds, role } = req.body;
+
+    if (!email || !projectIds || !Array.isArray(projectIds) || projectIds.length === 0) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Email and at least one project ID are required" 
+      });
+    }
+
+    // Find the user to add
+    const collaboratorUser = await User.findOne({ email: email.toLowerCase().trim() });
+    if (!collaboratorUser) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "User not found with this email. Make sure the user is registered." 
+      });
+    }
+
+    // Prevent adding oneself
+    if (collaboratorUser._id.toString() === req.user.id) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "You cannot add yourself as a collaborator" 
+      });
+    }
+
+    const validRoles = ["viewer", "editor", "admin"];
+    const assignedRole = (role || "viewer").toLowerCase();
+    if (!validRoles.includes(assignedRole)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid role specified" 
+      });
+    }
+
+    const results = [];
+    
+    // Process each project
+    for (const projectId of projectIds) {
+      try {
+        const project = await Project.findById(projectId);
+        
+        if (!project) {
+          results.push({ id: projectId, status: "failed", message: "Project not found" });
+          continue;
+        }
+
+        // Verify ownership
+        if (!project.user || project.user.toString() !== req.user.id) {
+          results.push({ id: projectId, title: project.title, status: "failed", message: "Only owner can invite" });
+          continue;
+        }
+
+        // Check if already a collaborator
+        const isAlready = project.collaborators && project.collaborators.some(
+          (c) => c.user && c.user.toString() === collaboratorUser._id.toString()
+        );
+
+        if (isAlready) {
+          results.push({ id: projectId, title: project.title, status: "skipped", message: "Already a collaborator" });
+          continue;
+        }
+
+        // Add collaborator
+        if (!project.collaborators) project.collaborators = [];
+        project.collaborators.push({
+          user: collaboratorUser._id,
+          role: assignedRole
+        });
+
+        await project.save();
+        results.push({ id: projectId, title: project.title, status: "success" });
+      } catch (err) {
+        results.push({ id: projectId, status: "failed", message: err.message });
+      }
+    }
+
+    res.status(200).json({ 
+      success: true, 
+      message: "Bulk invitation process completed", 
+      results 
+    });
+  } catch (error) {
+    console.error("Bulk Invite Error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Internal server error during bulk invitation", 
+      error: error.message 
+    });
+  }
+};
+
+/**
+ * @desc Get unique collaborators from all user's projects
+ * @route GET /api/projects/collaborators/recent
+ * @access Private
+ */
+export const getRecentCollaborators = async (req, res) => {
+  try {
+    const projects = await Project.find({ user: req.user.id }).populate("collaborators.user", "email username picture");
+    
+    const collaboratorMap = new Map();
+    
+    projects.forEach(project => {
+      if (project.collaborators) {
+        project.collaborators.forEach(collab => {
+          if (collab.user && collab.user.email) {
+            collaboratorMap.set(collab.user.email, {
+              email: collab.user.email,
+              username: collab.user.username,
+              picture: collab.user.picture
+            });
+          }
+        });
+      }
+    });
+
+    const recentCollaborators = Array.from(collaboratorMap.values());
+
+    res.status(200).json({
+      success: true,
+      collaborators: recentCollaborators
+    });
+  } catch (error) {
+    console.error("Get Recent Collaborators Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching recent collaborators",
+      error: error.message
+    });
   }
 };

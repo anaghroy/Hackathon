@@ -48,4 +48,9 @@ export const reviewCodeApi = (projectId, data) => {
   return aiApi.post(`/review/${projectId}`, data);
 };
 
+// Feature 8: Time-Travel Debugger
+export const debugErrorApi = (projectId, data) => {
+  return aiApi.post(`/debug-error/${projectId}`, data);
+};
+
 export default aiApi;

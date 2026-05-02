@@ -63,10 +63,10 @@ export const useDeploy = () => {
   const fetchLogs = useCallback(async (projectId, params = {}) => {
     try {
       const response = await getDeployLogsApi(projectId, params);
-      return response.data.logs || [];
+      return response.data;
     } catch (err) {
       console.error("Failed to fetch logs", err);
-      return [];
+      return null;
     }
   }, []);
 

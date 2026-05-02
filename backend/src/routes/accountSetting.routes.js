@@ -4,7 +4,6 @@ import { getSettings, updateSettings } from "../controllers/accountSetting.contr
 
 const router = express.Router();
 
-// Apply auth middleware to all routes in this file
 router.use(authUser);
 
 router.get("/", getSettings);

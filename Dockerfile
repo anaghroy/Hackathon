@@ -4,13 +4,12 @@ FROM node:20-alpine AS frontend-builder
 WORKDIR /app
 
 # Install dependencies first (better caching)
-COPY ./frontend/package*.json ./
-COPY ./frontend/package-lock.json ./
+COPY ./frontend/package*.json /app
 
 RUN npm install
 
 # Copy rest and build
-COPY ./frontend ./
+COPY ./frontend /app
 
 RUN npm run build
 
@@ -21,13 +20,12 @@ FROM node:20-alpine
 WORKDIR /app
 
 # Install backend dependencies
-COPY ./backend/package*.json ./
-COPY ./backend/package-lock.json ./
+COPY ./backend/package*.json /app
 
 RUN npm install
 
 # Copy backend source
-COPY ./backend ./
+COPY ./backend /app
 
 # Build JavaScript → dist/
 RUN npm run build

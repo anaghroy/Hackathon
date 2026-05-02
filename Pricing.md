@@ -5,7 +5,7 @@ Choose the right plan for your workflow. Whether you're a solo developer buildin
 ---
 
 ## 1. Developer (Hobby)
-**Price**: $0 / month  
+**Price**: ₹0 / month  
 *Perfect for individuals, hackathons, and small side projects.*
 
 **DevOps Features:**
@@ -26,7 +26,7 @@ Choose the right plan for your workflow. Whether you're a solo developer buildin
 ---
 
 ## 2. Pro (Team)
-**Price**: $29 / user / month  
+**Price**: ₹29 / user / month  
 *Built for professional developers and startups who need speed and advanced AI tools.*
 
 **DevOps Features:**

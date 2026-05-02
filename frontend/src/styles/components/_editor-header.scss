@@ -79,10 +79,10 @@
 .editor-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   font-size: 13px;
   font-weight: 500;
-  padding: 8px 16px;
+  padding: 8px 10px;
   border-radius: $radius-sm; // Sharp edges
   cursor: pointer;
   transition: $transition;

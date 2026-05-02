@@ -11,6 +11,7 @@ import {
   scanSecurityApi,
   analyzePerformanceApi,
   applyFixApi,
+  debugErrorApi,
 } from "../services/aiApi.service";
 import {
   setIntentResult,
@@ -20,6 +21,7 @@ import {
   setCodeReview,
   setSecurityResult,
   setPerformanceResult,
+  setDebugResult,
   setLoading,
   setError,
   clearAiState,
@@ -182,6 +184,24 @@ export const useAI = () => {
     }
   }, [dispatch]);
 
+  const debugError = useCallback(async (projectId, data) => {
+    try {
+      dispatch(setLoading(true));
+      dispatch(setError(null));
+      const response = await debugErrorApi(projectId, data);
+      dispatch(setDebugResult(response.data));
+      toast.success("Error analysis completed");
+      return response.data;
+    } catch (err) {
+      const msg = err.response?.data?.message || "Failed to analyze error";
+      dispatch(setError(msg));
+      toast.error(msg);
+      throw err;
+    } finally {
+      dispatch(setLoading(false));
+    }
+  }, [dispatch]);
+
   const resetAiState = useCallback(() => {
     dispatch(clearAiState());
   }, [dispatch]);
@@ -197,6 +217,7 @@ export const useAI = () => {
     scanSecurity,
     analyzePerformance,
     applyFix,
+    debugError,
     resetAiState,
   };
 };

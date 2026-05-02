@@ -19,6 +19,8 @@ const deploymentSchema = new mongoose.Schema(
     url: {
       type: String,
     },
+    containerId: String,
+    port: Number,
     logs: [
       {
         timestamp: { type: Date, default: Date.now },

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { 
   ArrowLeft, ShieldAlert, ShieldCheck, AlertTriangle, 
   ChevronRight, Play, RefreshCw, CheckCircle2, Lock
@@ -13,6 +14,13 @@ const EditorSecurity = () => {
   const navigate = useNavigate();
   const { scanSecurity, applyFix, securityResult, loading } = useAI();
   const [selectedIssue, setSelectedIssue] = useState(null);
+  const { selectedProject } = useSelector((state) => state.project);
+
+  const getOriginalCode = (filePath) => {
+    if (!selectedProject || !selectedProject.files) return "// Project files not loaded";
+    const file = selectedProject.files.find(f => f.filename === filePath);
+    return file ? file.content : `// File not found: ${filePath}`;
+  };
 
   const handleScan = async () => {
     try {
@@ -34,7 +42,8 @@ const EditorSecurity = () => {
           }
         ]
       });
-      // Optionally re-scan or update UI
+      // Clear selected issue after applying fix
+      setSelectedIssue(null);
     } catch (err) {
       console.error(err);
     }
@@ -151,7 +160,7 @@ const EditorSecurity = () => {
                 </div>
                 <div style={{ flex: 1, overflow: 'auto', backgroundColor: '#0f0f10' }}>
                   <ReactDiffViewer
-                    oldValue={"// Vulnerable code at line " + selectedIssue.line}
+                    oldValue={getOriginalCode(selectedIssue.filePath || selectedIssue.file)}
                     newValue={selectedIssue.suggestedFix}
                     splitView={true}
                     useDarkTheme={true}

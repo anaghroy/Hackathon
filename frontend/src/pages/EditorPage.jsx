@@ -8,13 +8,13 @@ import {
   ArrowLeft, FileCode2, TestTube, CheckCircle, Folder, FolderOpen,
   FileJson, Cpu, Database, BrainCircuit, Activity, ChevronRight, ChevronDown, Plus, Save,
   FilePlus, FolderPlus, Trash2, X, Check, FileText, Image as ImageIcon, FileCode, Hash, Info, Settings,
-  Type, ShieldAlert, Rocket, Lock, Terminal, History
+  Type, ShieldAlert, Rocket, Lock, Terminal, History, Users, Share2
 } from 'lucide-react';
 
 const EditorPage = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { selectedProject, getProject, updateProject, loading: projectLoading, error: projectError } = useProject();
+  const { selectedProject, getProject, updateProject, addCollaborator, fetchRecentCollaborators, loading: projectLoading, error: projectError } = useProject();
   const { memories, fetchMemories, loading: memoryLoading } = useMemory();
 
   // State for Editor
@@ -24,6 +24,13 @@ const EditorPage = () => {
   const [expandedFolders, setExpandedFolders] = useState({});
   const [isSaving, setIsSaving] = useState(false);
   const editorRef = React.useRef(null);
+
+  // State for Sharing
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [collaboratorEmail, setCollaboratorEmail] = useState("");
+  const [collaboratorRole, setCollaboratorRole] = useState("viewer");
+  const [recentCollaborators, setRecentCollaborators] = useState([]);
+  const [isSharing, setIsSharing] = useState(false);
 
   // State for Explorer
   const [selectedPath, setSelectedPath] = useState(null); 
@@ -67,6 +74,20 @@ const EditorPage = () => {
       fetchMemories(projectId);
     }
   }, [projectId]);
+
+  useEffect(() => {
+    if (isShareModalOpen) {
+      const loadRecent = async () => {
+        try {
+          const collabs = await fetchRecentCollaborators();
+          setRecentCollaborators(collabs || []);
+        } catch (err) {
+          console.error("Failed to load recent collaborators", err);
+        }
+      };
+      loadRecent();
+    }
+  }, [isShareModalOpen]);
 
   // Set first file as active when project loads
   useEffect(() => {
@@ -308,6 +329,28 @@ const EditorPage = () => {
     }
   };
 
+  const handleShare = async (e) => {
+    e.preventDefault();
+    if (!collaboratorEmail) return toast.error("Email is required");
+    
+    setIsSharing(true);
+    try {
+      await addCollaborator(projectId, { 
+        email: collaboratorEmail, 
+        role: collaboratorRole 
+      });
+      toast.success("Collaborator added successfully!");
+      setCollaboratorEmail("");
+      setIsShareModalOpen(false);
+      // Refresh project to show new collaborators
+      getProject(projectId);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Failed to add collaborator");
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
   const handleSaveFile = async () => {
     if (!activeFile) return;
     setIsSaving(true);
@@ -533,9 +576,21 @@ const EditorPage = () => {
           </button>
           <button 
             className="editor-btn editor-btn--ghost" 
+            onClick={() => navigate(`/editor/${projectId}/debugger`)}
+          >
+            <History size={16} /> Debugger
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
             onClick={() => navigate(`/editor/${projectId}/env`)}
           >
             <Lock size={16} /> Secrets
+          </button>
+          <button 
+            className="editor-btn editor-btn--ghost" 
+            onClick={() => setIsShareModalOpen(true)}
+          >
+            <Share2 size={16} /> Share
           </button>
           <button 
             className="editor-btn editor-btn--primary" 
@@ -812,10 +867,109 @@ const EditorPage = () => {
                 <History size={20} />
                 <span>Rollback History</span>
               </button>
+              <button 
+                className="editor-tool-card" 
+                onClick={() => navigate(`/editor/${projectId}/debugger`)}
+              >
+                <History size={20} />
+                <span>Debugger</span>
+              </button>
             </div>
           </div>
         </aside>
       </div>
+
+      {/* Share Project Modal */}
+      {isShareModalOpen && (
+        <div className="modal-overlay" onClick={() => setIsShareModalOpen(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '450px' }}>
+            <header className="modal-header">
+              <div className="flex items-center gap-2">
+                <Users size={20} className="text-primary" />
+                <h2>Project Collaboration</h2>
+              </div>
+              <button className="close-btn" onClick={() => setIsShareModalOpen(false)}>
+                <X size={20} />
+              </button>
+            </header>
+            
+            <div className="modal-body p-6">
+              <form onSubmit={handleShare} className="space-y-4">
+                <div className="input-group">
+                  <label className="input-label mono">INVITE BY EMAIL</label>
+                  <input 
+                    type="email" 
+                    placeholder="colleague@company.com" 
+                    className="input-field"
+                    list="recent-share-emails"
+                    value={collaboratorEmail}
+                    onChange={(e) => setCollaboratorEmail(e.target.value)}
+                    required
+                  />
+                  <datalist id="recent-share-emails">
+                    {recentCollaborators.map(collab => (
+                      <option key={collab.email} value={collab.email}>{collab.username}</option>
+                    ))}
+                  </datalist>
+                </div>
+                
+                <div className="input-group">
+                  <label className="input-label mono">ASSIGN ROLE</label>
+                  <select 
+                    className="input-field"
+                    value={collaboratorRole}
+                    onChange={(e) => setCollaboratorRole(e.target.value)}
+                    style={{ background: 'rgba(255,255,255,0.05)', color: 'white' }}
+                  >
+                    <option style={{background: "#1a1a1a"}} value="viewer">Viewer (Read-only)</option>
+                    <option style={{background: "#1a1a1a"}} value="editor">Editor (Can edit code)</option>
+                    <option style={{background: "#1a1a1a"}} value="admin">Admin (Manage team)</option>
+                  </select>
+                </div>
+                
+                <button 
+                  type="submit" 
+                  className="btn btn-primary btn-full mt-4"
+                  disabled={isSharing}
+                >
+                  {isSharing ? "Adding..." : "Invite Collaborator"}
+                </button>
+              </form>
+
+              {selectedProject?.collaborators?.length > 0 && (
+                <div className="mt-8">
+                  <h3 className="mono text-xs text-gray-500 mb-3 tracking-widest">CURRENT COLLABORATORS</h3>
+                  <div className="space-y-3">
+                    {selectedProject.collaborators.map((collab, i) => (
+                      <div key={i} className="flex items-center justify-between p-2.5 bg-white/[0.03] rounded-md border border-white/10 hover:border-primary/40 transition-all group">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-[#3b82f6] to-[#8b5cf6] flex items-center justify-center text-white font-bold text-sm shadow-md">
+                            {collab.user?.username?.charAt(0).toUpperCase() || 'U'}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-sm font-medium text-white/90">{collab.user?.username || 'User'}</span>
+                            <span className="text-sm text-white/20">,</span>
+                            <span className={`text-[11px] font-mono uppercase tracking-tight ${
+                              collab.role === 'admin' ? 'text-yellow-500/90' : 
+                              collab.role === 'editor' ? 'text-blue-400/90' : 
+                              'text-white/40'
+                            }`}>
+                              {collab.role}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-[10px] text-white/20 mono opacity-0 group-hover:opacity-100 transition-opacity">
+                          {collab.user?.email ? collab.user.email.split('@')[0] + '@...' : ''}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

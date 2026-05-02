@@ -8,6 +8,7 @@ const initialState = {
   codeReview: null,
   securityResult: null,
   performanceResult: null,
+  debugResult: null,
   loading: false,
   error: null,
 };
@@ -37,6 +38,9 @@ export const aiSlice = createSlice({
     setPerformanceResult: (state, action) => {
       state.performanceResult = action.payload;
     },
+    setDebugResult: (state, action) => {
+      state.debugResult = action.payload;
+    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
@@ -51,6 +55,7 @@ export const aiSlice = createSlice({
       state.codeReview = null;
       state.securityResult = null;
       state.performanceResult = null;
+      state.debugResult = null;
       state.error = null;
     }
   },
@@ -64,6 +69,7 @@ export const {
   setCodeReview,
   setSecurityResult,
   setPerformanceResult,
+  setDebugResult,
   setLoading,
   setError,
   clearAiState

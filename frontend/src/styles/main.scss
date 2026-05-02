@@ -33,6 +33,8 @@
 @use "./pages/forgot-password";
 @use "./pages/reset-password";
 @use "./pages/verifyPending";
+@use "./pages/account-settings";
+@use "./pages/shared-projects";
 
 // Editor
 @use "./components/editor-header";

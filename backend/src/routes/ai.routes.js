@@ -10,7 +10,8 @@ import {
   analyzeLogs,
   applyFix,
   analyzePerformance,
-  scanSecurity
+  scanSecurity,
+  debugError
 } from "../controllers/ai.controller.js";
 
 const aiRouter = express.Router();
@@ -27,5 +28,6 @@ aiRouter.post("/analyze-logs", authUser, analyzeLogs);
 aiRouter.post("/apply-fix", authUser, applyFix);
 aiRouter.post("/performance/:projectId", authUser, analyzePerformance);
 aiRouter.post("/security/:projectId", authUser, scanSecurity);
+aiRouter.post("/debug-error/:projectId", authUser, debugError);
 
 export default aiRouter;

@@ -16,11 +16,15 @@ import deployRouter from "./routes/deploy.routes.js";
 import envRouter from "./routes/env.routes.js";
 import accountSettingRouter from "./routes/accountSetting.routes.js";
 import { config } from "./config/config.js";
+import { proxyMiddleware } from "./services/proxy.service.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Custom Subdomain Proxy (must be very first)
+app.use(proxyMiddleware);
 
 // Middleware
 

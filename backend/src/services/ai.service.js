@@ -11,7 +11,7 @@ import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js
 // -----------------------------
 const TIMEOUT_MS = 15000;
 const MAX_PROMPT_LENGTH = 12000;
-const MIN_VALID_LENGTH = 50;
+const MIN_VALID_LENGTH = 10;
 
 // -----------------------------
 // TIMEOUT WRAPPER
@@ -77,9 +77,7 @@ const retry = async (fn, retries = 1) => {
 const isValidResponse = (res) => {
   return (
     typeof res === "string" &&
-    res.length > MIN_VALID_LENGTH &&
-    !res.toLowerCase().includes("error") &&
-    !res.toLowerCase().includes("failed")
+    res.length > MIN_VALID_LENGTH
   );
 };
 
@@ -170,10 +168,18 @@ export const analyzeCodeSecurity = async (projectId, projectFiles) => {
 Return STRICT JSON:
 {
   "highRiskIssues": number,
-  "issues": string[]
+  "issues": [
+    {
+      "issue": "Title of the vulnerability",
+      "explanation": "Detailed description of the risk",
+      "line": number,
+      "filePath": "relative/path/to/file.js",
+      "suggestedFix": "Corrected code block"
+    }
+  ]
 }
 
-If no critical issues, set "highRiskIssues": 0.
+If no issues, set "highRiskIssues": 0 and "issues": [].
 
 Code:
 ${fileSummary}`;
@@ -183,13 +189,26 @@ ${fileSummary}`;
     });
 
     let parsed;
-
     try {
-      parsed = JSON.parse(aiResult.replace(/```json|```/g, ""));
+      const firstBrace = aiResult.indexOf('{');
+      const lastBrace = aiResult.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        const jsonStr = aiResult.substring(firstBrace, lastBrace + 1);
+        parsed = JSON.parse(jsonStr);
+      } else {
+        throw new Error("No JSON found");
+      }
     } catch {
       parsed = {
         highRiskIssues: 0,
-        issues: ["Failed to parse AI response"],
+        issues: [
+          {
+            issue: "Analysis Error",
+            explanation: "The AI response could not be parsed into a structured report. Raw output: " + aiResult.slice(0, 200),
+            line: 0,
+            suggestedFix: "// Unable to generate fix"
+          }
+        ],
       };
     }
 

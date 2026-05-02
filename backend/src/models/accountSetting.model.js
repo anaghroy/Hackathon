@@ -8,11 +8,6 @@ const accountSettingSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    theme: {
-      type: String,
-      enum: ["light", "dark", "system"],
-      default: "system",
-    },
     emailNotifications: {
       type: Boolean,
       default: true,

@@ -8,6 +8,8 @@ import {
   deleteProject,
   getSharedProjects,
   addCollaborator,
+  inviteToMultipleProjects,
+  getRecentCollaborators,
 } from "../controllers/project.controller.js";
 import { authUser } from "../middleware/auth.middleware.js";
 
@@ -24,6 +26,13 @@ projectRouter.post("/create", authUser, createProject);
  * @access Private
  */
 projectRouter.get("/", authUser, getProjects);
+/**
+ * @desc Get shared projects
+ * @route GET /api/projects/shared
+ * @access Private
+ */
+projectRouter.get("/shared", authUser, getSharedProjects);
+
 /**
  * @desc Get single project
  * @route GET /api/projects/:id
@@ -43,13 +52,6 @@ projectRouter.put("/:id", authUser, updateProject);
  * @access Private
  */
 projectRouter.delete("/:id", authUser, deleteProject);
-
-/**
- * @desc Get shared projects
- * @route GET /api/projects/shared
- * @access Private
- */
-projectRouter.get("/shared", authUser, getSharedProjects);
 /**
  * @desc Add collaborator
  * @route POST /api/projects/:id/collaborators
@@ -57,5 +59,17 @@ projectRouter.get("/shared", authUser, getSharedProjects);
  * @body { email, role }
  */
 projectRouter.post("/:id/collaborators", authUser, addCollaborator);
+/**
+ * @desc Invite collaborator to multiple projects
+ * @route POST /api/projects/bulk-invite
+ * @access Private
+ */
+projectRouter.post("/bulk-invite", authUser, inviteToMultipleProjects);
+/**
+ * @desc Get recent collaborators
+ * @route GET /api/projects/collaborators/recent
+ * @access Private
+ */
+projectRouter.get("/collaborators/recent", authUser, getRecentCollaborators);
 
 export default projectRouter;

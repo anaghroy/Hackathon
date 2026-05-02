@@ -31,23 +31,56 @@ export const connectRepo = async (req, res) => {
 
       if (repoTreeRes.ok) {
          const treeData = await repoTreeRes.json();
-         // Filter to only blobs (files) and limit to 40 files to avoid rate limiting
-         const blobs = treeData.tree.filter(t => t.type === 'blob').slice(0, 40);
+         // Filter to only blobs (files) and limit to 40 files
+         // Also skip common binary or large files to prevent BSON size errors
+         const binaryExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.ico', '.pdf', '.zip', '.exe', '.dll', '.woff', '.woff2', '.ttf'];
+         const blobs = treeData.tree.filter(t => {
+            if (t.type !== 'blob') return false;
+            const ext = t.path.toLowerCase().slice(t.path.lastIndexOf('.'));
+            return !binaryExtensions.includes(ext);
+         }).slice(0, 40);
          
-         // Fetch contents in parallel
+         // Fetch contents in parallel with safety limits
          initialFiles = await Promise.all(blobs.map(async b => {
-             const rawRes = await fetch(`https://raw.githubusercontent.com/${repoName}/${currentBranch}/${b.path}`);
-             const content = rawRes.ok ? await rawRes.text() : "// Failed to load content";
-             return {
-                 filename: b.path,
-                 content
-             };
+             try {
+               const rawRes = await fetch(`https://raw.githubusercontent.com/${repoName}/${currentBranch}/${b.path}`);
+               if (!rawRes.ok) return { filename: b.path, content: "// Failed to load content" };
+               
+               let content = await rawRes.text();
+               // Safety: Truncate very large files (limit to 50KB per file for initialization)
+               if (content.length > 50000) {
+                 content = content.slice(0, 50000) + "\n\n// ... file truncated for initial import ...";
+               }
+               
+               return {
+                   filename: b.path,
+                   content
+               };
+             } catch (err) {
+               return { filename: b.path, content: "// Network error loading file" };
+             }
          }));
       } else {
          console.warn(`Failed to fetch tree for ${repoName}:`, repoTreeRes.statusText);
       }
     } catch (e) {
       console.error("Failed to fetch repo contents:", e);
+    }
+
+    // Ensure package.json exists for build simulation if it's missing from the repo
+    const hasPackageJson = initialFiles.some(f => f.filename === 'package.json');
+    if (!hasPackageJson) {
+      initialFiles.push({
+        filename: 'package.json',
+        content: JSON.stringify({
+          name: repoName.split('/').pop(),
+          version: "1.0.0",
+          scripts: {
+            build: "echo 'Running production build... DONE'",
+            start: "node index.js"
+          }
+        }, null, 2)
+      });
     }
 
     // Initialize a new project record in the database for the repo
@@ -57,7 +90,7 @@ export const connectRepo = async (req, res) => {
       repoProvider: provider,
       repoName: repoName,
       branch: branch || "main",
-      buildCommand: buildCommand || "",
+      buildCommand: buildCommand || "npm run build",
       description: `Connected ${provider} repository: ${repoName}`,
       files: initialFiles,
     });

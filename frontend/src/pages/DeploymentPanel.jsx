@@ -220,6 +220,24 @@ const DeploymentPanel = () => {
                       <span style={{ fontSize: '13px' }}>{currentDeployment.commitMessage || 'Manual trigger from Dashboard'}</span>
                     </div>
                   </div>
+
+                  {/* Infrastructure Info */}
+                  <div style={{ marginTop: '24px', display: 'flex', gap: '32px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '0' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '4px' }}>Environment</label>
+                      <span style={{ fontSize: '13px', color: '#3b82f6' }}>Production (Isolated Docker)</span>
+                    </div>
+                    {currentDeployment.port && (
+                      <div>
+                        <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '4px' }}>Mapping</label>
+                        <span className="mono" style={{ fontSize: '13px' }}>localhost:{currentDeployment.port} → :3000</span>
+                      </div>
+                    )}
+                    <div>
+                      <label style={{ display: 'block', fontSize: '10px', fontWeight: '700', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', marginBottom: '4px' }}>Network</label>
+                      <span style={{ fontSize: '13px' }}>CogniNet (Subdomain Routed)</span>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Build Logs */}

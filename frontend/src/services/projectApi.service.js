@@ -32,4 +32,24 @@ export const deleteProjectApi = (id) => {
   return projectApi.delete(`/${id}`);
 };
 
+// Get Shared Projects
+export const getSharedProjectsApi = () => {
+  return projectApi.get("/shared");
+};
+
+// Add Collaborator
+export const addCollaboratorApi = (id, data) => {
+  return projectApi.post(`/${id}/collaborators`, data);
+};
+
+// Bulk Invite
+export const bulkInviteApi = (data) => {
+  return projectApi.post("/bulk-invite", data);
+};
+
+// Recent Collaborators
+export const getRecentCollaboratorsApi = () => {
+  return projectApi.get("/collaborators/recent");
+};
+
 export default projectApi;

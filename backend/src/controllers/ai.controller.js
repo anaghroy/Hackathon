@@ -6,6 +6,7 @@ import { generateGraph } from "../services/graph.service.js";
 import DecisionMemory from "../models/decisionMemory.model.js";
 import AIAnalysis from "../models/aiAnalysis.model.js";
 import { setCache, getCache, buildExplainKey } from "../services/cache.service.js";
+import { analyzeStackTrace } from "../services/debugger.service.js";
 
 export const intentAnalysis = async (req, res) => {
   try {
@@ -300,6 +301,25 @@ export const scanSecurity = async (req, res) => {
 
     const result = await analyzeCodeSecurity(project._id, project.files || []);
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const debugError = async (req, res) => {
+  try {
+    const { projectId } = req.params;
+    const { stackTrace, errorMessage } = req.body;
+
+    if (!projectId || !stackTrace) {
+      return res.status(400).json({ message: "projectId and stackTrace are required" });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project) return res.status(404).json({ message: "Project not found" });
+
+    const result = await analyzeStackTrace(project, stackTrace, errorMessage);
+    res.json({ analysis: result });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

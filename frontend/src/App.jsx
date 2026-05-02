@@ -6,22 +6,22 @@ import { useAuth } from "./hooks/useAuth";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const EditorPage = React.lazy(() => import("./pages/EditorPage"));
-const EditorIntent = React.lazy(() => import("./pages/EditorIntent"));
-const EditorExplainAI = React.lazy(() => import("./pages/EditorExplainAI"));
-const EditorSchema = React.lazy(() => import("./pages/EditorSchema"));
-const EditorMemory = React.lazy(() => import("./pages/EditorMemory"));
-const EditorTests = React.lazy(() => import("./pages/EditorTests"));
-const EditorReview = React.lazy(() => import("./pages/EditorReview"));
-const EditorSecurity = React.lazy(() => import("./pages/EditorSecurity"));
-const EditorPerformance = React.lazy(() => import("./pages/EditorPerformance"));
-const Profile = React.lazy(() => import("./pages/Profile"));
-const ConnectRepo = React.lazy(() => import("./pages/ConnectRepo"));
-const DeploymentPanel = React.lazy(() => import("./pages/DeploymentPanel"));
-const LogsViewer = React.lazy(() => import("./pages/LogsViewer"));
-const RollbackTimeline = React.lazy(() => import("./pages/RollbackTimeline"));
-const EnvManager = React.lazy(() => import("./pages/EnvManager"));
+import Dashboard from "./pages/Dashboard";
+import EditorPage from "./pages/EditorPage";
+import EditorIntent from "./pages/EditorIntent";
+import EditorExplainAI from "./pages/EditorExplainAI";
+import EditorSchema from "./pages/EditorSchema";
+import EditorMemory from "./pages/EditorMemory";
+import EditorTests from "./pages/EditorTests";
+import EditorReview from "./pages/EditorReview";
+import EditorSecurity from "./pages/EditorSecurity";
+import EditorPerformance from "./pages/EditorPerformance";
+import Profile from "./pages/Profile";
+import ConnectRepo from "./pages/ConnectRepo";
+import DeploymentPanel from "./pages/DeploymentPanel";
+import LogsViewer from "./pages/LogsViewer";
+import RollbackTimeline from "./pages/RollbackTimeline";
+import EnvManager from "./pages/EnvManager";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyPending from "./pages/VerifyPending";
@@ -261,7 +261,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>
   );

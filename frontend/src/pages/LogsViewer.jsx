@@ -6,6 +6,7 @@ import {
   Search, ShieldAlert, CheckCircle2, AlertCircle
 } from 'lucide-react';
 import { useDeploy } from '../hooks/useDeploy';
+import { useSocket } from '../hooks/useSocket';
 
 const LogsViewer = () => {
   const { projectId } = useParams();
@@ -16,20 +17,33 @@ const LogsViewer = () => {
   const [logType, setLogType] = useState('build');
   const [isFollowing, setIsFollowing] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
+  const [deploymentId, setDeploymentId] = useState(null);
   
   const logEndRef = useRef(null);
-  const pollInterval = useRef(null);
 
-  const fetchCurrentLogs = async () => {
-    const newLogs = await fetchLogs(projectId, { type: logType, lines: 200 });
-    setLogs(newLogs);
+  // Initialize socket connection
+  const { realTimeLogs, isConnected } = useSocket(projectId, deploymentId);
+
+  const fetchInitialLogs = async () => {
+    const data = await fetchLogs(projectId, { type: logType, lines: 200 });
+    if (data) {
+      setLogs(data.logs || []);
+      setDeploymentId(data.deploymentId);
+    }
   };
 
   useEffect(() => {
-    fetchCurrentLogs();
-    pollInterval.current = setInterval(fetchCurrentLogs, 3000);
-    return () => clearInterval(pollInterval.current);
+    fetchInitialLogs();
   }, [projectId, logType]);
+
+  // Sync real-time logs into the main logs state
+  useEffect(() => {
+    if (realTimeLogs.length > 0) {
+      // Avoid duplicates if needed, but for simple build logs appending is fine
+      const latestLog = realTimeLogs[realTimeLogs.length - 1];
+      setLogs((prev) => [...prev, { ...latestLog, timestamp: new Date().toISOString() }]);
+    }
+  }, [realTimeLogs]);
 
   useEffect(() => {
     if (isFollowing && logEndRef.current) {
@@ -142,7 +156,9 @@ const LogsViewer = () => {
                 <span>stdout / stderr</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                <span style={{ fontSize: '11px', color: '#10b981' }}>● Live</span>
+                <span style={{ fontSize: '11px', color: isConnected ? '#10b981' : '#f59e0b' }}>
+                  {isConnected ? '● Live' : '○ Connecting...'}
+                </span>
                 <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.3)' }}>{filteredLogs.length} lines matched</span>
               </div>
             </div>
