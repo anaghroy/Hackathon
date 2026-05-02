@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import useProject from "../hooks/useProject";
@@ -21,7 +21,12 @@ import {
 } from "lucide-react";
 import toast from "react-hot-toast";
 import brandLogo from "../assets/Brand logo.png";
+import Loader from "../components/ui/Loader";
 
+const DashboardOverview = React.lazy(() => import("../components/dashboard/DashboardOverview"));
+const DashboardShared = React.lazy(() => import("../components/dashboard/DashboardShared"));
+const DashboardSettings = React.lazy(() => import("../components/dashboard/DashboardSettings"));
+const DashboardProjects = React.lazy(() => import("../components/dashboard/DashboardProjects"));
 const Dashboard = () => {
   const navigate = useNavigate();
   const {
@@ -234,190 +239,20 @@ const Dashboard = () => {
 
       {/* Main Content Area */}
       <main className="dashboard__main dashboard-page">
-        {activeTab === "overview" && (
-          <div className="overview-docs">
-            <header className="docs-header">
-              <h1 className="docs-title">Platform Documentation</h1>
-              <p className="docs-lead">
-                Welcome to CogniCode, the premium AI-powered development environment. 
-                Our platform provides institutional-grade tools to build, manage, and scale your mission-critical applications.
-              </p>
-            </header>
-
-            <div className="docs-content">
-              <section className="docs-section">
-                <h2 className="docs-subtitle">Core Capabilities</h2>
-                <div className="docs-grid">
-                  <div className="docs-item">
-                    <h3>Smart Dashboard</h3>
-                    <p>Centralized control center for all your projects and active deployments.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Project Management</h3>
-                    <p>Create, organize, and manage your repositories with a streamlined interface.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Code Review</h3>
-                    <p>Automated AI-driven code analysis for bugs, performance, and best practices.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Graph & Analytics</h3>
-                    <p>Interactive visual representations of your system architecture and schemas.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Deployment System</h3>
-                    <p>Connect GitHub repositories and push to production with zero friction.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Shared Workspace</h3>
-                    <p>Collaborate with your team securely on projects and live codebases.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>DevOps Integration</h3>
-                    <p>Built-in CI/CD, environment variables, and scalable infrastructure tools.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>AI Productivity Tools</h3>
-                    <p>Context-aware editor, intent-based modifications, and memory timeline.</p>
-                  </div>
-                  <div className="docs-item">
-                    <h3>Security & Reliability</h3>
-                    <p>Vulnerability scanning and robust error handling across all features.</p>
-                  </div>
-                </div>
-              </section>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "shared" && (
-          <div className="shared-page">
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Shared With Me</h1>
-                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
-                  Projects and workspaces shared by your team.
-                </p>
-              </div>
-            </header>
-            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
-              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
-                <Users size={48} strokeWidth={1} />
-              </div>
-              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
-                No projects have been shared with you yet.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "settings" && (
-          <div className="settings-page">
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">Settings</h1>
-                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
-                  Manage your personal account preferences.
-                </p>
-              </div>
-            </header>
-            <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
-              <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
-                <Settings size={48} strokeWidth={1} />
-              </div>
-              <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
-                Settings panel is currently being updated.
-              </p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "projects" && (
-          <>
-            <header className="dashboard-page__header">
-              <div className="dashboard-page__title-group">
-                <h1 className="dashboard-page__title">My Projects</h1>
-                <p className="dashboard-page__subtitle" style={{ color: "rgba(255,255,255,0.6)", fontSize: "0.875rem" }}>
-                  Manage and organize your AI code projects.
-                </p>
-              </div>
-              <div style={{ display: "flex", gap: "12px" }}>
-                <button
-                  className="project-card__btn project-card__btn--ghost"
-                  onClick={() => navigate("/connect-repo")}
-                >
-                  <GitCompare size={18} /> Connect Repo
-                </button>
-                <button
-                  className="project-card__btn project-card__btn--primary"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  <Plus size={18} /> Create New Project
-                </button>
-              </div>
-            </header>
-
-            {projectLoading && projects.length === 0 ? (
-              <div className="dashboard-page__loading">
-                <div className="loader"></div>
-              </div>
-            ) : projects.length === 0 ? (
-              <div className="dashboard-page__empty" style={{ background: "rgba(10,10,10,0.4)", border: "1px solid rgba(255,255,255,0.05)", borderRadius: "0" }}>
-                <div className="dashboard-page__empty-icon" style={{ opacity: 0.5 }}>
-                  <Folder size={48} strokeWidth={1} />
-                </div>
-                <p className="dashboard-page__empty-text" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.875rem" }}>
-                  You haven't created any projects yet.
-                </p>
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setIsCreateModalOpen(true)}
-                >
-                  Start Your First Project
-                </button>
-              </div>
-            ) : (
-              <div className="dashboard-page__grid">
-                {projects.map((project) => (
-                  <div
-                    key={project._id}
-                    className="project-card"
-                    onClick={() => navigate(`/editor/${project._id}`)}
-                  >
-                    <div className="project-card__header">
-                      <h3 className="project-card__title">{project.title}</h3>
-                      <span className="project-card__date">
-                        {new Date(
-                          project.updatedAt || project.createdAt,
-                        ).toLocaleString("en-US", {
-                          month: "short",
-                          hour: "numeric",
-                          minute: "2-digit",
-                        })}
-                      </span>
-                    </div>
-                    <div className="project-card__content">
-                      <p className="project-card__description">
-                        {project.description || "No description provided."}
-                      </p>
-                    </div>
-                    <div className="project-card__actions">
-                      <button
-                         className="project-card__btn project-card__btn--delete"
-                         onClick={(e) => openDeleteModal(e, project)}
-                      >
-                         <Trash2 size={14} />
-                      </button>
-                      <button className="project-card__btn">
-                         <ExternalLink size={14} /> Open
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        )}
+        <Suspense fallback={<Loader />}>
+          {activeTab === "overview" && <DashboardOverview />}
+          {activeTab === "shared" && <DashboardShared />}
+          {activeTab === "settings" && <DashboardSettings />}
+          {activeTab === "projects" && (
+            <DashboardProjects
+              projects={projects}
+              projectLoading={projectLoading}
+              navigate={navigate}
+              setIsCreateModalOpen={setIsCreateModalOpen}
+              openDeleteModal={openDeleteModal}
+            />
+          )}
+        </Suspense>
       </main>
 
       {/* Create Project Modal */}

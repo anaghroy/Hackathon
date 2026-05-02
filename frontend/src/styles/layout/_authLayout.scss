@@ -159,7 +159,7 @@
         .floating-card {
           position: relative;
           width: 100%;
-          border-radius: 12px;
+          border-radius: 0px;
           overflow: hidden;
           border: 1px solid rgba(255, 255, 255, 0.1);
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -188,7 +188,7 @@
           height: 20px;
           background: rgba(0, 0, 0, 0.4);
           filter: blur(20px);
-          border-radius: 50%;
+          border-radius: 0px;
           transform: rotateX(70deg);
           animation: shadow-pulse 8s ease-in-out infinite;
         }

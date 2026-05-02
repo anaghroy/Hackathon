@@ -1,6 +1,8 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Suspense } from "react";
 import Loading from "../components/Loading";
+import Loader from "../components/ui/Loader";
 
 const ProtectedRoute = ({ children }) => {
  
@@ -10,7 +12,11 @@ const ProtectedRoute = ({ children }) => {
 
   if (!user) return <Navigate to="/login" />
 
-  return children;
+  return (
+    <Suspense fallback={<Loader />}>
+      {children}
+    </Suspense>
+  );
 };
 
 export default ProtectedRoute;
