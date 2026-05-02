@@ -31,3 +31,8 @@ a {
 button, input, textarea {
   font-family: inherit;
 }
+
+/* Global Sharp Edge Rule - Strict */
+* {
+  border-radius: 0px !important;
+}

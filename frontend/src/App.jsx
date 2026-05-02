@@ -1,30 +1,32 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import { useAuth } from "./hooks/useAuth";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Dashboard from "./pages/Dashboard";
-import EditorPage from "./pages/EditorPage";
-import EditorIntent from "./pages/EditorIntent";
-import EditorExplainAI from "./pages/EditorExplainAI";
-import EditorSchema from "./pages/EditorSchema";
-import EditorMemory from "./pages/EditorMemory";
-import EditorTests from "./pages/EditorTests";
-import EditorReview from "./pages/EditorReview";
-import EditorSecurity from "./pages/EditorSecurity";
-import EditorPerformance from "./pages/EditorPerformance";
-import Profile from "./pages/Profile";
-import ConnectRepo from "./pages/ConnectRepo";
-import DeploymentPanel from "./pages/DeploymentPanel";
-import LogsViewer from "./pages/LogsViewer";
-import RollbackTimeline from "./pages/RollbackTimeline";
-import EnvManager from "./pages/EnvManager";
+const Dashboard = React.lazy(() => import("./pages/Dashboard"));
+const EditorPage = React.lazy(() => import("./pages/EditorPage"));
+const EditorIntent = React.lazy(() => import("./pages/EditorIntent"));
+const EditorExplainAI = React.lazy(() => import("./pages/EditorExplainAI"));
+const EditorSchema = React.lazy(() => import("./pages/EditorSchema"));
+const EditorMemory = React.lazy(() => import("./pages/EditorMemory"));
+const EditorTests = React.lazy(() => import("./pages/EditorTests"));
+const EditorReview = React.lazy(() => import("./pages/EditorReview"));
+const EditorSecurity = React.lazy(() => import("./pages/EditorSecurity"));
+const EditorPerformance = React.lazy(() => import("./pages/EditorPerformance"));
+const Profile = React.lazy(() => import("./pages/Profile"));
+const ConnectRepo = React.lazy(() => import("./pages/ConnectRepo"));
+const DeploymentPanel = React.lazy(() => import("./pages/DeploymentPanel"));
+const LogsViewer = React.lazy(() => import("./pages/LogsViewer"));
+const RollbackTimeline = React.lazy(() => import("./pages/RollbackTimeline"));
+const EnvManager = React.lazy(() => import("./pages/EnvManager"));
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyPending from "./pages/VerifyPending";
+import Landing from "./pages/Landing/Landing";
+import Documentation from "./pages/Documentation";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
@@ -75,6 +77,8 @@ function App() {
       />
 
       <Routes>
+        <Route path="/" element={<Landing />} />
+        <Route path="/docs" element={<Documentation />} />
         <Route
           path="/login"
           element={
@@ -257,7 +261,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
