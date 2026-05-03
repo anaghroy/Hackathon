@@ -20,7 +20,7 @@ $landing-border-hover: rgba(255, 92, 0, 0.3);
 
   /* Force rounded edges ONLY for this new style */
   * {
-    border-radius: 40px;
+    border-radius: 0px !important;
   }
 
   .sharp {
