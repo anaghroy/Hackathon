@@ -1,7 +1,7 @@
 import { analyzeCodeWithAI } from "./ai.service.js";
 import { generateGraph } from "./graph.service.js";
 
-export const analyzeStackTrace = async (project, stackTrace, errorMessage) => {
+export const analyzeStackTrace = async (project, stackTrace, errorMessage, options = {}) => {
   const graph = generateGraph(project.files);
   const allFiles = project.files;
   
@@ -44,6 +44,6 @@ Format your response in clear sections:
 3. Suggested Fix (Provide the exact code changes needed)
 `;
 
-  const result = await analyzeCodeWithAI({ customPrompt: prompt });
+  const result = await analyzeCodeWithAI({ customPrompt: prompt }, options);
   return result;
 };

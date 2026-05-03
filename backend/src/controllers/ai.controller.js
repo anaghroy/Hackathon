@@ -358,6 +358,7 @@ export const debugError = async (req, res) => {
   try {
     const { projectId } = req.params;
     const { stackTrace, errorMessage } = req.body;
+    const { stream } = req.query;
 
     if (!projectId || !stackTrace) {
       return res.status(400).json({ message: "projectId and stackTrace are required" });
@@ -366,9 +367,28 @@ export const debugError = async (req, res) => {
     const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: "Project not found" });
 
+    if (stream === "true") {
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const onChunk = (text) => {
+        res.write(`data: ${JSON.stringify({ chunk: text })}\n\n`);
+      };
+
+      const result = await analyzeStackTrace(project, stackTrace, errorMessage, { stream: true, onChunk });
+      res.write(`data: ${JSON.stringify({ done: true, analysis: result })}\n\n`);
+      return res.end();
+    }
+
     const result = await analyzeStackTrace(project, stackTrace, errorMessage);
     res.json({ analysis: result });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (!res.headersSent) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+      res.end();
+    }
   }
 };
