@@ -8,16 +8,24 @@ import Editor from "@monaco-editor/react";
 const EditorIntent = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
-  const { processIntent, loading } = useAI();
+  const { processIntent, loading, intentResult } = useAI();
   const [code, setCode] = useState('');
   const [prompt, setPrompt] = useState('');
   const [resultCode, setResultCode] = useState('');
 
+  // Sync resultCode with streaming analysis
+  React.useEffect(() => {
+    if (intentResult?.aiAnalysis) {
+      setResultCode(intentResult.aiAnalysis);
+    }
+  }, [intentResult?.aiAnalysis]);
+
   const handleSubmit = async () => {
     if (!code.trim() || !prompt.trim()) return;
     try {
-      const result = await processIntent(projectId, { code, prompt });
-      setResultCode(result.code || result.result || result.output || (typeof result === 'string' ? result : JSON.stringify(result, null, 2)));
+      const result = await processIntent(projectId, { code, prompt }, { stream: true });
+      // For streaming, the result returned by processIntent is the fullText string
+      setResultCode(typeof result === 'string' ? result : (result.code || result.result || result.output || JSON.stringify(result, null, 2)));
     } catch (error) {
       console.error(error);
     }

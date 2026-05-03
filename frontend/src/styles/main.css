@@ -93,9 +93,9 @@ button, input, textarea {
   font-family: inherit;
 }
 
-/* Global Sharp Edge Rule - Strict */
+/* Global Base Styles */
 * {
-  border-radius: 0px !important;
+  border-radius: 0px;
 }
 
 .dashboard {

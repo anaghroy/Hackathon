@@ -13,11 +13,19 @@ const EditorDebugger = () => {
   const { debugError, debugResult, loading } = useAI();
   const [stackTrace, setStackTrace] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [liveAnalysis, setLiveAnalysis] = useState('');
+
+  // Sync live analysis with streaming result
+  React.useEffect(() => {
+    if (debugResult?.analysis) {
+      setLiveAnalysis(debugResult.analysis);
+    }
+  }, [debugResult?.analysis]);
 
   const handleDebug = async () => {
     if (!stackTrace.trim()) return;
     try {
-      await debugError(projectId, { stackTrace, errorMessage });
+      await debugError(projectId, { stackTrace, errorMessage }, { stream: true });
     } catch (err) {
       console.error(err);
     }
@@ -94,12 +102,9 @@ const EditorDebugger = () => {
                   <span>AI Root Cause Analysis</span>
                 </div>
                 <div className="ai-analysis-content" style={{ padding: '8px 4px' }}>
-                  <TypewriterText 
-                    text={debugResult.analysis} 
-                    speed={2} 
-                    delay={100}
-                    style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7', color: 'rgba(255,255,255,0.9)' }}
-                  />
+                  <div style={{ whiteSpace: 'pre-wrap', lineHeight: '1.7', color: 'rgba(255,255,255,0.9)', fontSize: '14px' }}>
+                    {liveAnalysis}
+                  </div>
                 </div>
               </div>
 

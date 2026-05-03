@@ -150,7 +150,7 @@ const ArchitectureGraphInner = () => {
     try {
       setIsInitializing(true);
       setError(null);
-      const data = await getArchitectureGraph(projectId);
+      const data = await getArchitectureGraph(projectId, { stream: true });
       if (data && data.graph && data.graph.nodes && data.graph.nodes.length > 0) {
         processGraphData(data);
       } else {
@@ -165,9 +165,18 @@ const ArchitectureGraphInner = () => {
     }
   }, [projectId, getArchitectureGraph, processGraphData, setNodes, setEdges]);
 
+  // Prevent redundant processing if graph hasn't changed
+  const lastGraphRef = React.useRef(null);
+  useEffect(() => {
+    if (architectureGraph && architectureGraph.graph && architectureGraph.graph !== lastGraphRef.current) {
+      processGraphData(architectureGraph);
+      lastGraphRef.current = architectureGraph.graph;
+    }
+  }, [architectureGraph, processGraphData]);
+
   useEffect(() => {
     performFetch();
-  }, [projectId]);
+  }, [projectId, performFetch]);
 
   const onNodeClick = useCallback((event, node) => {
     event.stopPropagation();
@@ -192,7 +201,8 @@ const ArchitectureGraphInner = () => {
     [nodes, edges, setNodes, setEdges]
   );
 
-  const isLoading = aiLoading || isInitializing;
+  const isGlobalLoading = aiLoading || isInitializing;
+  const showInitialLoader = isGlobalLoading && nodes.length === 0;
 
   return (
     <div style={{ 
@@ -258,8 +268,8 @@ const ArchitectureGraphInner = () => {
               fontWeight: '600'
             }}
           >
-            <RefreshCw size={14} className={isLoading ? 'spin' : ''} />
-            Scan Project
+            <RefreshCw size={14} className={isGlobalLoading ? 'spin' : ''} />
+            {isGlobalLoading ? 'Scanning...' : 'Scan Project'}
           </button>
         </div>
       </header>
@@ -268,7 +278,7 @@ const ArchitectureGraphInner = () => {
         <div style={{ flex: 1, position: 'relative', background: '#000000', height: '100%' }}>
           
           {/* Direct Loading Overlay */}
-          {isLoading && (
+          {showInitialLoader && (
             <div style={{
               position: 'absolute',
               inset: 0,
