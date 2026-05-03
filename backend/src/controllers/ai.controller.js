@@ -11,14 +11,30 @@ import { analyzeStackTrace } from "../services/debugger.service.js";
 export const intentAnalysis = async (req, res) => {
   try {
     const { projectId } = req.params;
+    const { stream } = req.query;
+
     if (!projectId) return res.status(400).json({ message: "projectId is required" });
 
     const project = await Project.findById(projectId);
     if (!project) return res.status(404).json({ message: "Project not found" });
 
     const parsedData = parseProjectFiles(project.files);
-    const aiResult = await analyzeCodeWithAI(parsedData);
 
+    if (stream === "true") {
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const onChunk = (text) => {
+        res.write(`data: ${JSON.stringify({ chunk: text })}\n\n`);
+      };
+
+      const aiResult = await analyzeCodeWithAI(parsedData, { stream: true, onChunk });
+      res.write(`data: ${JSON.stringify({ done: true, fullText: aiResult })}\n\n`);
+      return res.end();
+    }
+
+    const aiResult = await analyzeCodeWithAI(parsedData);
     res.json({
       summary: parsedData,
       aiAnalysis: aiResult,
@@ -46,6 +62,7 @@ export const explainCodebase = async (req, res) => {
 export const explainGraphWithAI = async (req, res) => {
   try {
     const { projectId } = req.params;
+    const { stream } = req.query;
     if (!projectId) return res.status(400).json({ message: "projectId is required" });
 
     const project = await Project.findById(projectId);
@@ -54,12 +71,12 @@ export const explainGraphWithAI = async (req, res) => {
     const cacheKey = buildExplainKey(projectId);
     const cached = await getCache(cacheKey);
 
-    if (cached) {
+    if (cached && stream !== "true") {
       return res.json({ ...cached, cached: true, source: "redis" });
     }
 
     const existing = await AIAnalysis.findOne({ projectId }).sort({ createdAt: -1 });
-    if (existing) {
+    if (existing && stream !== "true") {
       const data = { graph: existing.graph, explanation: existing.explanation };
       await setCache(cacheKey, data, 300);
       return res.json({ ...data, cached: true, source: "db" });
@@ -81,6 +98,32 @@ FILES: ${graph.nodes.map((n) => n.id).join(", ")}
 Format your response in sections: Responsibilities, Connections, Data Flow, Decisions, Improvements.
 `;
 
+    if (stream === "true") {
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+
+      const onChunk = (text) => {
+        res.write(`data: ${JSON.stringify({ chunk: text })}\n\n`);
+      };
+
+      // Send initial graph data
+      res.write(`data: ${JSON.stringify({ graph })}\n\n`);
+
+      const explanation = await analyzeCodeWithAI({
+        customPrompt: prompt,
+        totalFiles: graph.nodes.length,
+      }, { stream: true, onChunk });
+
+      res.write(`data: ${JSON.stringify({ done: true, explanation })}\n\n`);
+      
+      // Save to cache/db after streaming ends
+      await AIAnalysis.create({ projectId, graph, explanation });
+      await setCache(cacheKey, { graph, explanation }, 300);
+      
+      return res.end();
+    }
+
     const explanation = await analyzeCodeWithAI({
       customPrompt: prompt,
       totalFiles: graph.nodes.length,
@@ -92,7 +135,12 @@ Format your response in sections: Responsibilities, Connections, Data Flow, Deci
 
     res.json({ ...data, cached: false, source: "ai" });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    if (!res.headersSent) {
+      res.status(500).json({ message: err.message });
+    } else {
+      res.write(`data: ${JSON.stringify({ error: err.message })}\n\n`);
+      res.end();
+    }
   }
 };
 

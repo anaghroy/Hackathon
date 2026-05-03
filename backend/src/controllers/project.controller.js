@@ -164,11 +164,20 @@ export const deleteProject = async (req, res) => {
 export const getSharedProjects = async (req, res) => {
   try {
     const sharedProjects = await Project.find({
-      "collaborators.user": req.user.id,
-    }).populate("user", "username email picture"); // Populate owner details to show on frontend
+      $or: [
+        { "collaborators.user": req.user.id }, // Projects shared with me
+        { 
+          user: req.user.id, 
+          collaborators: { $exists: true, $not: { $size: 0 } } 
+        } // Projects shared by me (has at least one collaborator)
+      ]
+    })
+    .populate("user", "username email picture")
+    .populate("collaborators.user", "username email picture");
 
     res.status(200).json({ success: true, projects: sharedProjects });
   } catch (error) {
+    console.error("Fetch Shared Projects Error:", error);
     res
       .status(500)
       .json({ success: false, message: "Error fetching shared projects" });

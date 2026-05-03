@@ -436,7 +436,7 @@ export const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { username, city, bio, dob } = req.body;
+    const { username, city, bio, dob, location } = req.body;
 
     const user = await userModel.findById(userId);
 
@@ -463,6 +463,7 @@ export const updateProfile = async (req, res) => {
     if (city !== undefined) user.city = city;
     if (bio !== undefined) user.bio = bio;
     if (dob !== undefined) user.dob = dob;
+    if (location !== undefined) user.location = location;
 
     await user.save();
 
@@ -475,6 +476,7 @@ export const updateProfile = async (req, res) => {
         city: user.city,
         bio: user.bio,
         dob: user.dob,
+        location: user.location,
         picture: user.picture,
       },
     });

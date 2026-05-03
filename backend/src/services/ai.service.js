@@ -6,16 +6,14 @@ import { cohereAnalyze } from "../services/ai/providers/cohere.provider.js";
 import { togetherAnalyze } from "../services/ai/providers/together.provider.js";
 import { deepInfraAnalyze } from "../services/ai/providers/DeepInfra.provider.js";
 
-// -----------------------------
 // CONFIG
-// -----------------------------
+
 const TIMEOUT_MS = 15000;
 const MAX_PROMPT_LENGTH = 12000;
 const MIN_VALID_LENGTH = 10;
 
-// -----------------------------
 // TIMEOUT WRAPPER
-// -----------------------------
+
 const withTimeout = (promise, ms = TIMEOUT_MS) => {
   return Promise.race([
     promise,
@@ -75,10 +73,7 @@ const retry = async (fn, retries = 1) => {
 // RESPONSE VALIDATION
 
 const isValidResponse = (res) => {
-  return (
-    typeof res === "string" &&
-    res.length > MIN_VALID_LENGTH
-  );
+  return typeof res === "string" && res.length > MIN_VALID_LENGTH;
 };
 
 // PROMPT TRIMMER
@@ -91,9 +86,52 @@ const trimPrompt = (prompt) => {
     : prompt;
 };
 
-// MAIN ANALYZER
+// SMART ROUTING LOGIC
+const getSmartProviderOrder = (prompt) => {
+  const p = prompt.toLowerCase();
+  
+  // Define provider functions map
+  const providerMap = {
+    Gemini: geminiAnalyze,
+    Groq: groqAnalyze,
+    HuggingFace: huggingfaceAnalyze,
+    Cohere: cohereAnalyze,
+    OpenRouter: openRouterAnalyze,
+    DeepInfra: deepInfraAnalyze,
+    Together: togetherAnalyze,
+  };
 
-export const analyzeCodeWithAI = async (parsedData) => {
+  // Default order
+  let order = ["Gemini", "Groq", "HuggingFace", "Cohere", "OpenRouter", "DeepInfra", "Together"];
+
+  let intent = "general";
+
+  if (p.includes("security") || p.includes("vulnerability") || p.includes("owasp")) {
+    intent = "security";
+    order = ["Gemini", "Groq", "OpenRouter", "Together"]; // Gemini/Groq have better reasoning for security
+  } else if (p.includes("schema") || p.includes("er diagram") || p.includes("mermaid")) {
+    intent = "schema";
+    order = ["Gemini", "OpenRouter", "Cohere"]; // Gemini is excellent at structured output/diagrams
+  } else if (p.includes("review") || p.includes("best practices")) {
+    intent = "review";
+    order = ["Groq", "Gemini", "Together"]; // Groq is fast for iterative reviews
+  } else if (p.includes("performance") || p.includes("bottleneck") || p.includes("complexity")) {
+    intent = "performance";
+    order = ["Groq", "Gemini", "DeepInfra"];
+  } else if (p.includes("test") || p.includes("unit test") || p.includes("coverage")) {
+    intent = "testing";
+    order = ["Groq", "Gemini", "Together"];
+  }
+
+  console.log(`Smart Routing: Detected intent '${intent}', prioritized: ${order[0]}`);
+
+  return order.map(name => ({ name, fn: providerMap[name] }));
+};
+
+// MAIN ANALYZER
+export const analyzeCodeWithAI = async (parsedData, options = {}) => {
+  const { stream = false, onChunk = null } = options;
+  
   const prompt =
     parsedData?.customPrompt ||
     `Analyze project:
@@ -101,26 +139,16 @@ Files: ${parsedData?.totalFiles || 0}
 Lines: ${parsedData?.totalLines || 0}`;
 
   const safePrompt = trimPrompt(prompt);
-
-  // CLEAN provider order
-  const providers = [
-    { name: "Groq", fn: groqAnalyze },
-    { name: "OpenRouter", fn: openRouterAnalyze },
-    { name: "Gemini", fn: geminiAnalyze },
-    { name: "HuggingFace", fn: huggingfaceAnalyze },
-    { name: "Cohere", fn: cohereAnalyze },
-    { name: "DeepInfra", fn: deepInfraAnalyze },
-    { name: "Together", fn: togetherAnalyze },
-  ];
+  const providers = getSmartProviderOrder(safePrompt);
 
   let lastError = null;
 
   for (const provider of providers) {
     try {
-      console.log(`Trying ${provider.name}`);
+      console.log(`Trying ${provider.name}${stream ? " (streaming)" : ""}`);
 
       const result = await retry(
-        () => withTimeout(provider.fn(safePrompt), TIMEOUT_MS),
+        () => withTimeout(provider.fn(safePrompt, { stream, onChunk }), TIMEOUT_MS),
         1,
       );
 
@@ -134,7 +162,7 @@ Lines: ${parsedData?.totalLines || 0}`;
       const msg = err.message || "";
 
       if (shouldSkipProvider(err)) {
-        console.log(`⏭Skipping ${provider.name} (non-retryable issue)`);
+        console.log(`Skipping ${provider.name} (non-retryable issue)`);
         continue;
       }
 
@@ -144,7 +172,6 @@ Lines: ${parsedData?.totalLines || 0}`;
   }
 
   console.error("All providers failed");
-
   return "AI system overloaded. Please try again.";
 };
 
@@ -190,8 +217,8 @@ ${fileSummary}`;
 
     let parsed;
     try {
-      const firstBrace = aiResult.indexOf('{');
-      const lastBrace = aiResult.lastIndexOf('}');
+      const firstBrace = aiResult.indexOf("{");
+      const lastBrace = aiResult.lastIndexOf("}");
       if (firstBrace !== -1 && lastBrace !== -1) {
         const jsonStr = aiResult.substring(firstBrace, lastBrace + 1);
         parsed = JSON.parse(jsonStr);
@@ -204,10 +231,12 @@ ${fileSummary}`;
         issues: [
           {
             issue: "Analysis Error",
-            explanation: "The AI response could not be parsed into a structured report. Raw output: " + aiResult.slice(0, 200),
+            explanation:
+              "The AI response could not be parsed into a structured report. Raw output: " +
+              aiResult.slice(0, 200),
             line: 0,
-            suggestedFix: "// Unable to generate fix"
-          }
+            suggestedFix: "// Unable to generate fix",
+          },
         ],
       };
     }
