@@ -39,7 +39,7 @@ export const useAuth = () => {
 
   const handleApiError = (error, fallbackMessage) => {
     console.log(error);
-    
+
     const message =
       error?.response?.data?.message || error?.message || fallbackMessage;
 
@@ -210,7 +210,6 @@ export const useAuth = () => {
       const data = await updateProfile(profileData);
 
       dispatch(setUser(data.user));
-      toast.success(data.message || "Profile Updated");
 
       return data;
     } catch (error) {
@@ -231,7 +230,7 @@ export const useAuth = () => {
       // Backend uploadProfilePicture doesn't return the full user object
       // We fetch fresh user data to keep state in sync and prevent redirects
       await handleGetMe();
-      
+
       toast.success(data.message || "Profile Picture Updated");
 
       return data;

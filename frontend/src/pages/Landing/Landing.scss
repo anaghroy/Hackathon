@@ -1,3 +1,4 @@
+@use "sass:color";
 @use "../../styles/abstracts/variables" as v;
 
 /* LANDING PAGE SPECIFIC THEME - AMBER & ORANGE (Gcore style) */
@@ -362,7 +363,7 @@ $landing-border-hover: rgba(255, 92, 0, 0.3);
         border: none;
 
         &:hover {
-          background: darken($landing-primary, 5%);
+          background: color.adjust($landing-primary, $lightness: -5%);
           transform: translateY(-2px);
           box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
         }
@@ -1012,7 +1013,7 @@ $landing-border-hover: rgba(255, 92, 0, 0.3);
       letter-spacing: 0.1em;
 
       &:hover {
-        background: darken($landing-primary, 5%);
+        background: color.adjust($landing-primary, $lightness: -5%);
         box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
       }
@@ -1134,7 +1135,7 @@ $landing-border-hover: rgba(255, 92, 0, 0.3);
         border: none;
 
         &:hover {
-          background: darken($landing-primary, 5%);
+          background: color.adjust($landing-primary, $lightness: -5%);
           color: #fff;
           box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
         }

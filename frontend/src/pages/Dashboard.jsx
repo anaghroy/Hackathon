@@ -291,7 +291,7 @@ const Dashboard = () => {
             }}
           >
             <Users size={20} />
-            Shared with Me
+            Shared Projects
           </div>
           <div
             className={`sidebar__item ${activeTab === "settings" ? "sidebar__item--active" : ""}`}
