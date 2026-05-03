@@ -286,7 +286,28 @@ const Landing = () => {
             transition={{ duration: 0.8 }}
             className="landing-demo__header"
           >
-            <h2 className="landing-demo__title">Build &bull; Optimize &bull; Deploy</h2>
+            <h2 className="landing-demo__title">
+              {["Build", "•", "Optimize", "•", "Deploy"].map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
+                  whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ 
+                    duration: 0.7, 
+                    delay: i * 0.15, 
+                    ease: [0.215, 0.61, 0.355, 1] 
+                  }}
+                  style={{ 
+                    display: 'inline-block', 
+                    margin: '0 0.15em',
+                    color: word === 'Optimize' ? '#ff5c00' : 'inherit'
+                  }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h2>
             <p className="landing-demo__subtitle">
               Seamless AI-powered DevOps workflow for modern engineering teams.
             </p>
@@ -365,7 +386,15 @@ const Landing = () => {
 
       <Element name="how-it-works" className="landing-how">
         <div className="landing-how__container">
-          <h2 className="landing-how__title">Deployment <span className="landing-how__title--italic">Workflow.</span></h2>
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="landing-how__title"
+          >
+            Deployment <span className="landing-how__title--accent">Workflow.</span>
+          </motion.h2>
           <div className="landing-how__timeline">
             <div className="landing-how__line">
               <motion.div initial={{ width: 0 }} whileInView={{ width: '100%' }} viewport={{ once: false, amount: 0.1 }} className="landing-how__line-progress" />
@@ -379,10 +408,14 @@ const Landing = () => {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 40 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: false, amount: 0.1 }}
-                  transition={{ delay: i * 0.2 }}
+                  viewport={{ once: false, amount: 0.2 }}
+                  transition={{ 
+                    duration: 0.8,
+                    delay: i * 0.2,
+                    ease: [0.16, 1, 0.3, 1]
+                  }}
                   className="landing-how-step"
                 >
                   <div className="landing-how-step__number mono">{item.step}</div>
@@ -398,10 +431,33 @@ const Landing = () => {
 
       <Element name="pricing" className="landing-pricing">
         <div className="landing-pricing__container">
-          <div className="landing-pricing__header">
-            <h2 className="landing-pricing__title">Predictable <span className="landing-pricing__title--italic">Pricing.</span></h2>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="landing-pricing__header"
+          >
+            <h2 className="landing-pricing__title">
+              {["Predictable", "Pricing."].map((word, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 15, filter: 'blur(10px)' }}
+                  whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  viewport={{ once: false }}
+                  transition={{ duration: 0.8, delay: i * 0.2 }}
+                  style={{ 
+                    display: 'inline-block', 
+                    marginRight: '0.3em',
+                    color: word.includes('Pricing') ? '#ff5c00' : 'inherit'
+                  }}
+                >
+                  {word}
+                </motion.span>
+              ))}
+            </h2>
             <p className="landing-pricing__subtitle">Scalable plans for developers and organizations.</p>
-          </div>
+          </motion.div>
           <div className="landing-pricing__grid">
             <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false, amount: 0.1 }} className="landing-price-card">
               <h3 className="landing-price-card__tier mono">DEVELOPER</h3>
@@ -478,8 +534,21 @@ const Landing = () => {
 
       <Element name="faq" className="landing-faq">
         <div className="landing-faq__container">
-          <h2 className="landing-faq__title">Information <span className="landing-faq__title--italic">Center.</span></h2>
-          <div className="landing-faq__list">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.5 }}
+            className="landing-faq__title"
+          >
+            Information <span className="landing-faq__title--italic">Center.</span>
+          </motion.h2>
+          <motion.div 
+            className="landing-faq__list"
+            variants={staggerContainer}
+            initial="initial"
+            whileInView="animate"
+            viewport={{ once: false, amount: 0.1 }}
+          >
             {[
               { q: 'What does this platform do?', a: 'CogniCode is an institutional-grade DevOps platform that combines seamless deployment workflows with AI-powered code optimization and security tools.' },
               { q: 'How does deployment work?', a: 'We use Dockerized runners to build and deploy your applications directly from your linked GitHub or GitLab repositories with one click.' },
@@ -487,8 +556,12 @@ const Landing = () => {
               { q: 'Is my data secure?', a: 'All secrets and environment variables are encrypted at rest with AES-256 and in transit via TLS 1.3. We maintain strict SOC2-compliant standards.' },
               { q: 'Do you support open-source?', a: 'We offer free Pro tier access to verified maintainers of active open-source projects. Contact our support team to apply.' },
               { q: 'What happens if limits exceed?', a: 'We provide a generous grace period and will notify you before any services are throttled. You can increase limits at any time.' },
-            ].map((faq, i) => (<AccordionItem key={i} question={faq.q} answer={faq.a} />))}
-          </div>
+            ].map((faq, i) => (
+              <motion.div key={i} variants={fadeInUp}>
+                <AccordionItem question={faq.q} answer={faq.a} />
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </Element>
 

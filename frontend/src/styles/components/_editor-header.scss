@@ -34,6 +34,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 140px;
+
+    /* Override for tool pages to prevent truncation */
+    .ai-page & {
+      max-width: 400px;
+      overflow: visible;
+      flex-shrink: 0;
+    }
   }
 
   &__subtitle {

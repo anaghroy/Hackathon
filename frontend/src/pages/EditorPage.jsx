@@ -883,7 +883,7 @@ const EditorPage = () => {
         <div className="modal-overlay" onClick={() => setIsShareModalOpen(false)}>
           <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '450px' }}>
             <header className="modal-header">
-              <div className="flex items-center gap-2">
+              <div className="modal-header__title">
                 <Users size={20} className="text-primary" />
                 <h2>Project Collaboration</h2>
               </div>
