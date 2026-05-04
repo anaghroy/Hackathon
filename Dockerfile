@@ -27,13 +27,10 @@ RUN npm install
 # Copy backend source
 COPY ./backend /app
 
-# Build JavaScript → dist/
-RUN npm run build
-
 # Copy frontend build into backend public folder
 COPY --from=frontend-builder /app/dist /app/public
 
 EXPOSE 3000
 
 # Run compiled JavaScript
-CMD ["node", "dist/server.js"]
+CMD ["node", "server.js"]

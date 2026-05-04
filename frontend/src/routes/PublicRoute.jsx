@@ -1,13 +1,13 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import { useSelector } from "react-redux";
 import Loading from "../components/Loading";
 
 const PublicRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+  const { user, loading } = useSelector((state) => state.auth);
 
   if (loading) return <Loading fullScreen message="Authenticating..." />;
 
-  if (isAuthenticated) {
+  if (user) {
     return <Navigate to="/dashboard" replace />;
   }
 

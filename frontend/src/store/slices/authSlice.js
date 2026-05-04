@@ -23,11 +23,14 @@ const authSlice = createSlice({
 
     setError: (state, action) => {
       state.error = action.payload;
+      state.user = null;
+      state.isAuthenticated = false;
     },
 
     logoutUser: (state) => {
       state.user = null;
       state.isAuthenticated = false;
+      state.loading = false;
       state.error = null;
     },
   },

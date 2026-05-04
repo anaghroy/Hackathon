@@ -30,22 +30,19 @@ import Documentation from "./pages/Documentation";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 import PublicRoute from "./routes/PublicRoute";
+import Loading from "./components/Loading";
 
 function App() {
-  const { handleGetMe } = useAuth();
+  const { handleGetMe, loading } = useAuth();
 
   useEffect(() => {
-    const init = async () => {
-      try {
-        const res = await handleGetMe();
-        console.log(res);
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    init();
+    handleGetMe();
   }, []);
+
+  if (loading) {
+    return <Loading fullScreen message="Authenticating..." />;
+  }
+
   return (
     <BrowserRouter>
       <Toaster 
